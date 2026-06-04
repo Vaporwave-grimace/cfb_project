@@ -1,0 +1,600 @@
+raw_name,preprocessed,proposed_match,similarity,confident,source_col,reviewed,timestamp
+Hawai'i,Hawai'i,Hawaii,0.571,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+California,California,Cal,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Miami (OH),Miami OH,Miami (OH),0.556,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Florida Atlantic,Florida Atlantic,Florida State,0.421,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Missouri State,Missouri State,Missouri,0.538,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Delaware,Delaware,Hawaii,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wyoming,Wyoming,Wyoming,1,TRUE,massey_name,FALSE,2026-05-20T21:05:00Z
+App State,App State,NC State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+San José State,San José State,San Jose State,0.733,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UL Monroe,ULM,Tulsa,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+nationalAverages,nationalAverages,Cincinnati,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Nicholls,Nicholls,Michigan,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Portland State,Portland State,Kansas State,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern,Southern,Southern Miss,0.583,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central Washington,Central Washington,Washington,0.529,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northern Michigan,Northern Michigan,Eastern Michigan,0.55,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Saginaw Valley State,Saginaw Valley State,Ball State,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ferris State,Ferris State,Texas State,0.429,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Indiana State,Indiana State,Indiana,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Michigan Tech,Michigan Tech,Michigan,0.636,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Marian College,Marian College,Boston College,0.444,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Clarion,Clarion,Arizona,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Delta State,Delta State,Iowa State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Seton Hill,Seton Hill,Boston College,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wilson,Wilson,Clemson,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+University Of Charleston (WV),University Of Charleston (WV),Boston College,0.171,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St. Thomas (MN),St. Thomas (MN),Oklahoma State,0.174,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Walsh,Walsh,Marshall,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Eastern Illinois,Eastern Illinois,Northern Illinois,0.579,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Norfolk State,Norfolk State,Colorado State,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wayne State (NE),Wayne State (NE),Iowa State,0.375,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Minnesota State Mankato,Minnesota State Mankato,Minnesota,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+East Stroudsburg University,East Stroudsburg University,Pittsburgh,0.172,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Quincy,Quincy,Cincinnati,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+University of Mary,University of Mary,Maryland,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Drake,Drake,Duke,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Houston Christian,Houston Christian,Houston,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Samford,Samford,Stanford,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Emporia State University,Emporia State University,Florida State,0.296,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+CSU Pueblo,CSU Pueblo,Purdue,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northwestern State,Northwestern State,Northwestern,0.733,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Eastern New Mexico,Eastern New Mexico,New Mexico,0.529,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Black Hills State,Black Hills State,Jacksonville State,0.375,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Western Colorado,Western Colorado,Colorado State,0.474,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Winona State,Winona State,Arizona State,0.533,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Fort Hays State,Fort Hays State,Texas State,0.353,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Rhode Island,Rhode Island,Maryland,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Florida,West Florida,Florida,0.545,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Colgate,Colgate,Colorado State,0.267,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Marist,Marist,Arizona,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Carson-Newman College,Carson-Newman College,Boston College,0.375,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Gannon,Gannon,UConn,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lehigh,Lehigh,Michigan,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Shorter,Shorter,Northwestern,0.308,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UT Permian Basin,UT Permian Basin,Eastern Michigan,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Shaw,Shaw,Hawaii,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Glenville State,Glenville State,Jacksonville State,0.579,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Grand Valley State University,Grand Valley State University,Ball State,0.233,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Post University,Post University,West Virginia,0.13,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central State (OH),Central State (OH),Ball State,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Tennessee Tech,Tennessee Tech,Tennessee,0.667,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Davidson,Davidson,South Florida,0.188,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Clark Atlanta,Clark Atlanta,Arkansas State,0.263,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Furman,Furman,Maryland,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Sacred Heart,Sacred Heart,Arkansas,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Washburn,Washburn,Auburn,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Fort Lewis,Fort Lewis,Ole Miss,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Augustana University (SD),Augustana University (SD),Arizona State,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Valparaiso,Valparaiso,Missouri,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northern Colorado,Northern Colorado,Colorado,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Jackson State,Jackson State,Jacksonville State,0.611,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Morehouse College,Morehouse College,Boston College,0.318,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Florida A&M,Florida A&M,Florida,0.6,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Tennessee State,Tennessee State,Tennessee,0.615,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mississippi Valley State,Mississippi Valley State,Mississippi State,0.65,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Benedict College,Benedict College,Boston College,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Pace,Pace,Rice,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Alabama,West Alabama,Alabama,0.545,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+East Tennessee State,East Tennessee State,Tennessee,0.471,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Western Carolina,Western Carolina,East Carolina,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Carolina Central,North Carolina Central,North Carolina,0.65,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mercer,Mercer,Air Force,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Catawba,Catawba,Ball State,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+South Carolina State,South Carolina State,South Carolina,0.684,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Chowan,Chowan,Iowa,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Savannah St,Savannah St,Utah State,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Morehead State,Morehead State,Oregon State,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UVA Wise,UVA Wise,Wisconsin,0.154,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wingate,Wingate,Washington State,0.235,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Stetson,Stetson,Oregon State,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Frostburg State,Frostburg State,NC State,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+McNeese,McNeese,Tennessee,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern Illinois,Southern Illinois,Northern Illinois,0.722,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Missouri S&T,Missouri S&T,Missouri,0.636,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bluefield State,Bluefield State,NC State,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Missouri Southern State,Missouri Southern State,Southern Miss,0.55,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Grambling,Grambling,Bowling Green,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lincoln (MO),Lincoln (MO),Coastal Carolina,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UT Rio Grande Valley,UT Rio Grande Valley,Vanderbilt,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Texas Southern,Texas Southern,Georgia Southern,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Western New Mexico,Western New Mexico,New Mexico,0.529,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+San Diego,San Diego,San Diego State,0.571,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern Utah,Southern Utah,Southern Miss,0.533,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Utah Tech,Utah Tech,Utah State,0.455,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Virginia Union,Virginia Union,Virginia,0.583,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Tuskegee,Tuskegee,Kentucky,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Susquehanna,Susquehanna,Indiana,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+John Carroll University,John Carroll University,Coastal Carolina,0.194,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kutztown University,Kutztown University,Rutgers,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wayne State (MI),Wayne State (MI),Iowa State,0.353,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Carolina Wesleyan,North Carolina Wesleyan,North Carolina,0.591,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+PennWest California,PennWest California,West Virginia,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Virginia Wesleyan,West Virginia Wesleyan,West Virginia,0.632,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Valley City State,Valley City State,Ball State,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+South Dakota Mines,South Dakota Mines,Minnesota,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Fairmont State,Fairmont State,Kent State,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southeastern Oklahoma State,Southeastern Oklahoma State,Oklahoma State,0.542,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Heidelberg,Heidelberg,Liberty,0.154,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Millersville,Millersville,Louisville,0.417,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southwestern Oklahoma State,Southwestern Oklahoma State,Oklahoma State,0.542,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northwestern Oklahoma State,Northwestern Oklahoma State,Oklahoma State,0.542,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Westminster (PA),Westminster (PA),Western Michigan,0.261,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Indiana-Pennsylvania,Indiana-Pennsylvania,Indiana,0.353,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Henderson State,Henderson State,Penn State,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern Arkansas,Southern Arkansas,Arkansas,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Buffalo State,Buffalo State,Buffalo,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lebanon Valley,Lebanon Valley,Boston College,0.19,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Eau Claire,Wisconsin-Eau Claire,Wisconsin,0.421,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Cornell College (IA),Cornell College (IA),Boston College,0.304,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Texas Lutheran,Texas Lutheran,Texas A&M,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+East Central (OK),East Central (OK),Central Michigan,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Howard Payne,Howard Payne,Iowa,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Texas A&M,West Texas A&M,Texas A&M,0.615,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Illinois College,Illinois College,Illinois,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Belhaven,Belhaven,Navy,0.111,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Thiel,Thiel,Ohio,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Randolph-Macon,Randolph-Macon,Colorado,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Franklin Pierce,Franklin Pierce,Northern Illinois,0.16,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Curry College,Curry College,Boston College,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Gallaudet,Gallaudet,Alabama,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Merchant Marine Academy,Merchant Marine Academy,East Carolina,0.133,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St. Lawrence,St. Lawrence,Kennesaw State,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Fitchburg State,Fitchburg State,NC State,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Alfred University,Alfred University,Rutgers,0.1,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mass Maritime,Mass Maritime,UMass,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Catholic,Catholic,South Carolina,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Gettysburg,Gettysburg,Pittsburgh,0.385,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Muhlenberg,Muhlenberg,Liberty,0.154,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Reading,Reading,Indiana,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+FDU-Florham,FDU-Florham,Florida,0.231,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hartwick,Hartwick,Marshall,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Virginia State,West Virginia State,West Virginia,0.706,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Framingham State,Framingham State,Washington State,0.318,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+University of Rochester (NY),University of Rochester (NY),Western Michigan,0.139,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Cortland,Cortland,Maryland,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+MIT,MIT,Miami,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Salve Regina,Salve Regina,Oregon,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Otterbein,Otterbein,Charlotte,0.231,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Delaware Valley,Delaware Valley,Marshall,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Anderson (IN),Anderson (IN),Vanderbilt,0.235,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+New England College,New England College,Boston College,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Biddeford,Biddeford,Stanford,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Concordia University Chicago,Concordia University Chicago,Georgia Tech,0.121,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Oberlin,Oberlin,Liberty,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wilkes,Wilkes,Wake Forest,0.154,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bentley,Bentley,Kentucky,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Eastern University,Eastern University,Eastern Michigan,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Johnson C Smith,Johnson C Smith,Southern Miss,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Endicott College,Endicott College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Westfield State,Westfield State,NC State,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bethany (WV),Bethany (WV),Kansas,0.067,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Western New England,Western New England,Western Michigan,0.32,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central Connecticut,Central Connecticut,Central Michigan,0.32,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mercyhurst,Mercyhurst,Rutgers,0.154,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Duquesne,Duquesne,Purdue,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northwood (MI),Northwood (MI),Northwestern,0.263,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Washington & Jefferson,Washington & Jefferson,Washington,0.45,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Findlay,Findlay,Indiana,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Dayton,Dayton,Houston,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Waynesburg,Waynesburg,Pittsburgh,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Brevard College,Brevard College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Delaware State,Delaware State,Iowa State,0.375,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lycoming,Lycoming,Wyoming,0.444,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Merrimack,Merrimack,James Madison,0.111,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ithaca College,Ithaca College,Boston College,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Stonehill,Stonehill,Houston,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Liberty,West Liberty,Liberty,0.545,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kean,Kean,Duke,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Washington and Lee,Washington and Lee,Washington,0.529,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-River Falls,Wisconsin-River Falls,Wisconsin,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Georgetown,Georgetown,Georgia,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Manchester,Manchester,Western Michigan,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Rowan,Rowan,Iowa,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Emory & Henry College,Emory & Henry College,Boston College,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Butler,Butler,Rutgers,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Anderson (Sc),Anderson (Sc),Vanderbilt,0.235,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Saint Vincent,Saint Vincent,West Virginia,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Shenandoah,Shenandoah,Indiana,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Chicago,Chicago,Michigan,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Christopher Newport,Christopher Newport,Northern Illinois,0.179,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+McKendree,McKendree,Kentucky,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kentucky Wesleyan,Kentucky Wesleyan,Kentucky,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Widener,Widener,Tennessee,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Shippensburg,Shippensburg,Pittsburgh,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lawrence University,Lawrence University,Rutgers,0.091,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+University of Mount Union,University of Mount Union,Louisiana Monroe,0.161,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+VMI,VMI,Miami,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Franklin,Franklin,Indiana,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St. Norbert,St. Norbert,Northwestern,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wittenberg,Wittenberg,Pittsburgh,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Stevens Pt,Wisconsin-Stevens Pt,Wisconsin,0.444,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hendrix College,Hendrix College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kentucky State,Kentucky State,Kent State,0.571,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Allegheny,Allegheny,Boston College,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lake Erie,Lake Erie,Wake Forest,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St. Olaf,St. Olaf,East Carolina,0.118,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hamline University,Hamline University,Liberty,0.15,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Lutheran,Wisconsin-Lutheran,Wisconsin,0.471,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Whitewater,Wisconsin-Whitewater,Wisconsin,0.444,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Roosevelt,Roosevelt,San Jose State,0.105,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Aurora,Aurora,Auburn,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Loras College,Loras College,Boston College,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Rockford,Rockford,Stanford,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Grinnell,Grinnell,Minnesota,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Benedictine University,Benedictine University,Liberty,0.13,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Luther,Luther,Southern Miss,0.308,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Stout,Wisconsin-Stout,Wisconsin,0.571,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Illinois Wesleyan,Illinois Wesleyan,Illinois,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lane College,Lane College,Boston College,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Willamette,Willamette,Alabama,0.154,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Whitworth,Whitworth,North Texas,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Idaho,Idaho,Florida,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Edward Waters,Edward Waters,Iowa State,0.176,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+California Lutheran University,California Lutheran University,Georgia Southern,0.235,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Puget Sound,Puget Sound,Georgia Southern,0.19,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Linfield College,Linfield College,Boston College,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Western Oregon,Western Oregon,Oregon State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Western Connecticut St,Western Connecticut St,Western Michigan,0.296,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northern Arizona,Northern Arizona,Arizona,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wheeling,Wheeling,Bowling Green,0.267,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UNC Pembroke,UNC Pembroke,NC State,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southwest Minnesota State,Southwest Minnesota State,Minnesota,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Stony Brook,Stony Brook,Houston,0.231,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wilmington (OH),Wilmington (OH),Miami (OH),0.294,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Berry College,Berry College,Boston College,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Worcester Polytechnic Institute,Worcester Polytechnic Institute,Western Michigan,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lock Haven University,Lock Haven University,Western Kentucky,0.133,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Allen,Allen,Marshall,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Greeneville,Greeneville,Louisville,0.267,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Fordham,Fordham,Stanford,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern Virginia,Southern Virginia,Georgia Southern,0.476,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hampton,Hampton,Sam Houston,0.231,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wofford,Wofford,Stanford,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Elon,Elon,Akron,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+William & Mary,William & Mary,Illinois,0.176,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Eastern Kentucky,Eastern Kentucky,Western Kentucky,0.765,TRUE,massey_name,FALSE,2026-05-20T21:05:00Z
+New Hampshire,New Hampshire,New Mexico,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mars Hill,Mars Hill,Marshall,0.364,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ripon,Ripon,Arizona,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Simpson College (IA),Simpson College (IA),Boston College,0.391,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Eureka College,Eureka College,Boston College,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northeastern State,Northeastern State,Northwestern,0.444,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southwest Baptist,Southwest Baptist,Northwestern,0.238,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+McMurry,McMurry,SMU,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lakeland,Lakeland,Maryland,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Austin,Austin,Houston,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Guilford College,Guilford College,Boston College,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Centre College Kentucky,Centre College Kentucky,Kentucky,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bridgewater (VA),Bridgewater (VA),Florida State,0.174,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Rose-Hulman,Rose-Hulman,Tulane,0.154,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bluffton,Bluffton,Houston,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mary Hardin-Baylor,Mary Hardin-Baylor,Baylor,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southeast Missouri State,Southeast Missouri State,Southern Miss,0.391,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Muskingum University,Muskingum University,Rutgers,0.087,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Prairie View A&M,Prairie View A&M,Texas A&M,0.158,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Murray State,Murray State,NC State,0.385,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Morgan State,Morgan State,Michigan State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Dakota,North Dakota,North Texas,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Tarleton State,Tarleton State,Oregon State,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Illinois State,Illinois State,Illinois,0.538,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Angelo State,Angelo State,Ohio State,0.429,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Sioux Falls,Sioux Falls,Buffalo,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Alabama A&M,Alabama A&M,Alabama,0.6,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lamar,Lamar,Alabama,0.429,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central Arkansas,Central Arkansas,Arkansas,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Concordia University St Paul,Concordia University St Paul,Georgia State,0.152,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Point University,Point University,West Virginia,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Abilene Christian,Abilene Christian,Louisiana Tech,0.16,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Dakota State University,Dakota State University,Florida State,0.269,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+East Texas Baptist University,East Texas Baptist University,Texas Tech,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wartburg,Wartburg,Pittsburgh,0.231,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Midwestern State,Midwestern State,Western Michigan,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lake Forest College,Lake Forest College,Wake Forest,0.474,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Washington University (St. Louis),Washington University (St. Louis),Washington State,0.306,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Nebraska-Kearney,Nebraska-Kearney,Nebraska,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Concordia Moorhead,Concordia Moorhead,Louisiana Monroe,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Texas A&M-Kingsville,Texas A&M-Kingsville,Texas A&M,0.421,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+New Mexico Highlands,New Mexico Highlands,New Mexico,0.474,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Adams State,Adams State,Texas State,0.462,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Colorado Mesa,Colorado Mesa,Colorado,0.583,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central Oklahoma,Central Oklahoma,Oklahoma,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Chapman,Chapman,Maryland,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Redlands,Redlands,Maryland,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Phoenix,Phoenix,Houston,0.091,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central Missouri,Central Missouri,Missouri,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Arkansas Tech,Arkansas Tech,Arkansas,0.583,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Harding University,Harding University,Marshall,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Johns Hopkins University,Johns Hopkins University,Wisconsin,0.115,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St John Fisher University,St John Fisher University,Southern Miss,0.129,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Springfield,Springfield,Wyoming,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+SUNY Morrisville,SUNY Morrisville,Louisville,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Carnegie Mellon,Carnegie Mellon,New Mexico,0.15,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hilbert College,Hilbert College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Castleton,Castleton,Houston,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+College Of New Jersey,College Of New Jersey,Boston College,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Dean College,Dean College,Boston College,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Anna Maria College,Anna Maria College,Boston College,0.318,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Long Island University,Long Island University,Louisiana Monroe,0.161,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Alma,Alma,Alabama,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kenyon,Kenyon,Kentucky,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Greensboro College,Greensboro College,Boston College,0.364,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Brockport,Brockport,North Carolina,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Misericordia,Misericordia,Missouri,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Plymouth State,Plymouth State,Utah State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Montclair State,Montclair State,Kent State,0.353,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Elizabeth City State,Elizabeth City State,Utah State,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wooster,Wooster,Northwestern,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Olivet College,Olivet College,Boston College,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Calvin University,Calvin University,Virginia,0.15,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mount St. Joseph,Mount St. Joseph,San Jose State,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Edinboro University,Edinboro University,North Carolina,0.107,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wagner,Wagner,Iowa,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Truman State,Truman State,Penn State,0.429,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Nichols College,Nichols College,Boston College,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Coast Guard,Coast Guard,Coastal Carolina,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+SUNY Maritime,SUNY Maritime,James Madison,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Stevenson,Stevenson,Penn State,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Trinity (CT),Trinity (CT),Virginia,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Franklin & Marshall,Franklin & Marshall,Marshall,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+American International,American International,Eastern Michigan,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ferrum,Ferrum,Rutgers,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kalamazoo,Kalamazoo,Alabama,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wesleyan University (CT),Wesleyan University (CT),Western Michigan,0.152,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hampden-Sydney,Hampden-Sydney,Tennessee,0.105,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Adrian,Adrian,Indiana,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ursinus,Ursinus,Wisconsin,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Grove City College,Grove City College,Boston College,0.318,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bates,Bates,Ball State,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Howard,Howard,Iowa,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hillsdale,Hillsdale,Louisville,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Apprentice School,Apprentice School,Central Michigan,0.192,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wabash College,Wabash College,Boston College,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Juniata College,Juniata College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Minnesota State Moorhead,Minnesota State Moorhead,Minnesota,0.364,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Dickinson (PA),Dickinson (PA),Wisconsin,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hanover College,Hanover College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Baldwin Wallace,Baldwin Wallace,Alabama,0.188,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hamilton,Hamilton,Miami,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Capital,Capital,Cal,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bemidji State,Bemidji State,Mississippi State,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Sewanee,Sewanee,Tennessee,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Holy Cross,Holy Cross,East Carolina,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Jamestown College,Jamestown College,Boston College,0.526,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Elmhurst,Elmhurst,Auburn,0.091,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Saint John's (MN),Saint John's (MN),San Jose State,0.115,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Central College,North Central College,Boston College,0.28,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+McDaniel College,McDaniel College,Boston College,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Monmouth (IL),Monmouth (IL),South Florida,0.211,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Indianapolis,Indianapolis,Indiana,0.545,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Colorado School Of Mines,Colorado School Of Mines,Colorado State,0.346,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+South Dakota,South Dakota,South Florida,0.353,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Martin Luther,Martin Luther,Northern Illinois,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ohio Wesleyan,Ohio Wesleyan,Ohio,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Huntingdon College (AL),Huntingdon College (AL),Boston College,0.346,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Nebraska Wesleyan,Nebraska Wesleyan,Nebraska,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central College,Central College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Buena Vista,Buena Vista,Arizona State,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Knox College,Knox College,Boston College,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Crown College,Crown College,Boston College,0.471,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Saint Xavier (IL),Saint Xavier (IL),West Virginia,0.12,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bridgewater State,Bridgewater State,Florida State,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northwest Missouri St,Northwest Missouri St,Missouri,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern Nazarene,Southern Nazarene,Southern Miss,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bowdoin,Bowdoin,Bowling Green,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Minot State,Minot State,Kent State,0.462,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bucknell,Bucknell,Kentucky,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Campbell,Campbell,Cal,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Upper Iowa University,Upper Iowa University,Iowa State,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lewis & Clark College,Lewis & Clark College,Boston College,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UMass Dartmouth,UMass Dartmouth,UMass,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Pacific Lutheran,Pacific Lutheran,Southern Miss,0.174,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Eastern Oregon,Eastern Oregon,Oregon State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Charleston Southern,Charleston Southern,Southern Miss,0.364,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ohio Northern,Ohio Northern,Northwestern,0.353,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Pittsburg St,Pittsburg St,Pittsburgh,0.667,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Minnesota Duluth,Minnesota Duluth,Minnesota,0.533,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Alabama State,Alabama State,Alabama,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+LYONCOLL,LYONCOLL,Boston College,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Winston-Salem,Winston-Salem,Wisconsin,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Averett,Averett,Navy,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hiram College,Hiram College,Boston College,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lenoir-Rhyne,Lenoir-Rhyne,Middle Tennessee,0.13,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Slippery Rock,Slippery Rock,Liberty,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Methodist,Methodist,James Madison,0.176,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Arkansas-Pine Bluff,Arkansas-Pine Bluff,Arkansas,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Chattanooga,Chattanooga,Michigan State,0.278,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Robert Morris,Robert Morris,Liberty,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Maine,Maine,Minnesota,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Utica,Utica,Cal,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bryant,Bryant,Maryland,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Georgia,West Georgia,Georgia,0.545,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Alabama,North Alabama,South Alabama,0.6,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northern State,Northern State,Northwestern,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UT Martin,UT Martin,East Carolina,0.176,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+SE Louisiana,SE Louisiana,Louisiana,0.727,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Austin Peay,Austin Peay,Penn State,0.188,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UAlbany,UAlbany,Alabama,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Missouri Western,Missouri Western,Missouri,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Dubuque,Dubuque,Auburn,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Trinity University TX,Trinity University TX,Virginia Tech,0.12,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Greenville,North Greenville,North Texas,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Gardner-Webb,Gardner-Webb,Western Michigan,0.13,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Carolina A&T,North Carolina A&T,North Carolina,0.765,TRUE,massey_name,FALSE,2026-05-20T21:05:00Z
+Rhodes College,Rhodes College,Boston College,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bethel (MN),Bethel (MN),Southern Miss,0.1,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Marietta,Marietta,Arizona State,0.188,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Trine University,Trine University,Rutgers,0.105,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Millsaps,Millsaps,Tulsa,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Geneva,Geneva,Nevada,0.429,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Presbyterian,Presbyterian,Western Michigan,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hardin-Simmons,Hardin-Simmons,Wisconsin,0.235,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Western Illinois,Western Illinois,Northern Illinois,0.579,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Newberry,Newberry,Liberty,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Arkansas-Monticello,Arkansas-Monticello,Arkansas,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+William Jewell,William Jewell,Illinois,0.188,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lagrange College,Lagrange College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Westminster College (MO),Westminster College (MO),Boston College,0.296,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Stephen F. Austin,Stephen F. Austin,Penn State,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Chadron St,Chadron St,Oregon State,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southwestern University,Southwestern University,Northwestern,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Cal Poly,Cal Poly,Cal,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ouachita Baptist,Ouachita Baptist,Appalachian State,0.24,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Oklahoma Baptist,Oklahoma Baptist,Oklahoma State,0.474,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Assumption,Assumption,UMass,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lafayette,Lafayette,Charlotte,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Albright,Albright,Cal,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Rensselaer,Rensselaer,Tennessee,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Brown,Brown,Iowa,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ohio Dominican,Ohio Dominican,Old Dominion,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Yale,Yale,Cal,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Albion,Albion,Cal,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Princeton,Princeton,Rice,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Williams,Williams,Illinois,0.273,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Amherst,Amherst,Rutgers,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Dartmouth,Dartmouth,South Florida,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St. Francis (PA),St. Francis (PA),Kansas State,0.13,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern Connecticut State,Southern Connecticut State,Southern Miss,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Husson,Husson,Houston,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Union (NY),Union (NY),Old Dominion,0.176,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+William Paterson,William Paterson,Jacksonville State,0.231,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+New Haven,New Haven,New Mexico,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hope College,Hope College,Boston College,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Depauw,Depauw,FAU,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Hobart College,Hobart College,Boston College,0.368,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Moravian,Moravian,Georgia,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Platteville,Wisconsin-Platteville,Wisconsin,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Middlebury,Middlebury,Middle Tennessee,0.263,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lincoln (PA),Lincoln (PA),Coastal Carolina,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Ashland,Ashland,Maryland,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Keystone,Keystone,Houston,0.3,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kings College (PA),Kings College (PA),Boston College,0.304,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Lacrosse,Wisconsin-Lacrosse,Wisconsin,0.471,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Richmond,Richmond,Rice,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Greenville,Greenville,Louisville,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Norwich,Norwich,Michigan,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+West Chester,West Chester,Northwestern,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+The Citadel,The Citadel,Boise State,0.111,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St. Scholastica,St. Scholastica,East Carolina,0.19,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Carleton,Carleton,Toledo,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wisconsin-Oshkosh,Wisconsin-Oshkosh,Wisconsin,0.571,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bloomsburg,Bloomsburg,Pittsburgh,0.286,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Gustavus Adolphus,Gustavus Adolphus,Colorado State,0.227,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Carroll University (WI),Carroll University (WI),Coastal Carolina,0.156,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Coe College,Coe College,Boston College,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Miles College,Miles College,Boston College,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Fort Valley State,Fort Valley State,Ball State,0.389,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bethune-Cookman,Bethune-Cookman,Tulane,0.118,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+La Verne,La Verne,Tulane,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+NEWBERG,NEWBERG,Liberty,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Pomona Pitzer,Pomona Pitzer,Louisiana Monroe,0.174,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Livingstone,Livingstone,Washington,0.267,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Idaho State,Idaho State,Utah State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Alfred State,Alfred State,Fresno State,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Beloit,Beloit,Baylor,0.111,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Tufts,Tufts,UTSA,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Millikin,Millikin,Illinois,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+CENTENARY,CENTENARY,Kent State,0.231,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Augustana (IL),Augustana (IL),Arizona State,0.19,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Northwestern (MN),Northwestern (MN),Northwestern,0.688,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lindenwood,Lindenwood,Bowling Green,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Case Western Reserve,Case Western Reserve,Western Michigan,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Pacific (OR),Pacific (OR),Miami (OH),0.118,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Weber State,Weber State,NC State,0.417,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+UC Davis,UC Davis,Louisville,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Davenport,Davenport,Florida,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Shepherd,Shepherd,Southern Miss,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Columbia,Columbia,Colorado,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bowie State,Bowie State,Boise State,0.538,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Concord University,Concord University,Wisconsin,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+St. Anselm,St. Anselm,Kansas State,0.176,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Fayetteville State,Fayetteville State,Jacksonville State,0.435,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Colby College,Colby College,Boston College,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Maryville College (TN),Maryville College (TN),Boston College,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Albany State GA,Albany State GA,Ball State,0.438,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Maine Maritime,Maine Maritime,New Mexico,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Concordia-Wisconsin,Concordia-Wisconsin,Wisconsin,0.533,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Roanoke College,Roanoke College,Boston College,0.35,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wheaton,Wheaton,Houston,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Carthage,Carthage,North Carolina,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Valdosta State,Valdosta State,Iowa State,0.429,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Harvard,Harvard,Marshall,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+East Texas A&M,East Texas A&M,Texas A&M,0.667,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Park,North Park,North Carolina,0.375,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Alcorn State,Alcorn State,Oregon State,0.467,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Incarnate Word,Incarnate Word,Cincinnati,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Sul Ross State,Sul Ross State,Texas State,0.375,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Salisbury,Salisbury,Pittsburgh,0.214,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Augsburg,Augsburg,Auburn,0.333,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Monmouth,Monmouth,Houston,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Pennsylvania,Pennsylvania,Penn State,0.176,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+ERSKINE,ERSKINE,Rutgers,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Worcester St,Worcester St,Northwestern,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Virginia St,Virginia St,Virginia,0.7,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Cornell,Cornell,Colorado,0.182,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Denison University,Denison University,Southern Miss,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Towson,Towson,Houston,0.222,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Tiffin,Tiffin,Cincinnati,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Thomas More College,Thomas More College,Boston College,0.292,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Minnesota Morris,Minnesota Morris,Minnesota,0.533,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Macalester,Macalester,Northwestern,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Claremont-Mudd-Scripps College,Claremont-Mudd-Scripps College,Boston College,0.235,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Midland Lutheran College,Midland Lutheran College,Boston College,0.296,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Little Rock,Little Rock,Ole Miss,0.133,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Cumberland (TN),Cumberland (TN),Maryland,0.167,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Virginia University Of Lynchburg,Virginia University Of Lynchburg,Virginia Tech,0.281,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Webber International,Webber International,Cincinnati,0.2,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Louisiana College,Louisiana College,Louisiana,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Central Methodist,Central Methodist,Central Michigan,0.348,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Langston University,Langston University,Washington State,0.179,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Lincoln (CA),Lincoln (CA),Coastal Carolina,0.238,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Kentucky Christian,Kentucky Christian,Kentucky,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Florida Memorial University,Florida Memorial University,Florida,0.25,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southern Oregon,Southern Oregon,Southern Miss,0.444,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Warner University,Warner University,Rutgers,0.105,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Bethel University Tennessee,Bethel University Tennessee,Tennessee,0.308,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Mayville State,Mayville State,Jacksonville State,0.5,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Madonna University (Mich.),Madonna University (Mich.),Old Dominion,0.125,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Simpson University (Ca),Simpson University (Ca),Southern Miss,0.1,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Oklahoma Panhandle St,Oklahoma Panhandle St,Oklahoma State,0.455,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Wayland Baptist,Wayland Baptist,Maryland,0.235,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+BLUEFIELD,BLUEFIELD,FIU,0.111,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+University of Rio Grande,University of Rio Grande,Vanderbilt,0.143,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Texas Wesleyan,Texas Wesleyan,Texas A&M,0.312,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Pikeville,Pikeville,Louisville,0.308,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Southwestern Assemblies Of God,Southwestern Assemblies Of God,Northwestern,0.258,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+North Dakota State,North Dakota State,Florida State,0.4,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+Sacramento State,Sacramento State,Kent State,0.412,FALSE,massey_name,FALSE,2026-05-20T21:05:00Z
+NC State Wolfpack,NC State Wolfpack,NC State,0.438,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+North Carolina Tar Heels,North Carolina Tar Heels,North Carolina,0.591,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Baylor Bears,Baylor Bears,Baylor,0.455,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+UCLA Bruins,UCLA Bruins,UCLA,0.3,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Clemson Tigers,Clemson Tigers,Clemson,0.462,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Louisville Cardinals,Louisville Cardinals,Louisville,0.474,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Notre Dame Fighting Irish,Notre Dame Fighting Irish,Notre Dame,0.391,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+SMU Mustangs,SMU Mustangs,Stanford,0.214,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Missouri Tigers,Missouri Tigers,Missouri,0.5,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Oklahoma Sooners,Oklahoma Sooners,Oklahoma State,0.474,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Iowa State Cyclones,Iowa State Cyclones,Iowa State,0.5,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Ohio State Buckeyes,Ohio State Buckeyes,Ohio State,0.5,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Oregon Ducks,Oregon Ducks,Oregon,0.455,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Houston Cougars,Houston Cougars,Houston,0.462,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+LSU Tigers,LSU Tigers,Rutgers,0.25,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Texas Longhorns,Texas Longhorns,Texas A&M,0.294,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Georgia Bulldogs,Georgia Bulldogs,Georgia,0.4,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Miami Hurricanes,Miami Hurricanes,Miami (OH),0.222,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Michigan Wolverines,Michigan Wolverines,Western Michigan,0.435,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Virginia Cavaliers,Virginia Cavaliers,Virginia,0.412,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+TCU Horned Frogs,TCU Horned Frogs,TCU,0.133,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Auburn Tigers,Auburn Tigers,Auburn,0.417,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+California Golden Bears,California Golden Bears,East Carolina,0.172,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Ole Miss Rebels,Ole Miss Rebels,Ole Miss,0.5,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Wisconsin Badgers,Wisconsin Badgers,Wisconsin,0.5,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Florida State Seminoles,Florida State Seminoles,Florida State,0.571,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Kansas Jayhawks,Kansas Jayhawks,Kansas,0.357,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Iowa Hawkeyes,Iowa Hawkeyes,Iowa,0.25,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Oklahoma State Cowboys,Oklahoma State Cowboys,Oklahoma State,0.619,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Texas Tech Red Raiders,Texas Tech Red Raiders,Texas Tech,0.421,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Alabama Crimson Tide,Alabama Crimson Tide,Alabama,0.316,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z
+Indiana Hoosiers,Indiana Hoosiers,Indiana,0.4,FALSE,odds_name,FALSE,2026-05-20T22:14:12Z

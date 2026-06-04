@@ -1,0 +1,139 @@
+canonical_name,odds_name,massey_name,conference,conf_tier,conf_weight,stadium,latitude,longitude,dome,hfa_pts
+Alabama,Alabama,Alabama,SEC,1,1,Bryant-Denny Stadium,33.2082,-87.5503,FALSE,4.5
+Arkansas,Arkansas,Arkansas,SEC,1,1,Donald W. Reynolds Razorback Stadium,36.0683,-94.1761,FALSE,3.5
+Auburn,Auburn,Auburn,SEC,1,1,Jordan-Hare Stadium,32.6031,-85.4908,FALSE,4
+Florida,Florida,Florida,SEC,1,1,Ben Hill Griffin Stadium,29.6499,-82.3486,FALSE,4
+Georgia,Georgia,Georgia,SEC,1,1,Sanford Stadium,33.9499,-83.3733,FALSE,4.5
+Kentucky,Kentucky,Kentucky,SEC,1,1,Kroger Field,38.022,-84.5052,FALSE,3
+LSU,LSU,LSU,SEC,1,1,Tiger Stadium,30.4121,-91.1837,FALSE,4.5
+Mississippi State,Mississippi St.,Mississippi State,SEC,1,1,Davis Wade Stadium,33.4552,-88.7897,FALSE,3.5
+Missouri,Missouri,Missouri,SEC,1,1,Faurot Field,38.9358,-92.3334,FALSE,3
+Oklahoma,Oklahoma,Oklahoma,SEC,1,1,Gaylord Family Oklahoma Memorial Stadium,35.2058,-97.4455,FALSE,4
+Ole Miss,Ole Miss,Mississippi,SEC,1,1,Vaught-Hemingway Stadium,34.3627,-89.5389,FALSE,3.5
+South Carolina,South Carolina,South Carolina,SEC,1,1,Williams-Brice Stadium,33.9744,-81.021,FALSE,3.5
+Tennessee,Tennessee,Tennessee,SEC,1,1,Neyland Stadium,35.9549,-83.9249,FALSE,4
+Texas,Texas,Texas,SEC,1,1,Darrell K Royal–Texas Memorial Stadium,30.2836,-97.7324,FALSE,4
+Texas A&M,Texas A&M,Texas A&M,SEC,1,1,Kyle Field,30.61,-96.3403,FALSE,4.5
+Vanderbilt,Vanderbilt,Vanderbilt,SEC,1,1,FirstBank Stadium,36.1447,-86.8027,FALSE,2.5
+Illinois,Illinois,Illinois,Big Ten,1,0.97,Memorial Stadium,40.0998,-88.2353,FALSE,3
+Indiana,Indiana,Indiana,Big Ten,1,0.97,Memorial Stadium,39.1839,-86.5257,FALSE,2.5
+Iowa,Iowa,Iowa,Big Ten,1,0.97,Kinnick Stadium,41.6584,-91.5508,FALSE,3.5
+Maryland,Maryland,Maryland,Big Ten,1,0.97,SECU Stadium,38.9896,-76.9469,FALSE,2.5
+Michigan,Michigan,Michigan,Big Ten,1,0.97,Michigan Stadium,42.266,-83.7486,FALSE,4
+Michigan State,Michigan St.,Michigan State,Big Ten,1,0.97,Spartan Stadium,42.728,-84.4827,FALSE,3
+Minnesota,Minnesota,Minnesota,Big Ten,1,0.97,Huntington Bank Stadium,44.9762,-93.2261,FALSE,3
+Nebraska,Nebraska,Nebraska,Big Ten,1,0.97,Memorial Stadium,40.8207,-96.7056,FALSE,4
+Northwestern,Northwestern,Northwestern,Big Ten,1,0.97,Ryan Field,42.0606,-87.6669,FALSE,2.5
+Ohio State,Ohio St.,Ohio State,Big Ten,1,0.97,Ohio Stadium,40.0017,-83.0197,FALSE,4.5
+Oregon,Oregon,Oregon,Big Ten,1,0.97,Autzen Stadium,44.0572,-123.0683,FALSE,4
+Penn State,Penn St.,Penn State,Big Ten,1,0.97,Beaver Stadium,40.8121,-77.8563,FALSE,4
+Purdue,Purdue,Purdue,Big Ten,1,0.97,Ross-Ade Stadium,40.4585,-86.9994,FALSE,2.5
+Rutgers,Rutgers,Rutgers,Big Ten,1,0.97,SHI Stadium,40.5218,-74.4504,FALSE,2.5
+UCLA,UCLA,UCLA,Big Ten,1,0.97,Rose Bowl,34.1614,-118.1676,FALSE,3
+USC,USC,USC,Big Ten,1,0.97,Los Angeles Memorial Coliseum,34.0141,-118.2879,FALSE,3.5
+Washington,Washington,Washington,Big Ten,1,0.97,Husky Stadium,47.6503,-122.3018,FALSE,3.5
+Wisconsin,Wisconsin,Wisconsin,Big Ten,1,0.97,Camp Randall Stadium,43.0699,-89.4121,FALSE,3.5
+Arizona,Arizona,Arizona,Big 12,1,0.92,Arizona Stadium,32.229,-110.9489,FALSE,3
+Arizona State,Arizona St.,Arizona State,Big 12,1,0.92,Mountain America Stadium,33.4262,-111.9328,FALSE,3
+Baylor,Baylor,Baylor,Big 12,1,0.92,McLane Stadium,31.5599,-97.1162,FALSE,3
+BYU,BYU,BYU,Big 12,1,0.92,LaVell Edwards Stadium,40.2574,-111.6549,FALSE,3.5
+Cincinnati,Cincinnati,Cincinnati,Big 12,1,0.92,Nippert Stadium,39.1325,-84.5161,FALSE,3
+Colorado,Colorado,Colorado,Big 12,1,0.92,Folsom Field,40.0099,-105.2669,FALSE,3.5
+Houston,Houston,Houston,Big 12,1,0.92,TDECU Stadium,29.7055,-95.4097,FALSE,3
+Iowa State,Iowa St.,Iowa State,Big 12,1,0.92,Jack Trice Stadium,42.014,-93.6358,FALSE,3.5
+Kansas,Kansas,Kansas,Big 12,1,0.92,David Booth Kansas Memorial Stadium,38.9632,-95.2469,FALSE,2.5
+Kansas State,Kansas St.,Kansas State,Big 12,1,0.92,Bill Snyder Family Football Stadium,39.2028,-96.5977,FALSE,3.5
+Oklahoma State,Oklahoma St.,Oklahoma State,Big 12,1,0.92,Boone Pickens Stadium,36.1263,-97.0653,FALSE,3.5
+TCU,TCU,TCU,Big 12,1,0.92,Amon G. Carter Stadium,32.7098,-97.3681,FALSE,3
+Texas Tech,Texas Tech,Texas Tech,Big 12,1,0.92,Jones AT&T Stadium,33.5905,-101.8749,FALSE,3
+UCF,UCF,UCF,Big 12,1,0.92,FBC Mortgage Stadium,28.6014,-81.1939,FALSE,3
+Utah,Utah,Utah,Big 12,1,0.92,Rice-Eccles Stadium,40.7601,-111.8483,FALSE,3.5
+West Virginia,West Virginia,West Virginia,Big 12,1,0.92,Mountaineer Field,39.6498,-79.9539,FALSE,4
+Boston College,Boston College,Boston College,ACC,1,0.9,Alumni Stadium,42.3356,-71.1686,FALSE,2.5
+Cal,California,Cal,ACC,1,0.9,California Memorial Stadium,37.8694,-122.2503,FALSE,3
+Clemson,Clemson,Clemson,ACC,1,0.9,Memorial Stadium,34.6783,-82.8432,FALSE,4.5
+Duke,Duke,Duke,ACC,1,0.9,Wallace Wade Stadium,36.0013,-78.9402,FALSE,2.5
+Florida State,Florida St.,Florida State,ACC,1,0.9,Doak Campbell Stadium,30.4389,-84.305,FALSE,4
+Georgia Tech,Georgia Tech,Georgia Tech,ACC,1,0.9,Bobby Dodd Stadium,33.7725,-84.3921,FALSE,3
+Louisville,Louisville,Louisville,ACC,1,0.9,L&N Federal Credit Union Stadium,38.2129,-85.7635,FALSE,3
+Miami,Miami,Miami,ACC,1,0.9,Hard Rock Stadium,25.958,-80.2389,FALSE,3.5
+NC State,NC State,NC State,ACC,1,0.9,Carter-Finley Stadium,35.8075,-78.7219,FALSE,3
+North Carolina,North Carolina,North Carolina,ACC,1,0.9,Kenan Memorial Stadium,35.9066,-79.0468,FALSE,3
+Pittsburgh,Pittsburgh,Pittsburgh,ACC,1,0.9,Acrisure Stadium,40.4468,-80.0158,FALSE,3
+SMU,SMU,SMU,ACC,1,0.9,Gerald J. Ford Stadium,32.8437,-96.7836,FALSE,3
+Stanford,Stanford,Stanford,ACC,1,0.9,Stanford Stadium,37.4346,-122.1609,FALSE,3
+Syracuse,Syracuse,Syracuse,ACC,1,0.9,JMA Wireless Dome,43.0362,-76.1364,TRUE,2
+Virginia,Virginia,Virginia,ACC,1,0.9,Scott Stadium,38.0311,-78.5095,FALSE,2.5
+Virginia Tech,Virginia Tech,Virginia Tech,ACC,1,0.9,Lane Stadium,37.2199,-80.4184,FALSE,4
+Wake Forest,Wake Forest,Wake Forest,ACC,1,0.9,Truist Field,36.1327,-80.2732,FALSE,2.5
+Air Force,Air Force,Air Force,Mountain West,2,0.78,Falcon Stadium,38.9969,-104.8613,FALSE,3
+Boise State,Boise St.,Boise State,Mountain West,2,0.78,Albertsons Stadium,43.6022,-116.19970000000001,FALSE,4
+Colorado State,Colorado St.,Colorado State,Mountain West,2,0.78,Canvas Stadium,40.5987,-105.0842,FALSE,3
+Fresno State,Fresno St.,Fresno State,Mountain West,2,0.78,Valley Children's Stadium,36.8092,-119.7476,FALSE,3
+Hawaii,Hawaii,Hawaii,Mountain West,2,0.78,Clarence T.C. Ching Athletics Complex,21.2985,-157.8372,FALSE,4
+Nevada,Nevada,Nevada,Mountain West,2,0.78,Mackay Stadium,39.5491,-119.8165,FALSE,3
+New Mexico,New Mexico,New Mexico,Mountain West,2,0.78,University Stadium,35.0837,-106.6233,FALSE,2.5
+Oregon State,Oregon St.,Oregon State,Mountain West,2,0.78,Reser Stadium,44.5634,-123.2793,FALSE,3
+San Diego State,San Diego St.,San Diego State,Mountain West,2,0.78,Snapdragon Stadium,32.7832,-117.12,FALSE,3
+San Jose State,San Jose St.,San Jose State,Mountain West,2,0.78,CEFCU Stadium,37.3506,-121.925,FALSE,2.5
+UNLV,UNLV,UNLV,Mountain West,2,0.78,Allegiant Stadium,36.0909,-115.1833,TRUE,2.5
+Utah State,Utah St.,Utah State,Mountain West,2,0.78,Maverik Stadium,41.7458,-111.8098,FALSE,3
+Washington State,Washington St.,Washington State,Mountain West,2,0.78,Gesa Field at Martin Stadium,46.731,-117.1802,FALSE,3.5
+Wyoming,Wyoming,Wyoming,Mountain West,2,0.78,War Memorial Stadium,41.315,-105.5664,FALSE,3
+Charlotte,Charlotte,Charlotte,AAC,2,0.76,Jerry Richardson Stadium,35.3096,-80.7429,FALSE,2.5
+East Carolina,East Carolina,East Carolina,AAC,2,0.76,Dowdy-Ficklen Stadium,35.6043,-77.3654,FALSE,3
+FAU,Florida Atlantic,Florida Atlantic,AAC,2,0.76,FAU Stadium,26.3741,-80.1017,FALSE,2.5
+Memphis,Memphis,Memphis,AAC,2,0.76,Simmons Bank Liberty Stadium,35.1298,-90.0289,FALSE,3
+Navy,Navy,Navy,AAC,2,0.76,Navy-Marine Corps Memorial Stadium,38.9701,-76.4938,FALSE,3
+North Texas,North Texas,North Texas,AAC,2,0.76,Apogee Stadium,33.2148,-97.1549,FALSE,2.5
+Rice,Rice,Rice,AAC,2,0.76,Rice Stadium,29.7168,-95.4099,FALSE,2.5
+South Florida,South Florida,South Florida,AAC,2,0.76,Raymond James Stadium,27.9759,-82.5033,FALSE,2.5
+Temple,Temple,Temple,AAC,2,0.76,Lincoln Financial Field,39.9008,-75.1675,FALSE,2.5
+Tulane,Tulane,Tulane,AAC,2,0.76,Yulman Stadium,29.9277,-90.1185,FALSE,3
+Tulsa,Tulsa,Tulsa,AAC,2,0.76,H.A. Chapman Stadium,36.157,-95.9449,FALSE,3
+UAB,UAB,UAB,AAC,2,0.76,Protective Stadium,33.521,-86.8138,FALSE,2.5
+UTSA,UTSA,UTSA,AAC,2,0.76,Alamodome,29.4189,-98.4133,TRUE,2
+Appalachian State,App State,Appalachian State,Sun Belt,2,0.73,Kidd Brewer Stadium,36.2151,-81.6852,FALSE,4
+Arkansas State,Arkansas St.,Arkansas State,Sun Belt,2,0.73,Centennial Bank Stadium,35.842,-90.6993,FALSE,3
+Coastal Carolina,Coastal Carolina,Coastal Carolina,Sun Belt,2,0.73,Brooks Stadium,33.796,-79.0186,FALSE,3.5
+Georgia Southern,Georgia Southern,Georgia Southern,Sun Belt,2,0.73,Paulson Stadium,32.3962,-81.7787,FALSE,3.5
+Georgia State,Georgia St.,Georgia State,Sun Belt,2,0.73,Center Parc Stadium,33.7354,-84.3893,FALSE,2.5
+James Madison,James Madison,James Madison,Sun Belt,2,0.73,Bridgeforth Stadium,38.4335,-78.8728,FALSE,3
+Louisiana,Louisiana,Louisiana,Sun Belt,2,0.73,Cajun Field,30.2119,-92.035,FALSE,3.5
+Louisiana Monroe,ULM,Louisiana Monroe,Sun Belt,2,0.73,Malone Stadium,32.5326,-92.0873,FALSE,2.5
+Marshall,Marshall,Marshall,Sun Belt,2,0.73,Joan C. Edwards Stadium,38.4178,-82.4281,FALSE,3
+Old Dominion,Old Dominion,Old Dominion,Sun Belt,2,0.73,Kornblau Field at S.B. Ballard Stadium,36.886,-76.3058,FALSE,2.5
+South Alabama,South Alabama,South Alabama,Sun Belt,2,0.73,Hancock Whitney Stadium,30.6917,-88.0478,FALSE,3
+Southern Miss,Southern Miss,Southern Miss,Sun Belt,2,0.73,M.M. Roberts Stadium,31.3307,-89.3299,FALSE,3
+Texas State,Texas State,Texas State,Sun Belt,2,0.73,Bobcat Stadium,29.8774,-97.9412,FALSE,3
+Troy,Troy,Troy,Sun Belt,2,0.73,Veterans Memorial Stadium,31.7997,-85.9642,FALSE,3
+Akron,Akron,Akron,MAC,2,0.7,InfoCision Stadium,41.0753,-81.5105,FALSE,2.5
+Ball State,Ball St.,Ball State,MAC,2,0.7,Scheumann Stadium,40.284,-85.4085,FALSE,2.5
+Bowling Green,Bowling Green,Bowling Green,MAC,2,0.7,Doyt Perry Stadium,41.3774,-83.6455,FALSE,2.5
+Buffalo,Buffalo,Buffalo,MAC,2,0.7,UB Stadium,42.997,-78.7917,FALSE,2.5
+Central Michigan,Central Michigan,Central Michigan,MAC,2,0.7,Kelly/Shorts Stadium,43.598,-84.7772,FALSE,2.5
+Eastern Michigan,Eastern Michigan,Eastern Michigan,MAC,2,0.7,Rynearson Stadium,42.2464,-83.628,FALSE,2.5
+Kent State,Kent St.,Kent State,MAC,2,0.7,Dix Stadium,41.1569,-81.3476,FALSE,2.5
+Miami (OH),Miami OH,Miami (OH),MAC,2,0.7,Yager Stadium,39.5117,-84.7358,FALSE,3
+Northern Illinois,Northern Illinois,Northern Illinois,MAC,2,0.7,Huskie Stadium,41.9282,-88.7709,FALSE,3
+Ohio,Ohio,Ohio,MAC,2,0.7,Peden Stadium,39.3228,-82.103,FALSE,3
+Toledo,Toledo,Toledo,MAC,2,0.7,Glass Bowl,41.663,-83.6068,FALSE,3
+Western Michigan,Western Michigan,Western Michigan,MAC,2,0.7,Waldo Stadium,42.2885,-85.6207,FALSE,2.5
+FIU,FIU,FIU,CUSA,2,0.65,Ricardo Silva Stadium,25.7583,-80.3768,FALSE,2.5
+Jacksonville State,Jacksonville St.,Jacksonville State,CUSA,2,0.65,Burgess-Snow Field,33.8248,-85.766,FALSE,3
+Kennesaw State,Kennesaw St.,Kennesaw State,CUSA,2,0.65,Fifth Third Bank Stadium,34.0235,-84.5824,FALSE,2.5
+Louisiana Tech,Louisiana Tech,Louisiana Tech,CUSA,2,0.65,Joe Aillet Stadium,32.5252,-92.6413,FALSE,3
+Middle Tennessee,Middle Tennessee,Middle Tennessee,CUSA,2,0.65,Floyd Stadium,35.8466,-86.3658,FALSE,2.5
+New Mexico State,New Mexico St.,New Mexico State,CUSA,2,0.65,Aggie Memorial Stadium,32.2804,-106.7503,FALSE,2.5
+Sam Houston,Sam Houston,Sam Houston,CUSA,2,0.65,Bowers Stadium,30.7082,-95.551,FALSE,2.5
+UTEP,UTEP,UTEP,CUSA,2,0.65,Sun Bowl Stadium,31.7727,-106.5017,FALSE,2.5
+Western Kentucky,Western Kentucky,Western Kentucky,CUSA,2,0.65,Houchens-Smith Stadium,36.9706,-86.4766,FALSE,3
+Army,Army,Army,Independent,3,0.72,Michie Stadium,41.3906,-73.9619,FALSE,3.5
+Liberty,Liberty,Liberty,Independent,3,0.68,Williams Stadium,37.3518,-79.1782,FALSE,3
+Notre Dame,Notre Dame,Notre Dame,Independent,3,0.95,Notre Dame Stadium,41.6977,-86.2339,FALSE,4.5
+UConn,Connecticut,Connecticut,Independent,3,0.6,Rentschler Field,41.6626,-72.6601,FALSE,2
+UMass,Massachusetts,UMass,Independent,3,0.58,McGuirk Alumni Stadium,42.3862,-72.5307,FALSE,2
+Sacramento State,Sacramento State Hornets,Sacramento State,Big Sky,4,0.4,Hornet Stadium,38.5604,-121.4236,FALSE,2.5
+North Dakota State,North Dakota State Bison,North Dakota State,MVFC,4,0.5,Fargodome,46.8772,-96.7898,TRUE,3
+Delaware,Delaware,Delaware,CUSA,2,0.6,Delaware Stadium,39.6812,-75.7513,FALSE,2.5
+Missouri State,Missouri State,Missouri State,CUSA,2,0.6,Plaster Stadium,37.1709,-93.3097,FALSE,2.5

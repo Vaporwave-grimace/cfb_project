@@ -1,0 +1,22 @@
+# R
+.RData
+.Rhistory
+.Rproj.user/
+
+# Credentials
+credentials.json
+
+# Databases (regeneratable)
+OUTPUTS/*.sqlite
+
+# Logs (runtime output)
+logs/*.log
+r_execution_log.txt
+
+# Node
+base44/node_modules/
+
+# Google Drive stubs (not real files)
+CFB Analytics/*.gdoc
+CFB Analytics/*.gsheet
+Docs/*.gsheet

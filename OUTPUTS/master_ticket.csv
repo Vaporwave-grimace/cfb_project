@@ -1,0 +1,7 @@
+Game,Time,Market,Side,Line,Proj,Edge,Win%,EV,Boost,Flags,Bet $
+FAU @ Florida,Sat Sep 05 10:00AM MT,SPREAD,away,25.5,-15.9,9.63,85.0%,0.627,0.95,,40
+Louisville @ Ole Miss,Sat Sep 05 10:00AM MT,SPREAD,home,-6.5,-16.2,9.74,85.0%,0.623,1,,13.33
+Ohio State @ Texas,Sat Sep 12 05:30PM MT,SPREAD,away,1.5,10.3,11.77,85.0%,0.637,1,,20
+LSU @ Ole Miss,Sat Sep 19 05:30PM MT,ML,home,-130,NA,0.36,92.3%,0.633,1,,20
+Texas @ Oklahoma,Sat Oct 10 10:00AM MT,ML,home,184,NA,0.31,66.1%,0.876,1,,20
+Texas @ Oklahoma,Sat Oct 10 10:00AM MT,SPREAD,home,6.5,-5,11.5,85.0%,0.623,1,,20

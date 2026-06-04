@@ -1,0 +1,14 @@
+{
+  "name": "cfb-base44-sync",
+  "version": "1.0.0",
+  "description": "Syncs CFB pipeline CSV exports to Base44 app entities",
+  "type": "module",
+  "main": "sync.js",
+  "scripts": {
+    "sync": "node sync.js"
+  },
+  "dependencies": {
+    "@base44/sdk": "latest",
+    "csv-parse": "^5.5.0"
+  }
+}
