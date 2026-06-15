@@ -57,7 +57,11 @@ load_sagarin_from_massey_cache <- function(date = Sys.Date()) {
 # We extract: rank, team name (before division marker), main rating (= X.XX).
 # PREDICTOR and GoldenMean sub-ratings are not labeled in current format → NA.
 #
-# Fallback: direct httr GET (fails with SEC_E_UNTRUSTED_ROOT on some machines).
+# Fallback: direct httr GET with SSL peer verification disabled.
+# sagarin.com presents a certificate whose root is not in Windows' trusted
+# store when accessed from a non-interactive session (Task Scheduler), causing
+# SEC_E_UNTRUSTED_ROOT. ssl_verifypeer=FALSE bypasses the check — acceptable
+# here because sagarin.com is a read-only ratings page with no credentials.
 # ------------------------------------------------------------------------------
 
 # Primary: Firecrawl (handles SSL transparently)
@@ -66,15 +70,16 @@ fetch_sagarin_firecrawl <- function(url = SAGARIN_URL) {
   firecrawl_scrape(url, timeout_ms = 30000, wait_ms = 1000)
 }
 
-# Fallback: direct httr (may hit SSL error on Windows Task Scheduler)
+# Fallback: direct httr with SSL verification disabled (SEC_E_UNTRUSTED_ROOT fix)
 fetch_sagarin_direct <- function(url = SAGARIN_URL) {
-  cat(sprintf("[SAGARIN] Fetching direct (fallback): %s\n", url))
+  cat(sprintf("[SAGARIN] Fetching direct (fallback, ssl_verifypeer=FALSE): %s\n", url))
   resp <- httr::GET(
     url,
     httr::add_headers(
       `User-Agent` = "Mozilla/5.0 (compatible; cfb-pipeline/1.0)",
       `Accept`     = "text/html,application/xhtml+xml"
     ),
+    httr::config(ssl_verifypeer = FALSE),
     httr::timeout(45)
   )
   if (httr::http_error(resp))

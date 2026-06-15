@@ -15,14 +15,25 @@
 #
 # MODEL USED:
 #   Matches GENERATE_PREDICTIONS_CFB.R (deterministic linear):
-#     proj_spread = -(rating_diff * SP_SCALAR
-#                     + ppa_adj   [ppa_diff × PPA_SPREAD_WEIGHT]
-#                     + succ_adj  [success_rate_diff × SUCCESS_SPREAD_WEIGHT]
+#     proj_spread = -(rating_diff_blended * SP_SCALAR
+#                     + ppa_adj              [ppa_diff × PPA_SPREAD_WEIGHT]
+#                     + succ_adj             [success_rate_diff × SUCCESS_SPREAD_WEIGHT]
+#                     + third_down_spread_adj [3d-rate diff × THIRD_DOWN_SPREAD_WEIGHT]
 #                     + effective_hfa)
-#   Sagarin/Massey excluded — historical snapshots not available from CFBD.
-#   PPA available from CFBD /ppa/teams endpoint for completed seasons.
 #
-#   SP-only comparison also computed for delta measurement.
+#   Factors INCLUDED in backtest (CFBD historical data available):
+#     SP+    — /ratings/sp?year=2024  (prior-season final as preseason proxy)
+#     ELO    — /ratings/elo?year=2025 (latest week per team; blended at WEIGHT_ELO)
+#     PPA    — /ppa/teams?year=2025
+#     3rd Dn — /stats/season?year=2025 (thirdDownConversions / thirdDowns)
+#
+#   Factors EXCLUDED (no CFBD historical data):
+#     Sagarin/Massey — no historical weekly snapshots via CFBD API
+#     Injury adj     — no historical injury status data
+#     Motivational   — rivalry/trap/bowl-elig require per-game context not in API
+#
+#   Three-way comparison: SP-only → SP+ELO-blend → full model (PPA + 3d-rate)
+#   ELO weight normalized to SP+: WEIGHT_SP_PLUS/(WEIGHT_SP_PLUS+WEIGHT_ELO)
 #
 # OUTPUTS:
 #   clean/backtest_2025_results.csv   — one row per game, all metrics
@@ -102,6 +113,39 @@ sp_ratings <- as_tibble(sp_raw) %>%
 cat(sprintf("[BACKTEST] SP+ ratings: %d teams loaded.\n", nrow(sp_ratings)))
 
 # ------------------------------------------------------------------------------
+# 2.1 Pull ELO ratings for 2025
+# Endpoint: /ratings/elo?year=YEAR — per-team per-week ELO.
+# Take latest week per team (highest week = most current rating).
+# Blended with SP+ in the prediction step at normalized weight.
+# ------------------------------------------------------------------------------
+cat("\n[1.5/5] Fetching ELO ratings...\n")
+elo_ratings <- tryCatch({
+  raw_elo <- cfbd_get("/ratings/elo", list(year = BACKTEST_YEAR))
+  if (length(raw_elo) == 0 || nrow(as.data.frame(raw_elo)) == 0) {
+    warning("[BACKTEST] /ratings/elo returned empty — ELO blend disabled.")
+    NULL
+  } else {
+    elo_tbl <- as_tibble(raw_elo) %>%
+      group_by(team) %>%
+      slice_max(order_by = as.integer(week), n = 1, with_ties = FALSE) %>%
+      ungroup() %>%
+      transmute(
+        canonical_name = normalize_team_name(team, mappings = master,
+                                              source_col    = "massey_name",
+                                              unmatched_log = "logs/unmatched_teams.csv"),
+        elo_rating = as.numeric(elo)
+      ) %>%
+      filter(!is.na(canonical_name))
+    cat(sprintf("[BACKTEST] ELO ratings: %d teams loaded.\n", nrow(elo_tbl)))
+    elo_tbl
+  }
+}, error = function(e) {
+  warning(sprintf("[BACKTEST] ELO fetch failed (non-fatal): %s", e$message))
+  NULL
+})
+ELO_AVAILABLE <- !is.null(elo_ratings) && nrow(elo_ratings) > 0
+
+# ------------------------------------------------------------------------------
 # 2.5 Pull PPA metrics for 2025 (off/def PPA, success rate, explosiveness)
 # CFBD endpoint: /ppa/teams?year=YEAR&excludeGarbageTime=true
 # Column map:
@@ -156,6 +200,50 @@ ppa_ratings <- tryCatch({
 })
 
 PPA_AVAILABLE <- !is.null(ppa_ratings) && nrow(ppa_ratings) > 0
+
+# ------------------------------------------------------------------------------
+# 2.6 Pull season stats for 2025 — third-down conversion rate
+# Endpoint: /stats/season?year=YEAR — returns long-format team season totals.
+# We extract thirdDownConversions + thirdDowns and compute rate per team.
+# Matches SCRAPE_CFB_DATA.R logic; applied in prediction step via
+# THIRD_DOWN_SPREAD_WEIGHT and THIRD_DOWN_TOTAL_WEIGHT from CONFIG.R.
+# ------------------------------------------------------------------------------
+cat("\n[2.5/5] Fetching season stats (third-down rates)...\n")
+season_stats <- tryCatch({
+  raw_stats <- cfbd_get("/stats/season", list(year = BACKTEST_YEAR))
+  if (length(raw_stats) == 0 || nrow(as.data.frame(raw_stats)) == 0) {
+    warning("[BACKTEST] /stats/season returned empty — third-down adj disabled.")
+    NULL
+  } else {
+    stats_tbl <- as_tibble(raw_stats)
+    if (!all(c("statName", "statValue", "team") %in% names(stats_tbl))) {
+      warning("[BACKTEST] /stats/season unexpected format — third-down adj disabled.")
+      NULL
+    } else {
+      td_stats <- stats_tbl %>%
+        filter(statName %in% c("thirdDownConversions", "thirdDowns")) %>%
+        select(team, statName, statValue) %>%
+        pivot_wider(names_from = statName, values_from = statValue,
+                    values_fn = first) %>%
+        filter(!is.na(thirdDowns), as.numeric(thirdDowns) > 0) %>%
+        mutate(
+          canonical_name  = normalize_team_name(team, mappings = master,
+                                                 source_col    = "massey_name",
+                                                 unmatched_log = "logs/unmatched_teams.csv"),
+          third_down_rate = as.numeric(thirdDownConversions) /
+                              pmax(as.numeric(thirdDowns), 1L)
+        ) %>%
+        filter(!is.na(canonical_name)) %>%
+        select(canonical_name, third_down_rate)
+      cat(sprintf("[BACKTEST] Third-down rates: %d teams loaded.\n", nrow(td_stats)))
+      td_stats
+    }
+  }
+}, error = function(e) {
+  warning(sprintf("[BACKTEST] Season stats fetch failed (non-fatal): %s", e$message))
+  NULL
+})
+TD_AVAILABLE <- !is.null(season_stats) && nrow(season_stats) > 0
 
 # ------------------------------------------------------------------------------
 # 3. Pull all 2025 game results (regular season + postseason)
@@ -331,6 +419,28 @@ games_rated <- games %>%
   # Join posted lines
   left_join(lines_df, by = "game_id")
 
+# Join ELO ratings onto games
+if (ELO_AVAILABLE) {
+  games_rated <- games_rated %>%
+    left_join(elo_ratings %>% select(canonical_name, home_elo = elo_rating),
+              by = c("canonical_home" = "canonical_name")) %>%
+    left_join(elo_ratings %>% select(canonical_name, away_elo = elo_rating),
+              by = c("canonical_away" = "canonical_name"))
+} else {
+  games_rated <- games_rated %>% mutate(home_elo = NA_real_, away_elo = NA_real_)
+}
+
+# Join third-down rates onto games
+if (TD_AVAILABLE) {
+  games_rated <- games_rated %>%
+    left_join(season_stats %>% select(canonical_name, home_3d = third_down_rate),
+              by = c("canonical_home" = "canonical_name")) %>%
+    left_join(season_stats %>% select(canonical_name, away_3d = third_down_rate),
+              by = c("canonical_away" = "canonical_name"))
+} else {
+  games_rated <- games_rated %>% mutate(home_3d = NA_real_, away_3d = NA_real_)
+}
+
 # Join PPA metrics onto games (non-fatal — remains NA if PPA unavailable)
 if (PPA_AVAILABLE) {
   games_rated <- games_rated %>%
@@ -389,43 +499,83 @@ if (PPA_AVAILABLE) {
 #
 # Both variants stored so the summary can show delta MAE from PPA layer.
 
-# Resolve caps outside mutate — dplyr doesn't propagate <- assignments between args
-.max_edge   <- if (exists("MAX_EDGE_SPREAD"))         MAX_EDGE_SPREAD         else Inf
-.ppa_w      <- if (exists("PPA_SPREAD_WEIGHT"))       PPA_SPREAD_WEIGHT       else 5.0
-.succ_w     <- if (exists("SUCCESS_SPREAD_WEIGHT"))   SUCCESS_SPREAD_WEIGHT   else 2.0
-.expl_w     <- if (exists("EXPL_TOTAL_WEIGHT"))       EXPL_TOTAL_WEIGHT       else 3.0
-.scalar     <- if (exists("SP_SCALAR"))               SP_SCALAR               else 1.0
+# Resolve constants outside mutate
+.max_edge   <- if (exists("MAX_EDGE_SPREAD"))             MAX_EDGE_SPREAD             else Inf
+.ppa_w      <- if (exists("PPA_SPREAD_WEIGHT"))           PPA_SPREAD_WEIGHT           else 5.0
+.succ_w     <- if (exists("SUCCESS_SPREAD_WEIGHT"))       SUCCESS_SPREAD_WEIGHT       else 2.0
+.expl_w     <- if (exists("EXPL_TOTAL_WEIGHT"))           EXPL_TOTAL_WEIGHT           else 3.0
+.scalar     <- if (exists("SP_SCALAR"))                   SP_SCALAR                   else 1.0
+.td_sp_w    <- if (exists("THIRD_DOWN_SPREAD_WEIGHT"))    THIRD_DOWN_SPREAD_WEIGHT    else 3.0
+.td_tot_w   <- if (exists("THIRD_DOWN_TOTAL_WEIGHT"))     THIRD_DOWN_TOTAL_WEIGHT     else 4.0
+.avg_3d     <- if (exists("LEAGUE_AVG_3D_RATE"))          LEAGUE_AVG_3D_RATE          else 0.41
+.elo_w_cfg  <- if (exists("WEIGHT_ELO"))                  WEIGHT_ELO                  else 0.10
+.sp_w_cfg   <- if (exists("WEIGHT_SP_PLUS"))              WEIGHT_SP_PLUS              else 0.45
+
+# ELO blend weights — normalized to SP+ + ELO only (Sagarin/Massey unavailable historically)
+.sp_w_bt    <- .sp_w_cfg  / (.sp_w_cfg + .elo_w_cfg)   # 0.45/0.55 ≈ 0.818
+.elo_w_bt   <- .elo_w_cfg / (.sp_w_cfg + .elo_w_cfg)   # 0.10/0.55 ≈ 0.182
+
+# ELO z-score scale: convert ELO diff to SP+ units for blending
+# SD(ELO per team) ≈ 150; SD(SP+ per team) ≈ 15 → scale_factor ≈ 0.1
+.sp_sd      <- sd(sp_ratings$sp_overall,  na.rm = TRUE)
+.elo_sd     <- if (ELO_AVAILABLE) sd(elo_ratings$elo_rating, na.rm = TRUE) else 1
 
 games_pred <- games_rated %>%
   mutate(
     rating_diff   = home_sp - away_sp,
     effective_hfa = if_else(neutral_site, 0, coalesce(home_hfa_pts, 3.0)),
 
+    # ELO differential scaled to SP+ units, then blended
+    elo_diff_scaled = if_else(
+      !is.na(home_elo) & !is.na(away_elo) & ELO_AVAILABLE,
+      (home_elo - away_elo) / .elo_sd * .sp_sd,
+      rating_diff   # fall back to SP+ diff when ELO unavailable
+    ),
+    # Blended rating: SP+ 82% + ELO 18% (weights normalized; see header)
+    rating_diff_blended = rating_diff * .sp_w_bt + elo_diff_scaled * .elo_w_bt,
+
+    # Third-down rate adjustment (same formula as live GENERATE_PREDICTIONS_CFB.R)
+    home_3d_use          = coalesce(home_3d, .avg_3d),
+    away_3d_use          = coalesce(away_3d, .avg_3d),
+    third_down_spread_adj = (home_3d_use - away_3d_use) * .td_sp_w,
+    third_down_total_adj  = (home_3d_use + away_3d_use - 2 * .avg_3d) * .td_tot_w,
+
     # PPA adjustment terms (0 when PPA unavailable)
-    ppa_adj     = if_else(!is.na(ppa_diff),          ppa_diff          * .ppa_w,  0),
+    ppa_adj     = if_else(!is.na(ppa_diff),          ppa_diff          * .ppa_w, 0),
     success_adj = if_else(!is.na(success_rate_diff), success_rate_diff * .succ_w, 0),
 
-    # SP-only baseline (for MAE comparison)
-    proj_spread_sp = -(.scalar * rating_diff + effective_hfa),
+    # --- Three variants for delta measurement ---
+    # 1. SP-only baseline (original model, no ELO/PPA/3d)
+    proj_spread_sp  = -(.scalar * rating_diff + effective_hfa),
 
-    # Full model with PPA blend
-    proj_spread   = -(.scalar * rating_diff + ppa_adj + success_adj + effective_hfa),
+    # 2. SP+ELO blend (rating improvement only)
+    proj_spread_elo = -(.scalar * rating_diff_blended + effective_hfa),
 
-    # Flag whether PPA was active on this game
+    # 3. Full model: SP+ELO + PPA + third-down
+    proj_spread     = -(.scalar * rating_diff_blended +
+                        ppa_adj + success_adj +
+                        third_down_spread_adj +
+                        effective_hfa),
+
+    # Flag which adjustments were active on this game
     ppa_active  = !is.na(ppa_diff) & PPA_AVAILABLE,
+    elo_active  = !is.na(home_elo) & !is.na(away_elo) & ELO_AVAILABLE,
+    td_active   = !is.na(home_3d)  & !is.na(away_3d)  & TD_AVAILABLE,
 
     # Win probability from spread
     win_prob_home = 1 / (1 + exp(proj_spread / 7.5)),
 
-    # Model's predicted home margin (positive = model predicts home wins)
-    pred_home_margin    = -proj_spread,
-    pred_home_margin_sp = -proj_spread_sp,   # SP-only baseline
+    # Predicted home margins for all three variants
+    pred_home_margin     = -proj_spread,
+    pred_home_margin_elo = -proj_spread_elo,
+    pred_home_margin_sp  = -proj_spread_sp,
 
-    # Error: predicted - actual (signed; use abs() for MAE)
-    pred_error    = pred_home_margin    - actual_margin,
+    # Errors for three-way MAE comparison
+    pred_error    = pred_home_margin     - actual_margin,
     abs_error     = abs(pred_error),
-    # SP-only error for delta comparison
-    pred_error_sp = pred_home_margin_sp - actual_margin,
+    pred_error_elo= pred_home_margin_elo - actual_margin,
+    abs_error_elo = abs(pred_error_elo),
+    pred_error_sp = pred_home_margin_sp  - actual_margin,
     abs_error_sp  = abs(pred_error_sp),
 
     # ATS evaluation (requires posted_spread)
@@ -485,11 +635,14 @@ cat(sprintf("[BACKTEST] Games dropped (missing SP+): %d\n",
 # ------------------------------------------------------------------------------
 
 # --- Overall ---
-overall_mae     <- mean(games_pred$abs_error,    na.rm = TRUE)
-overall_mae_sp  <- mean(games_pred$abs_error_sp, na.rm = TRUE)
+overall_mae     <- mean(games_pred$abs_error,     na.rm = TRUE)
+overall_mae_elo <- mean(games_pred$abs_error_elo, na.rm = TRUE)
+overall_mae_sp  <- mean(games_pred$abs_error_sp,  na.rm = TRUE)
 overall_rmse    <- sqrt(mean(games_pred$pred_error^2, na.rm = TRUE))
 n_games         <- nrow(games_pred)
 n_ppa_active    <- sum(games_pred$ppa_active, na.rm = TRUE)
+n_elo_active    <- sum(games_pred$elo_active, na.rm = TRUE)
+n_td_active     <- sum(games_pred$td_active,  na.rm = TRUE)
 
 # Direction accuracy: did model correctly predict which team would win?
 direction_correct <- games_pred %>%
@@ -568,27 +721,35 @@ cat(sprintf(" mcFootball 2025 BACKTEST RESULTS\n"))
 cat(sprintf("%s\n\n", sep))
 
 cat(sprintf(" Total games evaluated:  %d\n", n_games))
+cat(sprintf(" ELO active:             %d / %d games  (blend: SP+%.0f%% + ELO%.0f%%)\n",
+            n_elo_active, n_games, .sp_w_bt * 100, .elo_w_bt * 100))
 cat(sprintf(" PPA active:             %d / %d games  (weights: spread=%.1f, succ=%.1f)\n",
             n_ppa_active, n_games, .ppa_w, .succ_w))
+cat(sprintf(" 3rd-Down active:        %d / %d games  (spread=%.1f, total=%.1f)\n",
+            n_td_active, n_games, .td_sp_w, .td_tot_w))
 
-# MAE comparison: SP-only vs PPA-blend
-mae_delta <- overall_mae_sp - overall_mae
-cat(sprintf("\n --- MAE Comparison: SP-only vs PPA-blend ---\n"))
-cat(sprintf(" SP-only MAE:     %.2f pts\n", overall_mae_sp))
-cat(sprintf(" PPA-blend MAE:   %.2f pts  %s  (delta: %+.2f pts)\n",
+# Three-way MAE comparison: SP-only → SP+ELO → full model
+delta_elo  <- overall_mae_sp  - overall_mae_elo
+delta_full <- overall_mae_elo - overall_mae
+cat(sprintf("\n --- MAE Comparison (three variants) ---\n"))
+cat(sprintf(" 1. SP-only:            %.2f pts  (baseline)\n", overall_mae_sp))
+cat(sprintf(" 2. SP+ELO blend:       %.2f pts  (delta vs SP-only:  %+.2f)\n",
+            overall_mae_elo, delta_elo))
+cat(sprintf(" 3. Full model (PPA+3d):%.2f pts  %s\n",
             overall_mae,
             ifelse(overall_mae <= 6.0, "✓ TARGET MET (≤ 6.0)",
                    ifelse(overall_mae <= 7.5, "⚠ MARGINAL (6-7.5)",
-                                              "✗ RECALIBRATE (> 7.5)")),
-            mae_delta))
-if (PPA_AVAILABLE) {
-  if (mae_delta > 0.1) {
-    cat(sprintf(" PPA IMPROVED model by %.2f pts MAE.\n", mae_delta))
-  } else if (mae_delta < -0.1) {
-    cat(sprintf(" PPA HURT model by %.2f pts MAE — consider reducing weights.\n", abs(mae_delta)))
-  } else {
-    cat(" PPA effect is negligible (< 0.1 pts). Weights may need tuning.\n")
-  }
+                                              "✗ RECALIBRATE (> 7.5)"))))
+cat(sprintf("    ELO contribution:    %+.2f pts | PPA+3d contribution: %+.2f pts\n",
+            delta_elo, delta_full))
+mae_delta <- overall_mae_sp - overall_mae   # total improvement
+if (mae_delta > 0.1) {
+  cat(sprintf(" New factors IMPROVED model by %.2f pts MAE total.\n", mae_delta))
+} else if (mae_delta < -0.1) {
+  cat(sprintf(" New factors HURT model by %.2f pts — consider reducing weights.\n",
+              abs(mae_delta)))
+} else {
+  cat(" Factor effect is negligible (< 0.1 pts). Weights may need tuning.\n")
 }
 
 cat(sprintf("\n Overall RMSE:           %.2f pts\n", overall_rmse))
@@ -656,11 +817,16 @@ write_csv(
            canonical_away, canonical_home,
            home_conf, away_conf, conf_tier, conf_tier_label,
            home_score, away_score, actual_margin,
-           home_sp, away_sp, rating_diff, effective_hfa,
-           ppa_diff, success_rate_diff, ppa_adj, success_adj, ppa_active,
-           proj_spread_sp, proj_spread,
-           pred_home_margin_sp, pred_home_margin,
+           home_sp, away_sp, rating_diff,
+           home_elo, away_elo, elo_diff_scaled, rating_diff_blended,
+           home_3d, away_3d, third_down_spread_adj,
+           effective_hfa,
+           ppa_diff, success_rate_diff, ppa_adj, success_adj,
+           ppa_active, elo_active, td_active,
+           proj_spread_sp, proj_spread_elo, proj_spread,
+           pred_home_margin_sp, pred_home_margin_elo, pred_home_margin,
            pred_error_sp, abs_error_sp,
+           pred_error_elo, abs_error_elo,
            pred_error, abs_error,
            posted_spread, model_edge, bet_qualifies, bet_side, bet_covered),
   out_results
@@ -670,6 +836,7 @@ summary_rows <- bind_rows(
   tibble(group = "overall", label = "All games (PPA-blend)",
          n_games = n_games, mae = round(overall_mae, 3),
          mae_sp_only = round(overall_mae_sp, 3),
+         mae_elo = round(overall_mae_elo, 3),
          mae_ppa_delta = round(mae_delta, 3),
          rmse = round(overall_rmse, 3),
          n_bets = ats_summary$n_bets,
@@ -677,15 +844,15 @@ summary_rows <- bind_rows(
          model_bias = round(mean_error, 3)),
   by_conf %>%
     mutate(group = "conf_tier", label = conf_tier_label,
-           mae_sp_only = NA_real_, mae_ppa_delta = NA_real_,
+           mae_sp_only = NA_real_, mae_elo = NA_real_, mae_ppa_delta = NA_real_,
            model_bias = NA_real_) %>%
-    select(group, label, n_games, mae, mae_sp_only, mae_ppa_delta,
+    select(group, label, n_games, mae, mae_sp_only, mae_elo, mae_ppa_delta,
            rmse, n_bets, ats_win_pct, model_bias),
   by_week %>%
     mutate(group = "week", label = as.character(week),
-           mae_sp_only = NA_real_, mae_ppa_delta = NA_real_,
+           mae_sp_only = NA_real_, mae_elo = NA_real_, mae_ppa_delta = NA_real_,
            model_bias = NA_real_) %>%
-    select(group, label, n_games, mae, mae_sp_only, mae_ppa_delta,
+    select(group, label, n_games, mae, mae_sp_only, mae_elo, mae_ppa_delta,
            rmse, n_bets, ats_win_pct, model_bias)
 )
 

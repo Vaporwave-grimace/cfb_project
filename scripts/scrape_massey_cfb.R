@@ -34,8 +34,15 @@ fetch_massey_firecrawl <- function(url = MASSEY_CFB_URL) {
 
 # ------------------------------------------------------------------------------
 # 1b. Fetch via Chromote (fallback — requires Chrome installed)
+#
+# Reliability improvements over original:
+#   - Full retry loop (max_attempts = 2): if #SHCtable is missing after the
+#     first attempt, close the session and try again with a longer wait.
+#   - Explicit post-render validation: stop() only after all retries exhausted,
+#     so Saturday morning failures are caught early with a clear error message.
+#   - Longer wait_for timeout on retry (45s vs 30s) + larger sleep buffer.
 # ------------------------------------------------------------------------------
-fetch_massey_chromote <- function(url = MASSEY_CFB_URL) {
+fetch_massey_chromote <- function(url = MASSEY_CFB_URL, max_attempts = 2L) {
   cat(sprintf("[MASSEY] Fetching via Chromote (fallback): %s\n", url))
   if (!requireNamespace("chromote", quietly = TRUE))
     stop("[MASSEY] chromote package required for fallback fetch.")
@@ -43,19 +50,50 @@ fetch_massey_chromote <- function(url = MASSEY_CFB_URL) {
   if (is.null(chrome_path))
     stop("[MASSEY] Chrome not found for fallback fetch.")
 
-  page <- rvest::read_html_live(url)
-  on.exit(try(page$session$close(), silent = TRUE), add = TRUE)
-  tryCatch(
-    page$wait_for("#SHCtable td", timeout = 30000),
-    error = function(e) cat("[MASSEY] wait_for timed out — proceeding.\n")
-  )
-  Sys.sleep(1.5)
-  html_str <- page$session$Runtime$evaluate(
-    "document.documentElement.outerHTML"
-  )$result$value
-  if (!grepl("SHCtable", html_str, fixed = TRUE))
-    stop("[MASSEY] #SHCtable not found in Chromote-rendered page.")
-  html_str
+  last_err <- NULL
+
+  for (attempt in seq_len(max_attempts)) {
+    if (attempt > 1L) {
+      cat(sprintf("[MASSEY] Chromote retry %d / %d (sleeping 3s)...\n",
+                  attempt, max_attempts))
+      Sys.sleep(3)
+    }
+
+    wait_ms  <- if (attempt == 1L) 30000L else 45000L
+    sleep_s  <- if (attempt == 1L) 1.5    else 2.5
+
+    html_str <- tryCatch({
+      page <- rvest::read_html_live(url)
+      on.exit(try(page$session$close(), silent = TRUE), add = TRUE)
+
+      tryCatch(
+        page$wait_for("#SHCtable td", timeout = wait_ms),
+        error = function(e)
+          cat(sprintf("[MASSEY] wait_for timed out (attempt %d) — proceeding.\n",
+                      attempt))
+      )
+      Sys.sleep(sleep_s)
+
+      html <- page$session$Runtime$evaluate(
+        "document.documentElement.outerHTML"
+      )$result$value
+
+      if (!grepl("SHCtable", html, fixed = TRUE))
+        stop("#SHCtable not found in rendered page — table not loaded yet.")
+
+      html
+    }, error = function(e) {
+      last_err <<- e$message
+      cat(sprintf("[MASSEY] Chromote attempt %d failed: %s\n",
+                  attempt, e$message))
+      NULL
+    })
+
+    if (!is.null(html_str)) return(html_str)
+  }
+
+  stop(sprintf("[MASSEY] Chromote failed after %d attempt(s). Last error: %s",
+               max_attempts, last_err))
 }
 
 # ------------------------------------------------------------------------------
