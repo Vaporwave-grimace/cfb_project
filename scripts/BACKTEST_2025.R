@@ -125,11 +125,12 @@ elo_ratings <- tryCatch({
     warning("[BACKTEST] /ratings/elo returned empty — ELO blend disabled.")
     NULL
   } else {
+    # CFBD /ratings/elo returns one row per team per week in ascending order.
+    # week column may be a list-column (fromJSON nesting) — avoid parsing it;
+    # slice_tail(n=1) per team gives the latest week reliably.
     elo_tbl <- as_tibble(raw_elo) %>%
-      mutate(week_num = suppressWarnings(as.integer(week))) %>%
-      filter(!is.na(week_num)) %>%
       group_by(team) %>%
-      slice_max(order_by = week_num, n = 1, with_ties = FALSE) %>%
+      slice_tail(n = 1) %>%
       ungroup() %>%
       transmute(
         canonical_name = normalize_team_name(team, mappings = master,
