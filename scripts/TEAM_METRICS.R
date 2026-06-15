@@ -260,7 +260,63 @@ fetch_returning_production <- function(api_key, year, master) {
 }
 
 # ==============================================================================
-# 5. Load basic stats (third_down_rate, red_zone_rate) from SCRAPE_CFB_DATA.R
+# 5. Fetch play-type PPA splits from /ppa/teams
+#    Returns: canonical_name, off_rush_ppa, off_pass_ppa, def_rush_ppa, def_pass_ppa
+#    Used by get_scheme_adj() in GENERATE_PREDICTIONS_CFB.R
+#    Non-fatal: returns NULL on API error; columns will be NA in team_metrics
+# ==============================================================================
+
+fetch_ppa_teams <- function(api_key, year, master) {
+  cat(sprintf("[TEAM_METRICS] Fetching /ppa/teams for %d...\n", year))
+
+  raw <- tryCatch(
+    .cfbd_get("/ppa/teams",
+              params  = list(year = year, seasonType = "regular"),
+              api_key = api_key),
+    error = function(e) {
+      warning(sprintf("[TEAM_METRICS] /ppa/teams fetch failed (non-fatal): %s", e$message))
+      NULL
+    }
+  )
+
+  if (is.null(raw) || length(raw) == 0) {
+    warning("[TEAM_METRICS] /ppa/teams returned empty — scheme cols will be NA.")
+    return(NULL)
+  }
+
+  df <- as_tibble(raw)
+
+  # After flatten=TRUE: offense.rushing, offense.passing, defense.rushing, defense.passing
+  safe_col <- function(df, col) if (col %in% names(df)) df[[col]] else rep(NA_real_, nrow(df))
+
+  df <- df %>%
+    transmute(
+      team_raw     = team,
+      off_rush_ppa = as.numeric(safe_col(df, "offense.rushing")),
+      off_pass_ppa = as.numeric(safe_col(df, "offense.passing")),
+      def_rush_ppa = as.numeric(safe_col(df, "defense.rushing")),
+      def_pass_ppa = as.numeric(safe_col(df, "defense.passing"))
+    ) %>%
+    mutate(
+      canonical_name = normalize_team_name(
+        team_raw,
+        mappings      = master,
+        source_col    = "massey_name",
+        unmatched_log = "logs/unmatched_teams.csv"
+      )
+    ) %>%
+    filter(!is.na(canonical_name)) %>%
+    select(-team_raw)
+
+  cat(sprintf("[TEAM_METRICS] PPA play-type splits: %d teams | off_rush [%.3f,%.3f] | def_rush [%.3f,%.3f]\n",
+              nrow(df),
+              min(df$off_rush_ppa, na.rm = TRUE), max(df$off_rush_ppa, na.rm = TRUE),
+              min(df$def_rush_ppa, na.rm = TRUE), max(df$def_rush_ppa, na.rm = TRUE)))
+  df
+}
+
+# ==============================================================================
+# 6. Load basic stats (third_down_rate + rush_rate) from SCRAPE_CFB_DATA.R
 #    output. Falls back gracefully if file is missing.
 # ==============================================================================
 
@@ -269,22 +325,36 @@ load_basic_stats <- function(year) {
 
   if (!file.exists(path)) {
     warning(sprintf("[TEAM_METRICS] %s not found — run SCRAPE_CFB_DATA.R first. ", path),
-            "third_down_rate and red_zone_rate will be NA.")
+            "third_down_rate and rush_rate will be NA.")
     return(NULL)
   }
 
   df <- read_csv(path, show_col_types = FALSE)
   cat(sprintf("[TEAM_METRICS] Loaded basic stats: %d teams from %s.\n", nrow(df), path))
 
-  # Keep only the columns we need for the join
-  # red_zone_rate excluded — not available from CFBD /stats/season endpoint
+  # Keep only the columns we need for the join.
+  # rushingAttempts + passAttempts → rush_rate (consumed by get_scheme_adj()).
+  # red_zone_rate excluded — not available from CFBD /stats/season endpoint.
   keep <- intersect(
     c("canonical_name", "year", "third_down_rate",
       "pointsPerGame", "yardsPerPlay", "turnovers", "turnover_margin",
-      "pass_completion_rate", "sacksOpponent"),
+      "pass_completion_rate", "sacksOpponent",
+      "rushingAttempts", "passAttempts"),
     names(df)
   )
-  select(df, all_of(keep))
+  out <- select(df, all_of(keep))
+
+  if (all(c("rushingAttempts", "passAttempts") %in% names(out))) {
+    out <- out %>%
+      mutate(
+        rush_rate = as.numeric(rushingAttempts) /
+                    (as.numeric(rushingAttempts) + as.numeric(passAttempts)),
+        rush_rate = if_else(!is.finite(rush_rate), NA_real_, rush_rate)
+      ) %>%
+      select(-rushingAttempts, -passAttempts)
+  }
+
+  out
 }
 
 # ==============================================================================
@@ -339,7 +409,16 @@ build_team_metrics <- function(year = NULL, master = NULL) {
     }
   )
 
-  # ── load basic stats (third-down, red zone) ──────────────────────────────────
+  # ── fetch play-type PPA splits (non-fatal) ───────────────────────────────────
+  ppa_teams_df <- tryCatch(
+    fetch_ppa_teams(api_key = api_key, year = year, master = master),
+    error = function(e) {
+      warning(sprintf("[TEAM_METRICS] fetch_ppa_teams() error (non-fatal): %s", e$message))
+      NULL
+    }
+  )
+
+  # ── load basic stats (third-down, rush_rate) ─────────────────────────────────
   basic <- load_basic_stats(year)
 
   # ── join: basic stats ────────────────────────────────────────────────────────
@@ -371,10 +450,22 @@ build_team_metrics <- function(year = NULL, master = NULL) {
       mutate(returning_pct = NA_real_, retention_score = NA_real_)
   }
 
+  # ── join: play-type PPA splits (non-fatal left join) ─────────────────────────
+  if (!is.null(ppa_teams_df)) {
+    metrics <- metrics %>% left_join(ppa_teams_df, by = "canonical_name")
+  } else {
+    metrics <- metrics %>%
+      mutate(off_rush_ppa = NA_real_, off_pass_ppa = NA_real_,
+             def_rush_ppa = NA_real_, def_pass_ppa = NA_real_)
+  }
+
   # ── column ordering: key columns first ──────────────────────────────────────
   priority_cols <- c(
     "year", "canonical_name",
     "off_ppa", "def_ppa",
+    "off_rush_ppa", "off_pass_ppa",
+    "def_rush_ppa", "def_pass_ppa",
+    "rush_rate",
     "off_success_rate", "def_success_rate",
     "off_explosiveness", "def_explosiveness",
     "talent_score", "talent_norm",

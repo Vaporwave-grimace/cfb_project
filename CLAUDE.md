@@ -1,5 +1,5 @@
 # mcFootball CFB Pipeline — Session State
-# Last updated: 2026-06-15 | Session 20
+# Last updated: 2026-06-15 | Session 21
 
 ## Project
 Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_football.R`). Markets: SPREAD / TOTAL / ML. Kelly 0.5 fractional sizing. Telegram + Discord broadcast.
@@ -67,7 +67,48 @@ Enable line logger in late August: `Enable-ScheduledTask -TaskName "CFB_LineLogg
 
 ## Drop-in for Next Session
 
-Continuing mcFootball CFB pipeline. Read `CFB_PROJECT_BIBLE.md` for full history. Session 20 complete — score fetcher (`fetch_cfb_scores.R`), Task Scheduler scripts (`run_with_log_cfb.ps1`, `schedule_tasks_cfb.ps1`), Sagarin SSL fix, Massey Chromote retry, and backtest ELO blend + third-down adjustments. **Before first live use, run `source("scripts/db_schema_init.R")`**. Enable `CFB_LineLogger_Hourly` task in late August. Next live action Sep 2026.
+Continuing mcFootball CFB pipeline. Read `CFB_PROJECT_BIBLE.md` for full history. Session 21 complete — three new data features: weather forecasts (OpenWeather forecast API), scheme matchup (CFBD /ppa/teams rush/pass PPA splits), and injury total adjustment wired into proj_total. **Before first live use, run `source("scripts/db_schema_init.R")`**. Enable `CFB_LineLogger_Hourly` task in late August. Next live action Sep 2026.
+
+## Session 21 Summary (2026-06-15)
+
+### `scripts/WEATHER_SCRAPER_CFB.R` — Full Rewrite
+
+Previous version had three structural bugs: (1) used `/data/2.5/weather` (current conditions) instead of `/data/2.5/forecast` (5-day forecast needed for Thursday-fetched Saturday games); (2) expected `home_latitude`/`home_longitude`/`home_dome` already in `odds_data` — those columns don't exist; (3) joined results onto `odds_data` but Step 17 checks `games_with_predictions` — so Step 17 always saw `has_weather = FALSE`.
+
+Rewritten to:
+- Fetch stadium coordinates + dome flag from CFBD `/teams?division=fbs` (via `.cfb_team_locations()`)
+- Use `/data/2.5/forecast` (3-hr slots, 5 days) — pick slot closest to `commence_time` UTC
+- Use forecast `pop` field for `precip_prob` (0–1 probability vs. binary rain detection)
+- Join `wind_speed`, `precip_prob`, `temp_f`, `home_dome` directly onto `games_with_predictions` at end of run so Step 17's `!is.null(weather_data) && all(c("wind_speed","precip_prob") %in% names(gwp))` check passes
+- Dome/retractable-roof parks logged explicitly; `Sys.sleep(0.15)` between forecast calls to respect OWM rate limit
+
+### `scripts/TEAM_METRICS.R` — Scheme Matchup Data
+
+- New `fetch_ppa_teams()` function: calls CFBD `/ppa/teams?year=YYYY&seasonType=regular`; extracts `off_rush_ppa`, `off_pass_ppa`, `def_rush_ppa`, `def_pass_ppa` per team (after `flatten=TRUE`: `offense.rushing`, `offense.passing`, `defense.rushing`, `defense.passing`)
+- `load_basic_stats()` updated: adds `rushingAttempts` + `passAttempts` to keep list; derives `rush_rate = rushingAttempts / (rushingAttempts + passAttempts)` in-function; drops raw attempt columns before returning
+- `build_team_metrics()` updated: calls `fetch_ppa_teams()` (non-fatal, like talent/returning); left-joins play-type PPA + rush_rate into `team_metrics`; `priority_cols` updated to place new scheme cols near top
+- New columns flow to `games_with_predictions` via MERGE step as `home_off_rush_ppa`, `home_def_rush_ppa`, `home_rush_rate`, `away_*` etc.
+
+### `scripts/GENERATE_PREDICTIONS_CFB.R` — Scheme + Injury Total Adj
+
+- New `get_scheme_adj(game_row)`: pulls `home_rush_rate`, `home_def_rush_ppa`, `home_def_pass_ppa`, `away_*` from game_row; computes net home scheme edge (home offense vs. away defense scheme, minus away offense vs. home defense scheme); returns `net × SCHEME_SPREAD_WEIGHT`; returns 0 cleanly when columns absent
+- New `get_injury_total_adj(home, away)`: reads `total_adj` from `injury_adjustments` (INJURY_SCRAPER_CFB.R); both teams' totals added (missing scorer suppresses total); was computed by injury scraper but never wired into `proj_total`
+- `predict_game()` spread formula now includes `+ scheme_adj`
+- `predict_game()` total formula now includes `+ injury_total_adj` on both PPA and fallback paths
+- Output list adds `scheme_adj` and `injury_total_adj` columns
+
+### `scripts/CONFIG.R` — Scheme Constants
+
+- `SCHEME_SPREAD_WEIGHT <- 4.0` — pts per net EPA/play edge (conservative prior; tune 2.0–8.0)
+- `LG_AVG_DEF_RUSH_PPA <- 0.0` — FBS avg EPA/play allowed on rushes (≈ 0, zero-centered)
+- `LG_AVG_DEF_PASS_PPA <- 0.0` — FBS avg EPA/play allowed on passes (≈ 0)
+- `LG_AVG_RUSH_RATE <- 0.42` — FBS avg rush-play fraction (default when team data absent)
+
+### Calibration notes
+
+- `SCHEME_SPREAD_WEIGHT = 4.0` is a prior — validate against 2025 backtest once `/ppa/teams` data is confirmed available for 2025 season (CFBD historical endpoint). Tune toward 6–8 if scheme proves predictive.
+- Weather: wind + cold + precip are additive suppression signals; Step 17 already has the application logic — no code change needed there.
+- `injury_total_adj` from INJURY_SCRAPER is negative for key injuries (e.g., QB Out → -3.0 spread / -1.5 total per team). Total adj now fires correctly alongside spread adj.
 
 ## Session 20 Summary (2026-06-15)
 

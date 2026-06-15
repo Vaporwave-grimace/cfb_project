@@ -174,6 +174,28 @@ THIRD_DOWN_SPREAD_WEIGHT <- 3.0   # pts per unit 3rd-down rate diff (tune 2.0–
 THIRD_DOWN_TOTAL_WEIGHT  <- 4.0   # pts per combined deviation from avg (tune 2.0–6.0)
 
 # ------------------------------------------------------------------------------
+# SCHEME MATCHUP — Offensive run/pass tendency vs. defensive play-type efficiency
+# Source: CFBD /ppa/teams (off_rush_ppa, off_pass_ppa, def_rush_ppa, def_pass_ppa)
+#         CFBD /stats/season (rushingAttempts, passAttempts → rush_rate)
+#
+# Formula (home-team spread perspective):
+#   home_edge = rush_rate_home × (away_def_rush_ppa - LG_RUSH)
+#             + (1 - rush_rate_home) × (away_def_pass_ppa - LG_PASS)
+#   away_edge = rush_rate_away × (home_def_rush_ppa - LG_RUSH)
+#             + (1 - rush_rate_away) × (home_def_pass_ppa - LG_PASS)
+#   scheme_adj = (home_edge - away_edge) × SCHEME_SPREAD_WEIGHT
+#
+# EPA/play is zero-centered across FBS; positive def_ppa = weak defense.
+# LG averages seeded at 0 — refine from CFBD season totals post-season.
+# SCHEME_SPREAD_WEIGHT: 0.1 EPA/play edge × 4.0 = 0.4 pt shift (conservative prior)
+# Tune toward 6.0–8.0 if scheme proves predictive in live 2026 validation.
+# ------------------------------------------------------------------------------
+SCHEME_SPREAD_WEIGHT  <- 4.0   # pts per net EPA/play scheme edge (tune 2.0–8.0)
+LG_AVG_DEF_RUSH_PPA   <- 0.0   # FBS avg EPA/play allowed on rushes (≈ 0; refine post-season)
+LG_AVG_DEF_PASS_PPA   <- 0.0   # FBS avg EPA/play allowed on passes (≈ 0; refine post-season)
+LG_AVG_RUSH_RATE      <- 0.42  # FBS avg rush-play fraction (tune from /stats/season data)
+
+# ------------------------------------------------------------------------------
 # DATA PATHS
 # ------------------------------------------------------------------------------
 MASTER_CSV         <- "team_name_mappings_MASTER_CFB.csv"

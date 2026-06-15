@@ -159,6 +159,59 @@ get_motiv_adj <- function(home, away, game_id) {
 }
 
 # ------------------------------------------------------------------------------
+# Scheme matchup getter
+#   Reads home/away rush_rate, def_rush_ppa, def_pass_ppa from game_row.
+#   These columns flow in from team_metrics via MERGE_GAMES_RATINGS_CFB.R:
+#     home_rush_rate, home_def_rush_ppa, home_def_pass_ppa
+#     away_rush_rate, away_def_rush_ppa, away_def_pass_ppa
+#
+#   Logic: how well does each offense's run/pass tendency match up against
+#   the opponent's defensive weakness vs. that play type?
+#   Positive return = home team benefits more from scheme matchup.
+#
+#   CONFIG params: SCHEME_SPREAD_WEIGHT, LG_AVG_DEF_RUSH_PPA, LG_AVG_DEF_PASS_PPA
+# ------------------------------------------------------------------------------
+get_scheme_adj <- function(game_row) {
+  scheme_w <- if (exists("SCHEME_SPREAD_WEIGHT"))  SCHEME_SPREAD_WEIGHT  else 4.0
+  lg_rush  <- if (exists("LG_AVG_DEF_RUSH_PPA"))  LG_AVG_DEF_RUSH_PPA  else 0.0
+  lg_pass  <- if (exists("LG_AVG_DEF_PASS_PPA"))  LG_AVG_DEF_PASS_PPA  else 0.0
+  lg_rr    <- if (exists("LG_AVG_RUSH_RATE"))     LG_AVG_RUSH_RATE     else 0.42
+
+  h_rush_rate <- coalesce(as.numeric(game_row[["home_rush_rate"]]),   lg_rr)
+  a_rush_rate <- coalesce(as.numeric(game_row[["away_rush_rate"]]),   lg_rr)
+  h_def_rush  <- coalesce(as.numeric(game_row[["home_def_rush_ppa"]]), lg_rush)
+  h_def_pass  <- coalesce(as.numeric(game_row[["home_def_pass_ppa"]]), lg_pass)
+  a_def_rush  <- coalesce(as.numeric(game_row[["away_def_rush_ppa"]]), lg_rush)
+  a_def_pass  <- coalesce(as.numeric(game_row[["away_def_pass_ppa"]]), lg_pass)
+
+  # How home offense fares against away defense given home's run/pass tendency.
+  # Positive a_def_rush means away defense allows above-avg EPA on rushes → good for home.
+  home_edge <- h_rush_rate * (a_def_rush - lg_rush) +
+               (1 - h_rush_rate) * (a_def_pass - lg_pass)
+
+  # How away offense fares against home defense given away's run/pass tendency.
+  away_edge <- a_rush_rate * (h_def_rush - lg_rush) +
+               (1 - a_rush_rate) * (h_def_pass - lg_pass)
+
+  (home_edge - away_edge) * scheme_w
+}
+
+# ------------------------------------------------------------------------------
+# Injury total adjustment getter
+#   Reads total_adj from injury_adjustments (INJURY_SCRAPER_CFB.R Step 6.5).
+#   Both teams' injuries are additive (any missing scorer suppresses total).
+#   Returns pts to subtract from proj_total (negative = total suppression).
+# ------------------------------------------------------------------------------
+get_injury_total_adj <- function(home, away) {
+  if (!exists("injury_adjustments", envir = .GlobalEnv)) return(0)
+  ia <- get("injury_adjustments", envir = .GlobalEnv)
+  if (is.null(ia) || nrow(ia) == 0 || !"total_adj" %in% names(ia)) return(0)
+  home_adj <- coalesce(ia$total_adj[ia$canonical_name == home][1], 0)
+  away_adj <- coalesce(ia$total_adj[ia$canonical_name == away][1], 0)
+  home_adj + away_adj
+}
+
+# ------------------------------------------------------------------------------
 # Core prediction engine — one row at a time (via pmap)
 #
 # Spread formula:
@@ -236,7 +289,8 @@ predict_game <- function(game_row) {
   third_down_total_adj  <- (home_3d + away_3d - 2 * avg_3d) * td_tot_w
 
   # --- Injury adjustment (from INJURY_SCRAPER_CFB.R Step 6.5) ---
-  injury_adj <- tryCatch(get_injury_adj(home, away), error = function(e) 0)
+  injury_adj       <- tryCatch(get_injury_adj(home, away),       error = function(e) 0)
+  injury_total_adj <- tryCatch(get_injury_total_adj(home, away), error = function(e) 0)
 
   # --- Motivational adjustment (from MOTIVATIONAL_FACTORS_CFB.R Step 14.5) ---
   motiv_adj <- tryCatch(
@@ -244,12 +298,16 @@ predict_game <- function(game_row) {
     error = function(e) 0
   )
 
+  # --- Scheme matchup (from TEAM_METRICS.R /ppa/teams — Step 6) ---
+  # Fires when team_metrics has play-type PPA splits; 0 when columns are absent.
+  scheme_adj <- tryCatch(get_scheme_adj(game_row), error = function(e) 0)
+
   # --- Projected spread (home perspective) ---
   # Negative = home favored (sportsbook convention).
   # All positive adj terms shift the spread in home team's favour.
   proj_spread <- -(rd * scalar + ppa_adj + success_adj + talent_adj + hfa +
                    bye_adj + travel_adj + third_down_spread_adj +
-                   injury_adj + motiv_adj)
+                   injury_adj + motiv_adj + scheme_adj)
 
   # --- Projected total ---
   home_plays_pg <- if ("home_plays_per_game" %in% names(game_row))
@@ -264,10 +322,11 @@ predict_game <- function(game_row) {
 
   # Use explosiveness diff when PPA data available; fall back to SP+ off/def.
   # third_down_total_adj captures combined drive-sustaining efficiency.
+  # injury_total_adj subtracts scoring when key players are out (negative value).
   proj_total <- if (!is.na(expl_adj)) {
-    CFB_AVG_TOTAL + expl_adj + p_adj + third_down_total_adj
+    CFB_AVG_TOTAL + expl_adj + p_adj + third_down_total_adj + injury_total_adj
   } else {
-    CFB_AVG_TOTAL + odh + oda + p_adj + third_down_total_adj
+    CFB_AVG_TOTAL + odh + oda + p_adj + third_down_total_adj + injury_total_adj
   }
 
   # --- Win probability (logistic sigmoid) ---
@@ -275,22 +334,24 @@ predict_game <- function(game_row) {
   win_prob_away <- 1 - win_prob_home
 
   list(
-    proj_spread          = round(proj_spread,          2),
-    proj_total           = round(proj_total,           2),
-    win_prob_home        = round(win_prob_home,        4),
-    win_prob_away        = round(win_prob_away,        4),
-    bye_adj              = round(bye_adj,              2),
-    travel_adj           = round(travel_adj,           2),
-    ppa_adj              = round(ppa_adj,              3),
-    success_adj          = round(success_adj,          3),
-    talent_adj           = round(talent_adj,           3),
-    tempo_adj            = round(p_adj,                3),
+    proj_spread           = round(proj_spread,           2),
+    proj_total            = round(proj_total,            2),
+    win_prob_home         = round(win_prob_home,         4),
+    win_prob_away         = round(win_prob_away,         4),
+    bye_adj               = round(bye_adj,               2),
+    travel_adj            = round(travel_adj,            2),
+    ppa_adj               = round(ppa_adj,               3),
+    success_adj           = round(success_adj,           3),
+    talent_adj            = round(talent_adj,            3),
+    tempo_adj             = round(p_adj,                 3),
     third_down_spread_adj = round(third_down_spread_adj, 3),
     third_down_total_adj  = round(third_down_total_adj,  3),
-    injury_adj           = round(injury_adj,           2),
-    motiv_adj            = round(motiv_adj,            2),
-    week_num             = as.integer(week_num),
-    ppa_available        = !is.na(ppa_diff)
+    injury_adj            = round(injury_adj,            2),
+    injury_total_adj      = round(injury_total_adj,      2),
+    motiv_adj             = round(motiv_adj,             2),
+    scheme_adj            = round(scheme_adj,            3),
+    week_num              = as.integer(week_num),
+    ppa_available         = !is.na(ppa_diff)
   )
 }
 
