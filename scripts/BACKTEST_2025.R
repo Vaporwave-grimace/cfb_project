@@ -126,8 +126,10 @@ elo_ratings <- tryCatch({
     NULL
   } else {
     elo_tbl <- as_tibble(raw_elo) %>%
+      mutate(week_num = suppressWarnings(as.integer(week))) %>%
+      filter(!is.na(week_num)) %>%
       group_by(team) %>%
-      slice_max(order_by = as.integer(week), n = 1, with_ties = FALSE) %>%
+      slice_max(order_by = week_num, n = 1, with_ties = FALSE) %>%
       ungroup() %>%
       transmute(
         canonical_name = normalize_team_name(team, mappings = master,
