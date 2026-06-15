@@ -1,3 +1,558 @@
 timestamp,raw_name,source_col,preprocessed
 2026-05-29T16:41:03Z,Delaware,massey_name,Delaware
 2026-05-29T16:41:03Z,Missouri State,massey_name,Missouri State
+2026-06-15T23:00:24Z,nationalAverages,massey_name,nationalAverages
+2026-06-15T23:00:28Z,Nicholls,massey_name,Nicholls
+2026-06-15T23:00:28Z,Portland State,massey_name,Portland State
+2026-06-15T23:00:28Z,Southern,massey_name,Southern
+2026-06-15T23:00:28Z,Central Washington,massey_name,Central Washington
+2026-06-15T23:00:28Z,Saginaw Valley State,massey_name,Saginaw Valley State
+2026-06-15T23:00:28Z,Indiana State,massey_name,Indiana State
+2026-06-15T23:00:28Z,Clarion,massey_name,Clarion
+2026-06-15T23:00:28Z,Marian College,massey_name,Marian College
+2026-06-15T23:00:28Z,Michigan Tech,massey_name,Michigan Tech
+2026-06-15T23:00:28Z,Northern Michigan,massey_name,Northern Michigan
+2026-06-15T23:00:28Z,Ferris State,massey_name,Ferris State
+2026-06-15T23:00:28Z,Wayne State (NE),massey_name,Wayne State (NE)
+2026-06-15T23:00:28Z,Eastern Illinois,massey_name,Eastern Illinois
+2026-06-15T23:00:28Z,Walsh,massey_name,Walsh
+2026-06-15T23:00:28Z,University Of Charleston (WV),massey_name,University Of Charleston (WV)
+2026-06-15T23:00:28Z,St. Thomas (MN),massey_name,St. Thomas (MN)
+2026-06-15T23:00:28Z,Norfolk State,massey_name,Norfolk State
+2026-06-15T23:00:28Z,Wilson,massey_name,Wilson
+2026-06-15T23:00:28Z,Minnesota State Mankato,massey_name,Minnesota State Mankato
+2026-06-15T23:00:28Z,Seton Hill,massey_name,Seton Hill
+2026-06-15T23:00:28Z,Delta State,massey_name,Delta State
+2026-06-15T23:00:28Z,East Stroudsburg University,massey_name,East Stroudsburg University
+2026-06-15T23:00:28Z,Samford,massey_name,Samford
+2026-06-15T23:00:28Z,Drake,massey_name,Drake
+2026-06-15T23:00:28Z,Quincy,massey_name,Quincy
+2026-06-15T23:00:28Z,University of Mary,massey_name,University of Mary
+2026-06-15T23:00:28Z,Houston Christian,massey_name,Houston Christian
+2026-06-15T23:00:28Z,CSU Pueblo,massey_name,CSU Pueblo
+2026-06-15T23:00:28Z,Northwestern State,massey_name,Northwestern State
+2026-06-15T23:00:28Z,Emporia State University,massey_name,Emporia State University
+2026-06-15T23:00:28Z,Eastern New Mexico,massey_name,Eastern New Mexico
+2026-06-15T23:00:28Z,Winona State,massey_name,Winona State
+2026-06-15T23:00:28Z,Western Colorado,massey_name,Western Colorado
+2026-06-15T23:00:28Z,Black Hills State,massey_name,Black Hills State
+2026-06-15T23:00:28Z,Fort Hays State,massey_name,Fort Hays State
+2026-06-15T23:00:28Z,Rhode Island,massey_name,Rhode Island
+2026-06-15T23:00:28Z,West Florida,massey_name,West Florida
+2026-06-15T23:00:28Z,Colgate,massey_name,Colgate
+2026-06-15T23:00:28Z,Marist,massey_name,Marist
+2026-06-15T23:00:28Z,Shorter,massey_name,Shorter
+2026-06-15T23:00:28Z,Carson-Newman College,massey_name,Carson-Newman College
+2026-06-15T23:00:28Z,Lehigh,massey_name,Lehigh
+2026-06-15T23:00:28Z,Gannon,massey_name,Gannon
+2026-06-15T23:00:28Z,Glenville State,massey_name,Glenville State
+2026-06-15T23:00:28Z,Davidson,massey_name,Davidson
+2026-06-15T23:00:28Z,Shaw,massey_name,Shaw
+2026-06-15T23:00:28Z,UT Permian Basin,massey_name,UT Permian Basin
+2026-06-15T23:00:28Z,Tennessee Tech,massey_name,Tennessee Tech
+2026-06-15T23:00:28Z,Central State (OH),massey_name,Central State (OH)
+2026-06-15T23:00:28Z,Post University,massey_name,Post University
+2026-06-15T23:00:28Z,Grand Valley State University,massey_name,Grand Valley State University
+2026-06-15T23:00:28Z,Clark Atlanta,massey_name,Clark Atlanta
+2026-06-15T23:00:28Z,Sacred Heart,massey_name,Sacred Heart
+2026-06-15T23:00:28Z,Washburn,massey_name,Washburn
+2026-06-15T23:00:28Z,Furman,massey_name,Furman
+2026-06-15T23:00:28Z,Augustana University (SD),massey_name,Augustana University (SD)
+2026-06-15T23:00:28Z,Valparaiso,massey_name,Valparaiso
+2026-06-15T23:00:28Z,Fort Lewis,massey_name,Fort Lewis
+2026-06-15T23:00:28Z,Northern Colorado,massey_name,Northern Colorado
+2026-06-15T23:00:28Z,Jackson State,massey_name,Jackson State
+2026-06-15T23:00:28Z,Morehouse College,massey_name,Morehouse College
+2026-06-15T23:00:28Z,Florida A&M,massey_name,Florida A&M
+2026-06-15T23:00:28Z,Tennessee State,massey_name,Tennessee State
+2026-06-15T23:00:28Z,Benedict College,massey_name,Benedict College
+2026-06-15T23:00:28Z,Mississippi Valley State,massey_name,Mississippi Valley State
+2026-06-15T23:00:28Z,Pace,massey_name,Pace
+2026-06-15T23:00:28Z,West Alabama,massey_name,West Alabama
+2026-06-15T23:00:28Z,East Tennessee State,massey_name,East Tennessee State
+2026-06-15T23:00:28Z,North Carolina Central,massey_name,North Carolina Central
+2026-06-15T23:00:28Z,Western Carolina,massey_name,Western Carolina
+2026-06-15T23:00:28Z,Frostburg State,massey_name,Frostburg State
+2026-06-15T23:00:28Z,Stetson,massey_name,Stetson
+2026-06-15T23:00:28Z,South Carolina State,massey_name,South Carolina State
+2026-06-15T23:00:28Z,Mercer,massey_name,Mercer
+2026-06-15T23:00:28Z,UVA Wise,massey_name,UVA Wise
+2026-06-15T23:00:28Z,Catawba,massey_name,Catawba
+2026-06-15T23:00:28Z,Chowan,massey_name,Chowan
+2026-06-15T23:00:28Z,Wingate,massey_name,Wingate
+2026-06-15T23:00:28Z,Morehead State,massey_name,Morehead State
+2026-06-15T23:00:28Z,Savannah St,massey_name,Savannah St
+2026-06-15T23:00:28Z,Missouri Southern State,massey_name,Missouri Southern State
+2026-06-15T23:00:28Z,Southern Illinois,massey_name,Southern Illinois
+2026-06-15T23:00:28Z,Grambling,massey_name,Grambling
+2026-06-15T23:00:28Z,Bluefield State,massey_name,Bluefield State
+2026-06-15T23:00:28Z,Missouri S&T,massey_name,Missouri S&T
+2026-06-15T23:00:28Z,McNeese,massey_name,McNeese
+2026-06-15T23:00:28Z,Lincoln (MO),massey_name,Lincoln (MO)
+2026-06-15T23:00:28Z,San Diego,massey_name,San Diego
+2026-06-15T23:00:28Z,Texas Southern,massey_name,Texas Southern
+2026-06-15T23:00:28Z,Western New Mexico,massey_name,Western New Mexico
+2026-06-15T23:00:28Z,UT Rio Grande Valley,massey_name,UT Rio Grande Valley
+2026-06-15T23:00:28Z,Southern Utah,massey_name,Southern Utah
+2026-06-15T23:00:28Z,Utah Tech,massey_name,Utah Tech
+2026-06-15T23:00:28Z,Virginia Union,massey_name,Virginia Union
+2026-06-15T23:00:28Z,Tuskegee,massey_name,Tuskegee
+2026-06-15T23:00:28Z,Susquehanna,massey_name,Susquehanna
+2026-06-15T23:00:28Z,John Carroll University,massey_name,John Carroll University
+2026-06-15T23:00:28Z,Kutztown University,massey_name,Kutztown University
+2026-06-15T23:00:28Z,PennWest California,massey_name,PennWest California
+2026-06-15T23:00:28Z,Wayne State (MI),massey_name,Wayne State (MI)
+2026-06-15T23:00:28Z,West Virginia Wesleyan,massey_name,West Virginia Wesleyan
+2026-06-15T23:00:28Z,North Carolina Wesleyan,massey_name,North Carolina Wesleyan
+2026-06-15T23:00:28Z,Southern Arkansas,massey_name,Southern Arkansas
+2026-06-15T23:00:28Z,Lebanon Valley,massey_name,Lebanon Valley
+2026-06-15T23:00:28Z,Buffalo State,massey_name,Buffalo State
+2026-06-15T23:00:28Z,South Dakota Mines,massey_name,South Dakota Mines
+2026-06-15T23:00:28Z,Wisconsin-Eau Claire,massey_name,Wisconsin-Eau Claire
+2026-06-15T23:00:28Z,Indiana-Pennsylvania,massey_name,Indiana-Pennsylvania
+2026-06-15T23:00:28Z,Henderson State,massey_name,Henderson State
+2026-06-15T23:00:28Z,Westminster (PA),massey_name,Westminster (PA)
+2026-06-15T23:00:28Z,Southwestern Oklahoma State,massey_name,Southwestern Oklahoma State
+2026-06-15T23:00:28Z,Fairmont State,massey_name,Fairmont State
+2026-06-15T23:00:28Z,Southeastern Oklahoma State,massey_name,Southeastern Oklahoma State
+2026-06-15T23:00:28Z,Valley City State,massey_name,Valley City State
+2026-06-15T23:00:28Z,Heidelberg,massey_name,Heidelberg
+2026-06-15T23:00:28Z,Millersville,massey_name,Millersville
+2026-06-15T23:00:28Z,Northwestern Oklahoma State,massey_name,Northwestern Oklahoma State
+2026-06-15T23:00:28Z,East Central (OK),massey_name,East Central (OK)
+2026-06-15T23:00:28Z,Cornell College (IA),massey_name,Cornell College (IA)
+2026-06-15T23:00:28Z,Texas Lutheran,massey_name,Texas Lutheran
+2026-06-15T23:00:28Z,Belhaven,massey_name,Belhaven
+2026-06-15T23:00:28Z,Illinois College,massey_name,Illinois College
+2026-06-15T23:00:28Z,West Texas A&M,massey_name,West Texas A&M
+2026-06-15T23:00:28Z,Howard Payne,massey_name,Howard Payne
+2026-06-15T23:00:28Z,Thiel,massey_name,Thiel
+2026-06-15T23:00:28Z,Randolph-Macon,massey_name,Randolph-Macon
+2026-06-15T23:00:28Z,Gallaudet,massey_name,Gallaudet
+2026-06-15T23:00:28Z,Curry College,massey_name,Curry College
+2026-06-15T23:00:28Z,Merchant Marine Academy,massey_name,Merchant Marine Academy
+2026-06-15T23:00:28Z,Franklin Pierce,massey_name,Franklin Pierce
+2026-06-15T23:00:28Z,Fitchburg State,massey_name,Fitchburg State
+2026-06-15T23:00:28Z,Mass Maritime,massey_name,Mass Maritime
+2026-06-15T23:00:28Z,St. Lawrence,massey_name,St. Lawrence
+2026-06-15T23:00:28Z,Catholic,massey_name,Catholic
+2026-06-15T23:00:28Z,Alfred University,massey_name,Alfred University
+2026-06-15T23:00:28Z,Gettysburg,massey_name,Gettysburg
+2026-06-15T23:00:28Z,Muhlenberg,massey_name,Muhlenberg
+2026-06-15T23:00:28Z,Reading,massey_name,Reading
+2026-06-15T23:00:28Z,FDU-Florham,massey_name,FDU-Florham
+2026-06-15T23:00:28Z,Bentley,massey_name,Bentley
+2026-06-15T23:00:28Z,Otterbein,massey_name,Otterbein
+2026-06-15T23:00:28Z,Cortland,massey_name,Cortland
+2026-06-15T23:00:28Z,Oberlin,massey_name,Oberlin
+2026-06-15T23:00:28Z,Salve Regina,massey_name,Salve Regina
+2026-06-15T23:00:28Z,Delaware Valley,massey_name,Delaware Valley
+2026-06-15T23:00:28Z,MIT,massey_name,MIT
+2026-06-15T23:00:28Z,Hartwick,massey_name,Hartwick
+2026-06-15T23:00:28Z,Anderson (IN),massey_name,Anderson (IN)
+2026-06-15T23:00:28Z,New England College,massey_name,New England College
+2026-06-15T23:00:28Z,Wilkes,massey_name,Wilkes
+2026-06-15T23:00:28Z,Framingham State,massey_name,Framingham State
+2026-06-15T23:00:28Z,University of Rochester (NY),massey_name,University of Rochester (NY)
+2026-06-15T23:00:28Z,Biddeford,massey_name,Biddeford
+2026-06-15T23:00:28Z,Concordia University Chicago,massey_name,Concordia University Chicago
+2026-06-15T23:00:28Z,West Virginia State,massey_name,West Virginia State
+2026-06-15T23:00:28Z,Central Connecticut,massey_name,Central Connecticut
+2026-06-15T23:00:28Z,Findlay,massey_name,Findlay
+2026-06-15T23:00:28Z,Mercyhurst,massey_name,Mercyhurst
+2026-06-15T23:00:28Z,Duquesne,massey_name,Duquesne
+2026-06-15T23:00:28Z,Northwood (MI),massey_name,Northwood (MI)
+2026-06-15T23:00:28Z,Bethany (WV),massey_name,Bethany (WV)
+2026-06-15T23:00:28Z,Western New England,massey_name,Western New England
+2026-06-15T23:00:28Z,Washington & Jefferson,massey_name,Washington & Jefferson
+2026-06-15T23:00:28Z,Eastern University,massey_name,Eastern University
+2026-06-15T23:00:28Z,Westfield State,massey_name,Westfield State
+2026-06-15T23:00:28Z,Dayton,massey_name,Dayton
+2026-06-15T23:00:28Z,Endicott College,massey_name,Endicott College
+2026-06-15T23:00:28Z,Johnson C Smith,massey_name,Johnson C Smith
+2026-06-15T23:00:28Z,University of Mount Union,massey_name,University of Mount Union
+2026-06-15T23:00:28Z,McKendree,massey_name,McKendree
+2026-06-15T23:00:28Z,Saint Vincent,massey_name,Saint Vincent
+2026-06-15T23:00:28Z,Widener,massey_name,Widener
+2026-06-15T23:00:28Z,Chicago,massey_name,Chicago
+2026-06-15T23:00:28Z,Shenandoah,massey_name,Shenandoah
+2026-06-15T23:00:28Z,Lawrence University,massey_name,Lawrence University
+2026-06-15T23:00:28Z,Shippensburg,massey_name,Shippensburg
+2026-06-15T23:00:28Z,Christopher Newport,massey_name,Christopher Newport
+2026-06-15T23:00:28Z,Kentucky Wesleyan,massey_name,Kentucky Wesleyan
+2026-06-15T23:00:28Z,Anderson (Sc),massey_name,Anderson (Sc)
+2026-06-15T23:00:28Z,Brevard College,massey_name,Brevard College
+2026-06-15T23:00:28Z,Rowan,massey_name,Rowan
+2026-06-15T23:00:28Z,Manchester,massey_name,Manchester
+2026-06-15T23:00:28Z,Wisconsin-River Falls,massey_name,Wisconsin-River Falls
+2026-06-15T23:00:28Z,Washington and Lee,massey_name,Washington and Lee
+2026-06-15T23:00:28Z,Kean,massey_name,Kean
+2026-06-15T23:00:28Z,West Liberty,massey_name,West Liberty
+2026-06-15T23:00:28Z,Ithaca College,massey_name,Ithaca College
+2026-06-15T23:00:28Z,Merrimack,massey_name,Merrimack
+2026-06-15T23:00:28Z,Stonehill,massey_name,Stonehill
+2026-06-15T23:00:28Z,Delaware State,massey_name,Delaware State
+2026-06-15T23:00:28Z,Butler,massey_name,Butler
+2026-06-15T23:00:28Z,Lycoming,massey_name,Lycoming
+2026-06-15T23:00:28Z,Emory & Henry College,massey_name,Emory & Henry College
+2026-06-15T23:00:28Z,Georgetown,massey_name,Georgetown
+2026-06-15T23:00:28Z,Waynesburg,massey_name,Waynesburg
+2026-06-15T23:00:28Z,VMI,massey_name,VMI
+2026-06-15T23:00:28Z,Franklin,massey_name,Franklin
+2026-06-15T23:00:28Z,St. Norbert,massey_name,St. Norbert
+2026-06-15T23:00:28Z,Wittenberg,massey_name,Wittenberg
+2026-06-15T23:00:28Z,St. Olaf,massey_name,St. Olaf
+2026-06-15T23:00:28Z,Roosevelt,massey_name,Roosevelt
+2026-06-15T23:00:28Z,Kentucky State,massey_name,Kentucky State
+2026-06-15T23:00:28Z,Aurora,massey_name,Aurora
+2026-06-15T23:00:28Z,Benedictine University,massey_name,Benedictine University
+2026-06-15T23:00:28Z,Grinnell,massey_name,Grinnell
+2026-06-15T23:00:28Z,Rockford,massey_name,Rockford
+2026-06-15T23:00:28Z,Wisconsin-Stevens Pt,massey_name,Wisconsin-Stevens Pt
+2026-06-15T23:00:28Z,Loras College,massey_name,Loras College
+2026-06-15T23:00:28Z,Hamline University,massey_name,Hamline University
+2026-06-15T23:00:28Z,Wisconsin-Lutheran,massey_name,Wisconsin-Lutheran
+2026-06-15T23:00:28Z,Lake Erie,massey_name,Lake Erie
+2026-06-15T23:00:28Z,Allegheny,massey_name,Allegheny
+2026-06-15T23:00:28Z,Hendrix College,massey_name,Hendrix College
+2026-06-15T23:00:28Z,Luther,massey_name,Luther
+2026-06-15T23:00:28Z,Wisconsin-Stout,massey_name,Wisconsin-Stout
+2026-06-15T23:00:28Z,Illinois Wesleyan,massey_name,Illinois Wesleyan
+2026-06-15T23:00:28Z,Wisconsin-Whitewater,massey_name,Wisconsin-Whitewater
+2026-06-15T23:00:28Z,Willamette,massey_name,Willamette
+2026-06-15T23:00:28Z,Lane College,massey_name,Lane College
+2026-06-15T23:00:28Z,Whitworth,massey_name,Whitworth
+2026-06-15T23:00:28Z,Idaho,massey_name,Idaho
+2026-06-15T23:00:28Z,Edward Waters,massey_name,Edward Waters
+2026-06-15T23:00:28Z,California Lutheran University,massey_name,California Lutheran University
+2026-06-15T23:00:28Z,Puget Sound,massey_name,Puget Sound
+2026-06-15T23:00:28Z,Linfield College,massey_name,Linfield College
+2026-06-15T23:00:28Z,Western Oregon,massey_name,Western Oregon
+2026-06-15T23:00:28Z,Western Connecticut St,massey_name,Western Connecticut St
+2026-06-15T23:00:28Z,Northern Arizona,massey_name,Northern Arizona
+2026-06-15T23:00:28Z,Stony Brook,massey_name,Stony Brook
+2026-06-15T23:00:28Z,Allen,massey_name,Allen
+2026-06-15T23:00:28Z,Wofford,massey_name,Wofford
+2026-06-15T23:00:28Z,Elon,massey_name,Elon
+2026-06-15T23:00:28Z,Southwest Minnesota State,massey_name,Southwest Minnesota State
+2026-06-15T23:00:28Z,Wilmington (OH),massey_name,Wilmington (OH)
+2026-06-15T23:00:28Z,Hampton,massey_name,Hampton
+2026-06-15T23:00:28Z,Eastern Kentucky,massey_name,Eastern Kentucky
+2026-06-15T23:00:28Z,Fordham,massey_name,Fordham
+2026-06-15T23:00:28Z,William & Mary,massey_name,William & Mary
+2026-06-15T23:00:28Z,Wheeling,massey_name,Wheeling
+2026-06-15T23:00:28Z,Greeneville,massey_name,Greeneville
+2026-06-15T23:00:28Z,Berry College,massey_name,Berry College
+2026-06-15T23:00:28Z,Worcester Polytechnic Institute,massey_name,Worcester Polytechnic Institute
+2026-06-15T23:00:28Z,Lock Haven University,massey_name,Lock Haven University
+2026-06-15T23:00:28Z,UNC Pembroke,massey_name,UNC Pembroke
+2026-06-15T23:00:28Z,New Hampshire,massey_name,New Hampshire
+2026-06-15T23:00:28Z,Southern Virginia,massey_name,Southern Virginia
+2026-06-15T23:00:28Z,Mars Hill,massey_name,Mars Hill
+2026-06-15T23:00:28Z,Mary Hardin-Baylor,massey_name,Mary Hardin-Baylor
+2026-06-15T23:00:28Z,Bluffton,massey_name,Bluffton
+2026-06-15T23:00:28Z,Rose-Hulman,massey_name,Rose-Hulman
+2026-06-15T23:00:28Z,Bridgewater (VA),massey_name,Bridgewater (VA)
+2026-06-15T23:00:28Z,Centre College Kentucky,massey_name,Centre College Kentucky
+2026-06-15T23:00:28Z,Guilford College,massey_name,Guilford College
+2026-06-15T23:00:28Z,Austin,massey_name,Austin
+2026-06-15T23:00:28Z,Lakeland,massey_name,Lakeland
+2026-06-15T23:00:28Z,McMurry,massey_name,McMurry
+2026-06-15T23:00:28Z,Southwest Baptist,massey_name,Southwest Baptist
+2026-06-15T23:00:28Z,Northeastern State,massey_name,Northeastern State
+2026-06-15T23:00:28Z,Eureka College,massey_name,Eureka College
+2026-06-15T23:00:28Z,Ripon,massey_name,Ripon
+2026-06-15T23:00:28Z,Simpson College (IA),massey_name,Simpson College (IA)
+2026-06-15T23:00:28Z,Prairie View A&M,massey_name,Prairie View A&M
+2026-06-15T23:00:28Z,Southeast Missouri State,massey_name,Southeast Missouri State
+2026-06-15T23:00:28Z,Central Arkansas,massey_name,Central Arkansas
+2026-06-15T23:00:28Z,Lamar,massey_name,Lamar
+2026-06-15T23:00:28Z,Alabama A&M,massey_name,Alabama A&M
+2026-06-15T23:00:28Z,Tarleton State,massey_name,Tarleton State
+2026-06-15T23:00:28Z,North Dakota,massey_name,North Dakota
+2026-06-15T23:00:28Z,Morgan State,massey_name,Morgan State
+2026-06-15T23:00:28Z,Sioux Falls,massey_name,Sioux Falls
+2026-06-15T23:00:28Z,Muskingum University,massey_name,Muskingum University
+2026-06-15T23:00:28Z,Angelo State,massey_name,Angelo State
+2026-06-15T23:00:28Z,Murray State,massey_name,Murray State
+2026-06-15T23:00:28Z,Illinois State,massey_name,Illinois State
+2026-06-15T23:00:28Z,Concordia University St Paul,massey_name,Concordia University St Paul
+2026-06-15T23:00:28Z,Abilene Christian,massey_name,Abilene Christian
+2026-06-15T23:00:28Z,Central Oklahoma,massey_name,Central Oklahoma
+2026-06-15T23:00:28Z,Lake Forest College,massey_name,Lake Forest College
+2026-06-15T23:00:28Z,Adams State,massey_name,Adams State
+2026-06-15T23:00:28Z,New Mexico Highlands,massey_name,New Mexico Highlands
+2026-06-15T23:00:28Z,Washington University (St. Louis),massey_name,Washington University (St. Louis)
+2026-06-15T23:00:28Z,Nebraska-Kearney,massey_name,Nebraska-Kearney
+2026-06-15T23:00:28Z,Concordia Moorhead,massey_name,Concordia Moorhead
+2026-06-15T23:00:28Z,East Texas Baptist University,massey_name,East Texas Baptist University
+2026-06-15T23:00:28Z,Point University,massey_name,Point University
+2026-06-15T23:00:28Z,Dakota State University,massey_name,Dakota State University
+2026-06-15T23:00:28Z,Colorado Mesa,massey_name,Colorado Mesa
+2026-06-15T23:00:28Z,Wartburg,massey_name,Wartburg
+2026-06-15T23:00:28Z,Midwestern State,massey_name,Midwestern State
+2026-06-15T23:00:28Z,Texas A&M-Kingsville,massey_name,Texas A&M-Kingsville
+2026-06-15T23:00:28Z,Redlands,massey_name,Redlands
+2026-06-15T23:00:28Z,Phoenix,massey_name,Phoenix
+2026-06-15T23:00:28Z,Chapman,massey_name,Chapman
+2026-06-15T23:00:28Z,Harding University,massey_name,Harding University
+2026-06-15T23:00:28Z,Central Missouri,massey_name,Central Missouri
+2026-06-15T23:00:28Z,Arkansas Tech,massey_name,Arkansas Tech
+2026-06-15T23:00:28Z,Hilbert College,massey_name,Hilbert College
+2026-06-15T23:00:28Z,St John Fisher University,massey_name,St John Fisher University
+2026-06-15T23:00:28Z,Greensboro College,massey_name,Greensboro College
+2026-06-15T23:00:28Z,Misericordia,massey_name,Misericordia
+2026-06-15T23:00:28Z,College Of New Jersey,massey_name,College Of New Jersey
+2026-06-15T23:00:28Z,Castleton,massey_name,Castleton
+2026-06-15T23:00:28Z,Dean College,massey_name,Dean College
+2026-06-15T23:00:28Z,Anna Maria College,massey_name,Anna Maria College
+2026-06-15T23:00:28Z,Alma,massey_name,Alma
+2026-06-15T23:00:28Z,Kenyon,massey_name,Kenyon
+2026-06-15T23:00:28Z,Brockport,massey_name,Brockport
+2026-06-15T23:00:28Z,Long Island University,massey_name,Long Island University
+2026-06-15T23:00:28Z,Springfield,massey_name,Springfield
+2026-06-15T23:00:28Z,SUNY Morrisville,massey_name,SUNY Morrisville
+2026-06-15T23:00:28Z,Plymouth State,massey_name,Plymouth State
+2026-06-15T23:00:28Z,Carnegie Mellon,massey_name,Carnegie Mellon
+2026-06-15T23:00:28Z,Johns Hopkins University,massey_name,Johns Hopkins University
+2026-06-15T23:00:28Z,Montclair State,massey_name,Montclair State
+2026-06-15T23:00:28Z,Olivet College,massey_name,Olivet College
+2026-06-15T23:00:28Z,Franklin & Marshall,massey_name,Franklin & Marshall
+2026-06-15T23:00:28Z,Trinity (CT),massey_name,Trinity (CT)
+2026-06-15T23:00:28Z,Edinboro University,massey_name,Edinboro University
+2026-06-15T23:00:28Z,American International,massey_name,American International
+2026-06-15T23:00:28Z,Stevenson,massey_name,Stevenson
+2026-06-15T23:00:28Z,SUNY Maritime,massey_name,SUNY Maritime
+2026-06-15T23:00:28Z,Wesleyan University (CT),massey_name,Wesleyan University (CT)
+2026-06-15T23:00:28Z,Howard,massey_name,Howard
+2026-06-15T23:00:28Z,Bates,massey_name,Bates
+2026-06-15T23:00:28Z,Ferrum,massey_name,Ferrum
+2026-06-15T23:00:28Z,Hillsdale,massey_name,Hillsdale
+2026-06-15T23:00:28Z,Apprentice School,massey_name,Apprentice School
+2026-06-15T23:00:28Z,Mount St. Joseph,massey_name,Mount St. Joseph
+2026-06-15T23:00:28Z,Calvin University,massey_name,Calvin University
+2026-06-15T23:00:28Z,Elizabeth City State,massey_name,Elizabeth City State
+2026-06-15T23:00:28Z,Wooster,massey_name,Wooster
+2026-06-15T23:00:28Z,Coast Guard,massey_name,Coast Guard
+2026-06-15T23:00:28Z,Nichols College,massey_name,Nichols College
+2026-06-15T23:00:28Z,Minnesota State Moorhead,massey_name,Minnesota State Moorhead
+2026-06-15T23:00:28Z,Truman State,massey_name,Truman State
+2026-06-15T23:00:28Z,Wagner,massey_name,Wagner
+2026-06-15T23:00:28Z,Dickinson (PA),massey_name,Dickinson (PA)
+2026-06-15T23:00:28Z,Grove City College,massey_name,Grove City College
+2026-06-15T23:00:28Z,Ursinus,massey_name,Ursinus
+2026-06-15T23:00:28Z,Adrian,massey_name,Adrian
+2026-06-15T23:00:28Z,Kalamazoo,massey_name,Kalamazoo
+2026-06-15T23:00:28Z,Wabash College,massey_name,Wabash College
+2026-06-15T23:00:28Z,Hampden-Sydney,massey_name,Hampden-Sydney
+2026-06-15T23:00:28Z,Juniata College,massey_name,Juniata College
+2026-06-15T23:00:28Z,Capital,massey_name,Capital
+2026-06-15T23:00:28Z,Baldwin Wallace,massey_name,Baldwin Wallace
+2026-06-15T23:00:28Z,Hamilton,massey_name,Hamilton
+2026-06-15T23:00:28Z,Hanover College,massey_name,Hanover College
+2026-06-15T23:00:28Z,Jamestown College,massey_name,Jamestown College
+2026-06-15T23:00:28Z,Elmhurst,massey_name,Elmhurst
+2026-06-15T23:00:28Z,Saint John's (MN),massey_name,Saint John's (MN)
+2026-06-15T23:00:28Z,North Central College,massey_name,North Central College
+2026-06-15T23:00:28Z,McDaniel College,massey_name,McDaniel College
+2026-06-15T23:00:28Z,Monmouth (IL),massey_name,Monmouth (IL)
+2026-06-15T23:00:28Z,Saint Xavier (IL),massey_name,Saint Xavier (IL)
+2026-06-15T23:00:28Z,Huntingdon College (AL),massey_name,Huntingdon College (AL)
+2026-06-15T23:00:28Z,Knox College,massey_name,Knox College
+2026-06-15T23:00:28Z,Crown College,massey_name,Crown College
+2026-06-15T23:00:28Z,Buena Vista,massey_name,Buena Vista
+2026-06-15T23:00:28Z,Nebraska Wesleyan,massey_name,Nebraska Wesleyan
+2026-06-15T23:00:28Z,Central College,massey_name,Central College
+2026-06-15T23:00:28Z,Sewanee,massey_name,Sewanee
+2026-06-15T23:00:28Z,Bemidji State,massey_name,Bemidji State
+2026-06-15T23:00:28Z,Colorado School Of Mines,massey_name,Colorado School Of Mines
+2026-06-15T23:00:28Z,Indianapolis,massey_name,Indianapolis
+2026-06-15T23:00:28Z,South Dakota,massey_name,South Dakota
+2026-06-15T23:00:28Z,Martin Luther,massey_name,Martin Luther
+2026-06-15T23:00:28Z,Ohio Wesleyan,massey_name,Ohio Wesleyan
+2026-06-15T23:00:28Z,Holy Cross,massey_name,Holy Cross
+2026-06-15T23:00:28Z,Northwest Missouri St,massey_name,Northwest Missouri St
+2026-06-15T23:00:28Z,Bridgewater State,massey_name,Bridgewater State
+2026-06-15T23:00:28Z,Bowdoin,massey_name,Bowdoin
+2026-06-15T23:00:28Z,Southern Nazarene,massey_name,Southern Nazarene
+2026-06-15T23:00:28Z,Minot State,massey_name,Minot State
+2026-06-15T23:00:28Z,Campbell,massey_name,Campbell
+2026-06-15T23:00:28Z,Bucknell,massey_name,Bucknell
+2026-06-15T23:00:28Z,Upper Iowa University,massey_name,Upper Iowa University
+2026-06-15T23:00:28Z,Charleston Southern,massey_name,Charleston Southern
+2026-06-15T23:00:28Z,Eastern Oregon,massey_name,Eastern Oregon
+2026-06-15T23:00:28Z,Pacific Lutheran,massey_name,Pacific Lutheran
+2026-06-15T23:00:28Z,UMass Dartmouth,massey_name,UMass Dartmouth
+2026-06-15T23:00:28Z,Lewis & Clark College,massey_name,Lewis & Clark College
+2026-06-15T23:00:28Z,Ohio Northern,massey_name,Ohio Northern
+2026-06-15T23:00:28Z,Alabama State,massey_name,Alabama State
+2026-06-15T23:00:28Z,Minnesota Duluth,massey_name,Minnesota Duluth
+2026-06-15T23:00:28Z,Pittsburg St,massey_name,Pittsburg St
+2026-06-15T23:00:28Z,LYONCOLL,massey_name,LYONCOLL
+2026-06-15T23:00:28Z,Methodist,massey_name,Methodist
+2026-06-15T23:00:28Z,Bryant,massey_name,Bryant
+2026-06-15T23:00:28Z,Hiram College,massey_name,Hiram College
+2026-06-15T23:00:28Z,Maine,massey_name,Maine
+2026-06-15T23:00:28Z,Averett,massey_name,Averett
+2026-06-15T23:00:28Z,Arkansas-Pine Bluff,massey_name,Arkansas-Pine Bluff
+2026-06-15T23:00:28Z,Utica,massey_name,Utica
+2026-06-15T23:00:28Z,Slippery Rock,massey_name,Slippery Rock
+2026-06-15T23:00:28Z,Lenoir-Rhyne,massey_name,Lenoir-Rhyne
+2026-06-15T23:00:28Z,Chattanooga,massey_name,Chattanooga
+2026-06-15T23:00:28Z,Robert Morris,massey_name,Robert Morris
+2026-06-15T23:00:28Z,Winston-Salem,massey_name,Winston-Salem
+2026-06-15T23:00:28Z,West Georgia,massey_name,West Georgia
+2026-06-15T23:00:28Z,Bethel (MN),massey_name,Bethel (MN)
+2026-06-15T23:00:28Z,UAlbany,massey_name,UAlbany
+2026-06-15T23:00:28Z,Austin Peay,massey_name,Austin Peay
+2026-06-15T23:00:28Z,SE Louisiana,massey_name,SE Louisiana
+2026-06-15T23:00:28Z,UT Martin,massey_name,UT Martin
+2026-06-15T23:00:28Z,Newberry,massey_name,Newberry
+2026-06-15T23:00:28Z,Rhodes College,massey_name,Rhodes College
+2026-06-15T23:00:28Z,Marietta,massey_name,Marietta
+2026-06-15T23:00:28Z,Millsaps,massey_name,Millsaps
+2026-06-15T23:00:28Z,William Jewell,massey_name,William Jewell
+2026-06-15T23:00:28Z,Trine University,massey_name,Trine University
+2026-06-15T23:00:28Z,Trinity University TX,massey_name,Trinity University TX
+2026-06-15T23:00:28Z,Dubuque,massey_name,Dubuque
+2026-06-15T23:00:28Z,Hardin-Simmons,massey_name,Hardin-Simmons
+2026-06-15T23:00:28Z,Arkansas-Monticello,massey_name,Arkansas-Monticello
+2026-06-15T23:00:28Z,Northern State,massey_name,Northern State
+2026-06-15T23:00:28Z,Geneva,massey_name,Geneva
+2026-06-15T23:00:28Z,North Carolina A&T,massey_name,North Carolina A&T
+2026-06-15T23:00:28Z,Western Illinois,massey_name,Western Illinois
+2026-06-15T23:00:28Z,North Alabama,massey_name,North Alabama
+2026-06-15T23:00:28Z,Presbyterian,massey_name,Presbyterian
+2026-06-15T23:00:28Z,Gardner-Webb,massey_name,Gardner-Webb
+2026-06-15T23:00:28Z,North Greenville,massey_name,North Greenville
+2026-06-15T23:00:28Z,Missouri Western,massey_name,Missouri Western
+2026-06-15T23:00:28Z,Lagrange College,massey_name,Lagrange College
+2026-06-15T23:00:28Z,Westminster College (MO),massey_name,Westminster College (MO)
+2026-06-15T23:00:28Z,Stephen F. Austin,massey_name,Stephen F. Austin
+2026-06-15T23:00:28Z,Cal Poly,massey_name,Cal Poly
+2026-06-15T23:00:28Z,Oklahoma Baptist,massey_name,Oklahoma Baptist
+2026-06-15T23:00:28Z,Ouachita Baptist,massey_name,Ouachita Baptist
+2026-06-15T23:00:28Z,Southwestern University,massey_name,Southwestern University
+2026-06-15T23:00:28Z,Chadron St,massey_name,Chadron St
+2026-06-15T23:00:28Z,Assumption,massey_name,Assumption
+2026-06-15T23:00:28Z,Lafayette,massey_name,Lafayette
+2026-06-15T23:00:28Z,Yale,massey_name,Yale
+2026-06-15T23:00:28Z,Ohio Dominican,massey_name,Ohio Dominican
+2026-06-15T23:00:28Z,Rensselaer,massey_name,Rensselaer
+2026-06-15T23:00:28Z,Albright,massey_name,Albright
+2026-06-15T23:00:28Z,Brown,massey_name,Brown
+2026-06-15T23:00:28Z,Albion,massey_name,Albion
+2026-06-15T23:00:28Z,Princeton,massey_name,Princeton
+2026-06-15T23:00:28Z,Depauw,massey_name,Depauw
+2026-06-15T23:00:28Z,William Paterson,massey_name,William Paterson
+2026-06-15T23:00:28Z,St. Francis (PA),massey_name,St. Francis (PA)
+2026-06-15T23:00:28Z,Dartmouth,massey_name,Dartmouth
+2026-06-15T23:00:28Z,Husson,massey_name,Husson
+2026-06-15T23:00:28Z,Hope College,massey_name,Hope College
+2026-06-15T23:00:28Z,New Haven,massey_name,New Haven
+2026-06-15T23:00:28Z,Hobart College,massey_name,Hobart College
+2026-06-15T23:00:28Z,Amherst,massey_name,Amherst
+2026-06-15T23:00:28Z,Williams,massey_name,Williams
+2026-06-15T23:00:28Z,Union (NY),massey_name,Union (NY)
+2026-06-15T23:00:28Z,Moravian,massey_name,Moravian
+2026-06-15T23:00:28Z,Wisconsin-Platteville,massey_name,Wisconsin-Platteville
+2026-06-15T23:00:28Z,Kings College (PA),massey_name,Kings College (PA)
+2026-06-15T23:00:28Z,Keystone,massey_name,Keystone
+2026-06-15T23:00:28Z,Ashland,massey_name,Ashland
+2026-06-15T23:00:28Z,Lincoln (PA),massey_name,Lincoln (PA)
+2026-06-15T23:00:28Z,Middlebury,massey_name,Middlebury
+2026-06-15T23:00:28Z,Southern Connecticut State,massey_name,Southern Connecticut State
+2026-06-15T23:00:28Z,Richmond,massey_name,Richmond
+2026-06-15T23:00:28Z,Wisconsin-Oshkosh,massey_name,Wisconsin-Oshkosh
+2026-06-15T23:00:28Z,Greenville,massey_name,Greenville
+2026-06-15T23:00:28Z,Norwich,massey_name,Norwich
+2026-06-15T23:00:28Z,West Chester,massey_name,West Chester
+2026-06-15T23:00:28Z,St. Scholastica,massey_name,St. Scholastica
+2026-06-15T23:00:28Z,Carleton,massey_name,Carleton
+2026-06-15T23:00:28Z,The Citadel,massey_name,The Citadel
+2026-06-15T23:00:28Z,Coe College,massey_name,Coe College
+2026-06-15T23:00:28Z,Carroll University (WI),massey_name,Carroll University (WI)
+2026-06-15T23:00:28Z,Gustavus Adolphus,massey_name,Gustavus Adolphus
+2026-06-15T23:00:28Z,Wisconsin-Lacrosse,massey_name,Wisconsin-Lacrosse
+2026-06-15T23:00:28Z,Bloomsburg,massey_name,Bloomsburg
+2026-06-15T23:00:28Z,La Verne,massey_name,La Verne
+2026-06-15T23:00:28Z,Fort Valley State,massey_name,Fort Valley State
+2026-06-15T23:00:28Z,Bethune-Cookman,massey_name,Bethune-Cookman
+2026-06-15T23:00:28Z,Miles College,massey_name,Miles College
+2026-06-15T23:00:28Z,Pomona Pitzer,massey_name,Pomona Pitzer
+2026-06-15T23:00:28Z,NEWBERG,massey_name,NEWBERG
+2026-06-15T23:00:28Z,Livingstone,massey_name,Livingstone
+2026-06-15T23:00:28Z,Idaho State,massey_name,Idaho State
+2026-06-15T23:00:28Z,Alfred State,massey_name,Alfred State
+2026-06-15T23:00:28Z,Case Western Reserve,massey_name,Case Western Reserve
+2026-06-15T23:00:28Z,Northwestern (MN),massey_name,Northwestern (MN)
+2026-06-15T23:00:28Z,Millikin,massey_name,Millikin
+2026-06-15T23:00:28Z,Augustana (IL),massey_name,Augustana (IL)
+2026-06-15T23:00:28Z,CENTENARY,massey_name,CENTENARY
+2026-06-15T23:00:28Z,Lindenwood,massey_name,Lindenwood
+2026-06-15T23:00:28Z,Beloit,massey_name,Beloit
+2026-06-15T23:00:28Z,Tufts,massey_name,Tufts
+2026-06-15T23:00:28Z,Weber State,massey_name,Weber State
+2026-06-15T23:00:28Z,Pacific (OR),massey_name,Pacific (OR)
+2026-06-15T23:00:28Z,UC Davis,massey_name,UC Davis
+2026-06-15T23:00:28Z,Davenport,massey_name,Davenport
+2026-06-15T23:00:28Z,Columbia,massey_name,Columbia
+2026-06-15T23:00:28Z,Shepherd,massey_name,Shepherd
+2026-06-15T23:00:28Z,St. Anselm,massey_name,St. Anselm
+2026-06-15T23:00:28Z,Maryville College (TN),massey_name,Maryville College (TN)
+2026-06-15T23:00:28Z,Maine Maritime,massey_name,Maine Maritime
+2026-06-15T23:00:28Z,Albany State GA,massey_name,Albany State GA
+2026-06-15T23:00:28Z,Bowie State,massey_name,Bowie State
+2026-06-15T23:00:28Z,Colby College,massey_name,Colby College
+2026-06-15T23:00:28Z,Fayetteville State,massey_name,Fayetteville State
+2026-06-15T23:00:28Z,Concord University,massey_name,Concord University
+2026-06-15T23:00:28Z,Wheaton,massey_name,Wheaton
+2026-06-15T23:00:28Z,Carthage,massey_name,Carthage
+2026-06-15T23:00:28Z,Concordia-Wisconsin,massey_name,Concordia-Wisconsin
+2026-06-15T23:00:28Z,Roanoke College,massey_name,Roanoke College
+2026-06-15T23:00:28Z,Valdosta State,massey_name,Valdosta State
+2026-06-15T23:00:28Z,Harvard,massey_name,Harvard
+2026-06-15T23:00:28Z,North Park,massey_name,North Park
+2026-06-15T23:00:28Z,East Texas A&M,massey_name,East Texas A&M
+2026-06-15T23:00:28Z,Incarnate Word,massey_name,Incarnate Word
+2026-06-15T23:00:28Z,Alcorn State,massey_name,Alcorn State
+2026-06-15T23:00:28Z,Sul Ross State,massey_name,Sul Ross State
+2026-06-15T23:00:28Z,Augsburg,massey_name,Augsburg
+2026-06-15T23:00:28Z,Salisbury,massey_name,Salisbury
+2026-06-15T23:00:28Z,Monmouth,massey_name,Monmouth
+2026-06-15T23:00:28Z,Pennsylvania,massey_name,Pennsylvania
+2026-06-15T23:00:28Z,Worcester St,massey_name,Worcester St
+2026-06-15T23:00:28Z,ERSKINE,massey_name,ERSKINE
+2026-06-15T23:00:28Z,Denison University,massey_name,Denison University
+2026-06-15T23:00:28Z,Virginia St,massey_name,Virginia St
+2026-06-15T23:00:28Z,Cornell,massey_name,Cornell
+2026-06-15T23:00:28Z,Towson,massey_name,Towson
+2026-06-15T23:00:28Z,Tiffin,massey_name,Tiffin
+2026-06-15T23:00:28Z,Minnesota Morris,massey_name,Minnesota Morris
+2026-06-15T23:00:28Z,Thomas More College,massey_name,Thomas More College
+2026-06-15T23:00:28Z,Macalester,massey_name,Macalester
+2026-06-15T23:00:28Z,Claremont-Mudd-Scripps College,massey_name,Claremont-Mudd-Scripps College
+2026-06-15T23:00:29Z,Midland Lutheran College,massey_name,Midland Lutheran College
+2026-06-15T23:00:29Z,Little Rock,massey_name,Little Rock
+2026-06-15T23:00:29Z,Cumberland (TN),massey_name,Cumberland (TN)
+2026-06-15T23:00:29Z,Virginia University Of Lynchburg,massey_name,Virginia University Of Lynchburg
+2026-06-15T23:00:29Z,Webber International,massey_name,Webber International
+2026-06-15T23:00:29Z,Langston University,massey_name,Langston University
+2026-06-15T23:00:29Z,Central Methodist,massey_name,Central Methodist
+2026-06-15T23:00:29Z,Louisiana College,massey_name,Louisiana College
+2026-06-15T23:00:29Z,Lincoln (CA),massey_name,Lincoln (CA)
+2026-06-15T23:00:29Z,Kentucky Christian,massey_name,Kentucky Christian
+2026-06-15T23:00:29Z,Florida Memorial University,massey_name,Florida Memorial University
+2026-06-15T23:00:29Z,Southern Oregon,massey_name,Southern Oregon
+2026-06-15T23:00:29Z,Warner University,massey_name,Warner University
+2026-06-15T23:00:29Z,Bethel University Tennessee,massey_name,Bethel University Tennessee
+2026-06-15T23:00:29Z,Mayville State,massey_name,Mayville State
+2026-06-15T23:00:29Z,Madonna University (Mich.),massey_name,Madonna University (Mich.)
+2026-06-15T23:00:29Z,Simpson University (Ca),massey_name,Simpson University (Ca)
+2026-06-15T23:00:29Z,Oklahoma Panhandle St,massey_name,Oklahoma Panhandle St
+2026-06-15T23:00:29Z,Wayland Baptist,massey_name,Wayland Baptist
+2026-06-15T23:00:29Z,BLUEFIELD,massey_name,BLUEFIELD
+2026-06-15T23:00:29Z,University of Rio Grande,massey_name,University of Rio Grande
+2026-06-15T23:00:29Z,Texas Wesleyan,massey_name,Texas Wesleyan
+2026-06-15T23:00:29Z,Pikeville,massey_name,Pikeville
+2026-06-15T23:00:29Z,Southwestern Assemblies Of God,massey_name,Southwestern Assemblies Of God
