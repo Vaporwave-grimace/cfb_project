@@ -42,12 +42,46 @@ source("scripts/CONFIG.R")
 # Step 10 auto-learn only needs names that genuinely fail the current normalizer.
 if (file.exists("logs/unmatched_teams.csv")) file.remove("logs/unmatched_teams.csv")
 
+# DB schema init — idempotent (all IF NOT EXISTS); ensures both SQLite tables
+# exist on first run without requiring a separate manual step.
+source("scripts/db_schema_init.R")
+
+# --- STEP 1.5: Fetch CFB scores for settlement --------------------------------
+# Must run before Step 2. Scans unsettled bets in cfb_bets.sqlite, fetches
+# completed results from CFBD API (21-day lookback), and writes per-date score
+# CSVs to clean/. Handles the Thu-pipeline-catches-Saturday-games gap.
+cat("\n[Step 1.5] Fetching CFB scores for settlement...\n")
+tryCatch({
+  .cfb_scores_sourced_by_orchestrator <- TRUE
+  source("scripts/fetch_cfb_scores.R")
+  fetch_cfb_scores()
+}, error = function(e) {
+  cat(sprintf("[Step 1.5] Score fetch error (non-fatal): %s\n", e$message))
+})
+
 # --- STEP 2: Settle previous bets ---------------------------------------------
+# Scans all cfb_scores_*.csv files written in the last 21 days (not just
+# yesterday) so Saturday games are settled on the next Thursday run.
 cat("\n[Step 2] Settling previous bets...\n")
 tryCatch({
-  scores_file <- sprintf("clean/cfb_scores_%s.csv", format(pipeline_date - 1, "%Y%m%d"))
-  if (file.exists(scores_file)) {
-    scores <- read_csv(scores_file, show_col_types = FALSE)
+  score_files <- list.files("clean",
+                            pattern   = "^cfb_scores_\\d{8}\\.csv$",
+                            full.names = TRUE)
+  recent_cutoff <- pipeline_date - 21L
+  score_files <- Filter(function(f) {
+    fd <- tryCatch(
+      as.Date(sub(".*cfb_scores_(\\d{4})(\\d{2})(\\d{2})\\.csv$",
+                  "\\1-\\2-\\3", basename(f))),
+      error = function(e) as.Date(NA)
+    )
+    !is.na(fd) && fd >= recent_cutoff
+  }, score_files)
+
+  if (length(score_files) > 0) {
+    scores <- bind_rows(lapply(score_files, read_csv, show_col_types = FALSE))
+    scores <- distinct(scores, game_id, .keep_all = TRUE)
+    cat(sprintf("[Step 2] %d score file(s) | %d game(s) available.\n",
+                length(score_files), nrow(scores)))
     source("scripts/BET_SETTLEMENT.R")
     closing_lines <- tryCatch(
       load_closing_lines(),
@@ -60,8 +94,7 @@ tryCatch({
     cat(sprintf("[Step 2] Settlement complete. Net P&L: $%.2f\n",
                 coalesce(settlement_results$net_pl, 0)))
   } else {
-    cat(sprintf("[Step 2] No scores file found for %s — skipping settlement.\n",
-                pipeline_date - 1))
+    cat("[Step 2] No score files in last 21 days — skipping settlement.\n")
   }
 }, error = function(e) cat(sprintf("[Step 2] Settlement error: %s\n", e$message)))
 
