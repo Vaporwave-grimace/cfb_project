@@ -93,6 +93,19 @@ tryCatch({
 cat("\n[Step 7] Fetching odds...\n")
 source("scripts/fetch_odds_football.R")   # fatal — no odds = no pipeline
 
+# --- STEP 7.5: Injury reports (ESPN CFB) --------------------------------------
+# Runs AFTER odds fetch so odds_data exists to scope to this week's teams only.
+# Sets injury_adjustments in GlobalEnv; consumed by GENERATE_PREDICTIONS Step 13.
+cat("\n[Step 7.5] Fetching CFB injury reports (ESPN)...\n")
+tryCatch({
+  .injury_sourced_by_orchestrator <- TRUE
+  source("scripts/INJURY_SCRAPER_CFB.R")
+  run_injury_scraper_cfb()
+}, error = function(e) {
+  cat(sprintf("[Step 7.5] Injury scraper error (non-fatal): %s\n", e$message))
+  injury_adjustments <<- NULL
+})
+
 # --- STEP 8: Trend analysis (line movement) -----------------------------------
 cat("\n[Step 8] Running trend analysis...\n")
 tryCatch({
@@ -100,6 +113,20 @@ tryCatch({
 }, error = function(e) {
   cat(sprintf("[Step 8] Trend analysis error (non-fatal): %s\n", e$message))
   trend_signals <<- NULL
+})
+
+# --- STEP 8.5: Public betting % (Action Network via Firecrawl) ---------------
+# Populates vsin_data with bets% vs money% per game — powers BOOST_PUBLIC_PCT
+# (1.20x) in CALCULATE_VALUE_CFB.R. Non-fatal: boost simply won't fire if the
+# scrape fails or Firecrawl is unavailable.
+cat("\n[Step 8.5] Fetching public betting percentages...\n")
+tryCatch({
+  .public_bets_sourced_by_orchestrator <- TRUE
+  source("scripts/FETCH_PUBLIC_BETS_CFB.R")
+  fetch_public_bets_cfb()
+}, error = function(e) {
+  cat(sprintf("[Step 8.5] Public bets error (non-fatal): %s\n", e$message))
+  vsin_data <<- NULL
 })
 
 # --- STEP 9: Patch commence times ---------------------------------------------
@@ -142,6 +169,20 @@ validate_odds_data(odds_data)
 # --- STEP 12: Merge games + ratings -------------------------------------------
 cat("\n[Step 12] Merging games with ratings...\n")
 source("scripts/MERGE_GAMES_RATINGS_CFB.R")
+
+# --- STEP 12.5: Motivational factors ------------------------------------------
+# Must run BEFORE Step 13 (predictions) so get_motiv_adj() finds the data.
+# Uses odds_data (Step 7) for game list; cfbd_schedule (Step 4) for week number.
+cat("\n[Step 12.5] Computing motivational factors...\n")
+tryCatch({
+  .motiv_sourced_by_orchestrator <- TRUE
+  source("scripts/MOTIVATIONAL_FACTORS_CFB.R")
+  run_motivational_factors()
+}, error = function(e) {
+  cat(sprintf("[Step 12.5] Motivational factors error (non-fatal): %s\n", e$message))
+  motivational_factors <<- NULL
+  rivalry_game_ids     <<- character(0)
+})
 
 # --- STEP 13: Generate predictions (spread + total + win prob) ----------------
 cat("\n[Step 13] Generating predictions...\n")

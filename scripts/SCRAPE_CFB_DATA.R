@@ -263,7 +263,58 @@ scrape_schedule <- function(api_key, year, week, master, date = Sys.Date()) {
 }
 
 # ------------------------------------------------------------------------------
-# 4. Orchestrator — called by run_daily_football.R Step 4
+# 4. ELO Ratings
+#    Endpoint: GET /ratings/elo?year=YYYY
+#    Returns per-team per-week ELO scores. We take the most recent week per team.
+#    ELO is particularly valuable early-season before SP+ stabilizes (Weeks 1-4).
+#    Saved to clean/cfb_elo_ratings_YYYY.csv for MERGE_ALL_RATINGS_CFB.R to blend.
+# ------------------------------------------------------------------------------
+scrape_elo_ratings <- function(api_key, year, master) {
+  cat(sprintf("[CFBD] Fetching ELO ratings for %d...\n", year))
+
+  raw <- tryCatch(
+    cfbd_get("/ratings/elo", params = list(year = year), api_key = api_key),
+    error = function(e) {
+      warning(sprintf("[CFBD] ELO ratings failed (non-fatal): %s", e$message))
+      NULL
+    }
+  )
+
+  if (is.null(raw) || length(raw) == 0) {
+    warning("[CFBD] ELO ratings returned empty — pre-season or no data yet.")
+    return(NULL)
+  }
+
+  df <- as_tibble(raw) %>%
+    # Most recent week per team (highest week number = current rating)
+    group_by(team) %>%
+    slice_max(order_by = as.integer(week), n = 1, with_ties = FALSE) %>%
+    ungroup() %>%
+    transmute(
+      year       = as.integer(year),
+      team_raw   = team,
+      elo_rating = as.numeric(elo)
+    ) %>%
+    mutate(
+      canonical_name = normalize_team_name(team_raw, mappings = master,
+                                            source_col = "massey_name",
+                                            unmatched_log = "logs/unmatched_teams.csv")
+    ) %>%
+    filter(!is.na(canonical_name)) %>%
+    select(year, canonical_name, elo_rating)
+
+  out_path <- sprintf("clean/cfb_elo_ratings_%d.csv", year)
+  write_csv(df, out_path)
+  cat(sprintf("[CFBD] ELO ratings: %d teams | range [%.0f, %.0f] → %s\n",
+              nrow(df),
+              min(df$elo_rating, na.rm = TRUE),
+              max(df$elo_rating, na.rm = TRUE),
+              out_path))
+  df
+}
+
+# ------------------------------------------------------------------------------
+# 5. Orchestrator — called by run_daily_football.R Step 4
 # ------------------------------------------------------------------------------
 run_cfbd_scrape <- function(master = NULL, date = Sys.Date()) {
 
@@ -287,7 +338,7 @@ run_cfbd_scrape <- function(master = NULL, date = Sys.Date()) {
   week <- cfbd_current_week(api_key = api_key, year = year, date = date)
   cat(sprintf("[CFBD] Season: %d | Week: %d\n", year, week))
 
-  # Scrape all three endpoints — each is independently non-fatal
+  # Scrape all endpoints — each is independently non-fatal
   cfbd_sp_plus <- tryCatch(
     scrape_sp_plus(api_key = api_key, year = year, master = master),
     error = function(e) { warning(sprintf("[CFBD] SP+ failed: %s", e$message)); NULL }
@@ -304,19 +355,27 @@ run_cfbd_scrape <- function(master = NULL, date = Sys.Date()) {
     error = function(e) { warning(sprintf("[CFBD] Schedule failed: %s", e$message)); NULL }
   )
 
+  cfbd_elo_ratings <- tryCatch(
+    scrape_elo_ratings(api_key = api_key, year = year, master = master),
+    error = function(e) { warning(sprintf("[CFBD] ELO failed: %s", e$message)); NULL }
+  )
+
   # Assign to global env for downstream pipeline steps
-  if (!is.null(cfbd_sp_plus))    assign("cfbd_sp_plus",    cfbd_sp_plus,    envir = .GlobalEnv)
-  if (!is.null(cfbd_team_stats)) assign("cfbd_team_stats", cfbd_team_stats, envir = .GlobalEnv)
-  if (!is.null(cfbd_schedule))   assign("cfbd_schedule",   cfbd_schedule,   envir = .GlobalEnv)
+  if (!is.null(cfbd_sp_plus))      assign("cfbd_sp_plus",      cfbd_sp_plus,      envir = .GlobalEnv)
+  if (!is.null(cfbd_team_stats))   assign("cfbd_team_stats",   cfbd_team_stats,   envir = .GlobalEnv)
+  if (!is.null(cfbd_schedule))     assign("cfbd_schedule",     cfbd_schedule,     envir = .GlobalEnv)
+  if (!is.null(cfbd_elo_ratings))  assign("cfbd_elo_ratings",  cfbd_elo_ratings,  envir = .GlobalEnv)
 
   n_games <- if (!is.null(cfbd_schedule)) nrow(cfbd_schedule) else 0
-  cat(sprintf("[CFBD] Scrape complete — %d SP+ teams | %d stat teams | %d games this week.\n",
-              if (!is.null(cfbd_sp_plus)) nrow(cfbd_sp_plus) else 0,
-              if (!is.null(cfbd_team_stats)) nrow(cfbd_team_stats) else 0,
-              n_games))
+  cat(sprintf(
+    "[CFBD] Scrape complete — %d SP+ | %d stats | %d ELO | %d games this week.\n",
+    if (!is.null(cfbd_sp_plus))     nrow(cfbd_sp_plus)     else 0,
+    if (!is.null(cfbd_team_stats))  nrow(cfbd_team_stats)  else 0,
+    if (!is.null(cfbd_elo_ratings)) nrow(cfbd_elo_ratings) else 0,
+    n_games))
 
   invisible(list(sp_plus = cfbd_sp_plus, team_stats = cfbd_team_stats,
-                 schedule = cfbd_schedule))
+                 schedule = cfbd_schedule, elo_ratings = cfbd_elo_ratings))
 }
 
 # Run immediately when sourced by pipeline

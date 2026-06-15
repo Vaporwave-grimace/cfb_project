@@ -59,14 +59,18 @@ BOOST_TREND        <- 1.08         # Trend signal agrees with model pick
 BOOST_BYE_WEEK     <- 1.08         # Team off bye, model agrees on direction
 BOOST_PUBLIC_PCT   <- 1.20         # VSiN public % divergence >= 15%
 PUBLIC_PCT_MIN_DIV <- 0.15         # Minimum divergence threshold to fire BOOST_PUBLIC_PCT
+RIVALRY_SOFTEN_PTS <- 1.5          # Reduce effective spread edge for rivalry games
 
 # ------------------------------------------------------------------------------
-# RATINGS BLEND WEIGHTS (SP+ / Sagarin / Massey)
-# Adjust after validation against 2025 CFB season MAE
+# RATINGS BLEND WEIGHTS (SP+ / Sagarin / Massey / ELO)
+# Sum must equal 1.0. ELO added from CFBD /ratings/elo (week-by-week).
+# ELO is especially valuable early season before SP+ stabilizes.
+# Adjust weights after validation against 2025 CFB season MAE.
 # ------------------------------------------------------------------------------
-WEIGHT_SP_PLUS     <- 0.50
-WEIGHT_SAGARIN     <- 0.30
-WEIGHT_MASSEY      <- 0.20
+WEIGHT_SP_PLUS     <- 0.45
+WEIGHT_SAGARIN     <- 0.27
+WEIGHT_MASSEY      <- 0.18
+WEIGHT_ELO         <- 0.10   # CFBD /ratings/elo — Elo rating per team, latest week
 
 # ------------------------------------------------------------------------------
 # SPREAD FORMULA CALIBRATION
@@ -152,6 +156,22 @@ SUCCESS_SPREAD_WEIGHT <- 2.0   # success rate diff → pts (tune 0.0–4.0)
 # ------------------------------------------------------------------------------
 LEAGUE_AVG_PACE       <- 70.0  # avg plays/game; calibrate from CFBD historical data
 TEMPO_TOTAL_WEIGHT    <- 0.15  # pts per 1-play deviation from avg (tune 0.10–0.25)
+
+# ------------------------------------------------------------------------------
+# THIRD-DOWN CONVERSION RATE ADJUSTMENTS
+# Source: CFBD /stats/season (thirdDownConversions / thirdDowns → third_down_rate)
+# Applied in GENERATE_PREDICTIONS_CFB.R alongside PPA and tempo signals.
+# These are additive; tune down toward 0 if they degrade MAE vs 2025 backtest.
+#
+# LEAGUE_AVG_3D_RATE: historical FBS average ~41%
+# THIRD_DOWN_SPREAD_WEIGHT: pts per 0.01 rate differential (home - away)
+#   e.g., home 50% vs away 41%: 0.09 × 3.0 = 0.27 pt shift toward home
+# THIRD_DOWN_TOTAL_WEIGHT: pts per combined 0.01 deviation from avg (both teams)
+#   e.g., home +5% and away +5% above avg: (0.05 + 0.05) × 4.0 = 0.40 pts added
+# ------------------------------------------------------------------------------
+LEAGUE_AVG_3D_RATE       <- 0.41  # FBS average; update from CFBD after each season
+THIRD_DOWN_SPREAD_WEIGHT <- 3.0   # pts per unit 3rd-down rate diff (tune 2.0–5.0)
+THIRD_DOWN_TOTAL_WEIGHT  <- 4.0   # pts per combined deviation from avg (tune 2.0–6.0)
 
 # ------------------------------------------------------------------------------
 # DATA PATHS

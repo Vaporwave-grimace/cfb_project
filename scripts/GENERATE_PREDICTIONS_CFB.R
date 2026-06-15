@@ -131,6 +131,34 @@ pace_adjustment <- function(home_plays_pg, away_plays_pg,
 }
 
 # ------------------------------------------------------------------------------
+# Injury adjustment getter (reads injury_adjustments from GlobalEnv)
+# Returns net home-perspective pts: positive = home advantage, negative = home hurt
+# injury_adjustments tibble set by INJURY_SCRAPER_CFB.R (Step 6.5)
+# ------------------------------------------------------------------------------
+get_injury_adj <- function(home, away) {
+  if (!exists("injury_adjustments", envir = .GlobalEnv)) return(0)
+  ia <- get("injury_adjustments", envir = .GlobalEnv)
+  if (is.null(ia) || nrow(ia) == 0) return(0)
+  home_adj <- coalesce(ia$spread_adj[ia$canonical_name == home][1], 0)
+  away_adj <- coalesce(ia$spread_adj[ia$canonical_name == away][1], 0)
+  home_adj - away_adj   # net from home perspective
+}
+
+# ------------------------------------------------------------------------------
+# Motivational factor getter (reads motivational_factors from GlobalEnv)
+# Returns net_motiv_spread_adj from MOTIVATIONAL_FACTORS_CFB.R (Step 14.5)
+# Positive = home team has the motivational edge
+# ------------------------------------------------------------------------------
+get_motiv_adj <- function(home, away, game_id) {
+  if (!exists("motivational_factors", envir = .GlobalEnv)) return(0)
+  mf <- get("motivational_factors", envir = .GlobalEnv)
+  if (is.null(mf) || nrow(mf) == 0) return(0)
+  row <- mf[mf$game_id == game_id, ]
+  if (nrow(row) == 0) return(0)
+  coalesce(row$net_motiv_spread_adj[1], 0)
+}
+
+# ------------------------------------------------------------------------------
 # Core prediction engine — one row at a time (via pmap)
 #
 # Spread formula:
@@ -195,11 +223,33 @@ predict_game <- function(game_row) {
   bye_adj    <- tryCatch(get_bye_adj(home, away, rd), error = function(e) 0)
   travel_adj <- tryCatch(get_travel_adj(home, away),  error = function(e) 0)
 
+  # --- Third-down conversion rate adjustment ---
+  # home_third_down_rate / away_third_down_rate flow in via join_stats_side().
+  # Spread: home team that converts 3rd downs better has more sustained drives.
+  # Total: when both teams convert well, game tends toward more possessions / pts.
+  avg_3d   <- if (exists("LEAGUE_AVG_3D_RATE"))       LEAGUE_AVG_3D_RATE       else 0.41
+  td_sp_w  <- if (exists("THIRD_DOWN_SPREAD_WEIGHT")) THIRD_DOWN_SPREAD_WEIGHT else 3.0
+  td_tot_w <- if (exists("THIRD_DOWN_TOTAL_WEIGHT"))  THIRD_DOWN_TOTAL_WEIGHT  else 4.0
+  home_3d  <- coalesce(as.numeric(game_row[["home_third_down_rate"]]), avg_3d)
+  away_3d  <- coalesce(as.numeric(game_row[["away_third_down_rate"]]), avg_3d)
+  third_down_spread_adj <- (home_3d - away_3d) * td_sp_w
+  third_down_total_adj  <- (home_3d + away_3d - 2 * avg_3d) * td_tot_w
+
+  # --- Injury adjustment (from INJURY_SCRAPER_CFB.R Step 6.5) ---
+  injury_adj <- tryCatch(get_injury_adj(home, away), error = function(e) 0)
+
+  # --- Motivational adjustment (from MOTIVATIONAL_FACTORS_CFB.R Step 14.5) ---
+  motiv_adj <- tryCatch(
+    get_motiv_adj(home, away, game_row[["game_id"]]),
+    error = function(e) 0
+  )
+
   # --- Projected spread (home perspective) ---
-  # Negative = home favored (sportsbook convention)
-  # talent_adj added as a positive term (same sign convention as rating_diff):
-  #   +talent_adj = home talent advantage → spread moves in home team's favor
-  proj_spread <- -(rd * scalar + ppa_adj + success_adj + talent_adj + hfa + bye_adj + travel_adj)
+  # Negative = home favored (sportsbook convention).
+  # All positive adj terms shift the spread in home team's favour.
+  proj_spread <- -(rd * scalar + ppa_adj + success_adj + talent_adj + hfa +
+                   bye_adj + travel_adj + third_down_spread_adj +
+                   injury_adj + motiv_adj)
 
   # --- Projected total ---
   home_plays_pg <- if ("home_plays_per_game" %in% names(game_row))
@@ -212,11 +262,12 @@ predict_game <- function(game_row) {
                      game_row$away_possessionTime else NA_real_
   p_adj <- pace_adjustment(home_plays_pg, away_plays_pg, home_poss, away_poss)
 
-  # Use explosiveness diff when PPA data available; fall back to SP+ off/def
+  # Use explosiveness diff when PPA data available; fall back to SP+ off/def.
+  # third_down_total_adj captures combined drive-sustaining efficiency.
   proj_total <- if (!is.na(expl_adj)) {
-    CFB_AVG_TOTAL + expl_adj + p_adj
+    CFB_AVG_TOTAL + expl_adj + p_adj + third_down_total_adj
   } else {
-    CFB_AVG_TOTAL + odh + oda + p_adj
+    CFB_AVG_TOTAL + odh + oda + p_adj + third_down_total_adj
   }
 
   # --- Win probability (logistic sigmoid) ---
@@ -224,18 +275,22 @@ predict_game <- function(game_row) {
   win_prob_away <- 1 - win_prob_home
 
   list(
-    proj_spread    = round(proj_spread,    2),
-    proj_total     = round(proj_total,     2),
-    win_prob_home  = round(win_prob_home,  4),
-    win_prob_away  = round(win_prob_away,  4),
-    bye_adj        = round(bye_adj,        2),
-    travel_adj     = round(travel_adj,     2),
-    ppa_adj        = round(ppa_adj,        3),
-    success_adj    = round(success_adj,    3),
-    talent_adj     = round(talent_adj,     3),
-    tempo_adj      = round(p_adj,          3),
-    week_num       = as.integer(week_num),
-    ppa_available  = !is.na(ppa_diff)
+    proj_spread          = round(proj_spread,          2),
+    proj_total           = round(proj_total,           2),
+    win_prob_home        = round(win_prob_home,        4),
+    win_prob_away        = round(win_prob_away,        4),
+    bye_adj              = round(bye_adj,              2),
+    travel_adj           = round(travel_adj,           2),
+    ppa_adj              = round(ppa_adj,              3),
+    success_adj          = round(success_adj,          3),
+    talent_adj           = round(talent_adj,           3),
+    tempo_adj            = round(p_adj,                3),
+    third_down_spread_adj = round(third_down_spread_adj, 3),
+    third_down_total_adj  = round(third_down_total_adj,  3),
+    injury_adj           = round(injury_adj,           2),
+    motiv_adj            = round(motiv_adj,            2),
+    week_num             = as.integer(week_num),
+    ppa_available        = !is.na(ppa_diff)
   )
 }
 

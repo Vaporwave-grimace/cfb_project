@@ -61,6 +61,18 @@ evaluate_spread <- function(game, bankroll) {
     return(NULL)
   }
 
+  # Rivalry dampener: traditional rivalry games cover at ~50% regardless of
+  # ratings. Reduce effective edge by RIVALRY_SOFTEN_PTS (1.5 pts) so a
+  # 5.0 pt raw edge needs to be 6.5 pts before it qualifies on a rivalry game.
+  is_rivalry <- exists("rivalry_game_ids", envir = .GlobalEnv) &&
+                !is.null(game$game_id) &&
+                game$game_id %in% get("rivalry_game_ids", envir = .GlobalEnv)
+  if (is_rivalry) {
+    soften <- if (exists("RIVALRY_SOFTEN_PTS")) RIVALRY_SOFTEN_PTS else 1.5
+    edge_abs <- edge_abs - soften
+    if (edge_abs <= 0) return(NULL)
+  }
+
   dec_odds  <- american_to_decimal(juice)
   imp_prob  <- american_to_prob(juice)
   win_prob  <- imp_prob + (edge_abs / 28)  # rough prob boost from edge
