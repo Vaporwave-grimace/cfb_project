@@ -25,7 +25,7 @@ Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_
 3. Post-Week 4: calibrate `TEMPO_TOTAL_WEIGHT` (0.15 prior), `LEAGUE_AVG_PACE` (70.0 prior), `TALENT_WEIGHT` (1.5), `RETENTION_SCALAR_MIN` (0.80)
 4. ✅ Sagarin SSL — `ssl_verifypeer=FALSE` added to `fetch_sagarin_direct()` (Session 20); fixes `SEC_E_UNTRUSTED_ROOT` in Task Scheduler sessions; Firecrawl path unaffected
 5. ✅ Massey Chromote — full 2-attempt retry loop + `grepl("#SHCtable")` validation before returning; longer wait on retry (45s); clear error after all attempts exhausted (Session 20)
-6. Validate MASTER odds_names vs DK feed on first live odds fetch
+6. ✅ MASTER odds_names validated vs DK feed (2026-06-15) — 78/78 canonical matches, zero mismatches; `CFB_LineLogger_Hourly` enabled
 7. Monitor 10–15 pt edge bucket — 46.4% ATS on n=56, inconclusive
 
 ## Known Warnings (pre-season, non-fatal)
