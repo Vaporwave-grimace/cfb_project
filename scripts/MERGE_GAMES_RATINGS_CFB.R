@@ -70,6 +70,9 @@ join_metrics_side <- function(games_df, metrics_df, side = "home") {
   prefix <- side
 
   keep_metrics <- c("off_ppa", "def_ppa",
+                    "off_rush_ppa", "off_pass_ppa",
+                    "def_rush_ppa", "def_pass_ppa",
+                    "rush_rate",
                     "off_success_rate", "def_success_rate",
                     "off_explosiveness", "def_explosiveness",
                     "off_power_success", "off_stuff_rate")
@@ -166,7 +169,8 @@ merge_games_ratings <- function() {
     "rating|sp_offense|sp_defense|n_sources|",
     "yardsPerPlay|pointsPerGame|turnovers|turnover_margin|",
     "third_down_rate|pass_completion_rate|possessionTime|plays_per_game|",
-    "off_ppa|def_ppa|off_success_rate|def_success_rate|",
+    "off_ppa|def_ppa|off_rush_ppa|off_pass_ppa|def_rush_ppa|def_pass_ppa|rush_rate|",
+    "off_success_rate|def_success_rate|",
     "off_explosiveness|def_explosiveness|off_power_success|off_stuff_rate|",
     "talent_norm|retention_score",
     ")"
