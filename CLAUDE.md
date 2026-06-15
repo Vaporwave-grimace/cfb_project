@@ -1,5 +1,5 @@
 # mcFootball CFB Pipeline — Session State
-# Last updated: 2026-06-04 | Session 19
+# Last updated: 2026-06-15 | Session 20
 
 ## Project
 Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_football.R`). Markets: SPREAD / TOTAL / ML. Kelly 0.5 fractional sizing. Telegram + Discord broadcast.
@@ -23,8 +23,8 @@ Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_
 1. **Run `source("scripts/db_schema_init.R")` once** — both SQLite tables must exist before first logger run or live bet. Script now exists (Session 19).
 2. ✅ `plays_per_game` wired end-to-end (Session 19): SCRAPE adds `plays` → derives `plays_per_game`; MERGE passes it through; GENERATE uses it as primary pace signal (fallback: possessionTime).
 3. Post-Week 4: calibrate `TEMPO_TOTAL_WEIGHT` (0.15 prior), `LEAGUE_AVG_PACE` (70.0 prior), `TALENT_WEIGHT` (1.5), `RETENTION_SCALAR_MIN` (0.80)
-4. Sagarin SSL (`SEC_E_UNTRUSTED_ROOT`) — non-fatal fallback active, root cause unresolved
-5. Massey chromote intermittent timeout — retry logic added, not yet confirmed stable under load
+4. ✅ Sagarin SSL — `ssl_verifypeer=FALSE` added to `fetch_sagarin_direct()` (Session 20); fixes `SEC_E_UNTRUSTED_ROOT` in Task Scheduler sessions; Firecrawl path unaffected
+5. ✅ Massey Chromote — full 2-attempt retry loop + `grepl("#SHCtable")` validation before returning; longer wait on retry (45s); clear error after all attempts exhausted (Session 20)
 6. Validate MASTER odds_names vs DK feed on first live odds fetch
 7. Monitor 10–15 pt edge bucket — 46.4% ATS on n=56, inconclusive
 
@@ -50,6 +50,61 @@ Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_
   - MLB export.R also updated: `sport="MLB"` added to both BET_HISTORY and MASTER_TICKET exports
   - Sync: `node base44/sync.js YYYYMMDD` — auto-triggered by `finalize_bets()` after each live run
 
+## Task Scheduler (Windows) — CFB
+
+Registered via `schedule_tasks_cfb.ps1` (run once as Administrator). Wrapper: `run_with_log_cfb.ps1` — logs to `log/{TaskName}_{date}.log`, 30-day retention.
+
+| Task | Day | Time | Purpose |
+|---|---|---|---|
+| `CFB_Pipeline_Thu` | Thursday | 6:00 PM | Full pipeline — early line capture |
+| `CFB_Pipeline_Fri` | Friday | 12:00 PM | Updated odds + injury check |
+| `CFB_Pipeline_Sat` | Saturday | 8:00 AM | Final run before kickoffs |
+| `CFB_LineLogger_Hourly` | Thu–Sat | 9 AM–8 PM hourly | Line movement logging — **CREATED DISABLED** |
+
+Enable line logger in late August: `Enable-ScheduledTask -TaskName "CFB_LineLogger_Hourly"`
+
+---
+
 ## Drop-in for Next Session
 
-Continuing mcFootball CFB pipeline. Read `CFB_PROJECT_BIBLE.md` for full history. Session 18 complete — CLV tracking (db_schema_init.R, BET_SETTLEMENT.R SQLite rewrite, LINE_MOVEMENT_LOGGER_CFB.R fixed) and tempo model (plays_per_game in SCRAPE_CFB_DATA.R + GENERATE_PREDICTIONS_CFB.R) implemented. **Before first live use, run `source("scripts/db_schema_init.R")`**. Key pre-season check: verify `plays_per_game` flows through MERGE_GAMES_RATINGS_CFB.R. Next live action Sep 2026.
+Continuing mcFootball CFB pipeline. Read `CFB_PROJECT_BIBLE.md` for full history. Session 20 complete — score fetcher (`fetch_cfb_scores.R`), Task Scheduler scripts (`run_with_log_cfb.ps1`, `schedule_tasks_cfb.ps1`), Sagarin SSL fix, Massey Chromote retry, and backtest ELO blend + third-down adjustments. **Before first live use, run `source("scripts/db_schema_init.R")`**. Enable `CFB_LineLogger_Hourly` task in late August. Next live action Sep 2026.
+
+## Session 20 Summary (2026-06-15)
+
+### Score Fetcher (`scripts/fetch_cfb_scores.R`) — New
+
+- Solves Odds API hex `game_id` ↔ CFBD integer `game_id` mismatch by matching on canonical team name pair + game date (±1 day), then writing the Odds API `game_id` to the score CSV
+- `SCORES_LOOKBACK = 21L` — covers Thursday pipeline catching prior Saturday results
+- Output: `clean/cfb_scores_YYYYMMDD.csv` (cols: `game_id`, `home_team`, `away_team`, `home_score`, `away_score`, `game_date`)
+- Sources `TEAM_NAME_NORMALIZER_CFB.R`; falls back to raw names if master unavailable
+
+### `run_daily_football.R` — Score Fetch + 21-Day Settlement Window
+
+- Step 1.5 added: calls `fetch_cfb_scores()` before settlement
+- Step 2 rewritten: scans all `clean/cfb_scores_YYYYMMDD.csv` within 21-day window; deduplicates on `game_id`; covers multi-day settlement gaps (Sat games not yet in yesterday's file)
+
+### Task Scheduler — New Scripts
+
+- **`run_with_log_cfb.ps1`** — wrapper for all CFB tasks; logs stdout+stderr to `log/`; self-healing R path detection; 30-day log retention
+- **`schedule_tasks_cfb.ps1`** — registers `CFB_Pipeline_Thu` (Thu 6 PM), `CFB_Pipeline_Fri` (Fri 12 PM), `CFB_Pipeline_Sat` (Sat 8 AM), and `CFB_LineLogger_Hourly` (Thu–Sat 9 AM–8 PM, **created disabled**)
+
+### `scripts/scrape_sagarin.R` — SSL Fix
+
+- `fetch_sagarin_direct()` now passes `httr::config(ssl_verifypeer = FALSE)` — fixes `SEC_E_UNTRUSTED_ROOT` that silently dropped Sagarin from the rating blend when running under Task Scheduler
+- Firecrawl path (primary) unaffected
+
+### `scripts/scrape_massey_cfb.R` — Chromote Retry
+
+- `fetch_massey_chromote()` rewritten with 2-attempt retry loop
+- Explicit `grepl("SHCtable", html, fixed = TRUE)` validation before returning — prevents returning incomplete HTML when table hasn't rendered
+- Longer wait_for on retry (30s → 45s), larger sleep (1.5s → 2.5s), 3s between attempts
+
+### `scripts/BACKTEST_2025.R` — ELO Blend + Third-Down Adjustments
+
+- ELO fetch added (`[1.5/5]`): CFBD `/ratings/elo?year=2025`, latest week per team
+- Season stats fetch added (`[2.5/5]`): CFBD `/stats/season?year=2025` for third-down rates
+- **ELO blend**: SP+ weight 81.8% / ELO weight 18.2% (normalized from 0.45/0.10); ELO diff z-score scaled to SP+ units via `(elo_diff / sd_elo) * sd_sp`
+- **Third-down adjustments**: `third_down_spread_adj` + `third_down_total_adj` matching live engine
+- Three projection variants: `proj_spread_sp` (SP-only), `proj_spread_elo` (SP+ELO), `proj_spread` (full)
+- Three-way MAE console report: SP-only → SP+ELO → full model
+- New CSV output columns: `rating_diff_blended`, `elo_active`, `td_active`, `third_down_spread_adj`, `proj_spread_elo`, `abs_error_elo`; `summary_rows` includes `mae_elo`
