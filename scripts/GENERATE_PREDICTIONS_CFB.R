@@ -40,6 +40,61 @@
 
 suppressMessages(library(tidyverse))
 
+# ── ML ensemble (loaded once at source time; silent if models not yet trained) ─
+# Run scripts/build_ml_training_data.R then scripts/ml_model_cfb.R to build.
+# When both models exist, predict_game() blends ML (60%) with formula (40%).
+# Falls back to formula-only if either model is missing or prediction errors.
+
+.ML_MODELS_DIR   <- file.path(dirname(sys.frame(0)$ofile %||% "."), "..", "models")
+.CFB_ML_SPREAD   <- tryCatch(readRDS(file.path(.ML_MODELS_DIR, "cfb_spread_xgb.rds")),
+                               error = function(e) NULL)
+.CFB_ML_TOTAL    <- tryCatch(readRDS(file.path(.ML_MODELS_DIR, "cfb_total_xgb.rds")),
+                               error = function(e) NULL)
+ML_ENSEMBLE_WT   <- 0.60   # weight on ML component; tune after live 2026 games settle
+
+if (!is.null(.CFB_ML_SPREAD))
+  message("[PREDICT] ML spread model loaded — ensemble active (", ML_ENSEMBLE_WT * 100, "% ML)")
+if (!is.null(.CFB_ML_TOTAL))
+  message("[PREDICT] ML total model loaded — ensemble active (", ML_ENSEMBLE_WT * 100, "% ML)")
+
+.ml_predict_spread <- function(game_row) {
+  if (is.null(.CFB_ML_SPREAD)) return(NA_real_)
+  feat_names <- c("posted_spread", "rating_diff_blend", "sp_diff", "elo_diff_scaled",
+                   "ppa_diff", "success_rate_diff", "expl_diff",
+                   "rush_rate_diff", "third_down_diff", "scheme_adj",
+                   "effective_hfa", "neutral_site", "week", "is_postseason", "conf_tier")
+  # Map game_row names to training feature names where they differ
+  name_map <- c(rating_diff = "rating_diff_blend",
+                neutral_site = "neutral_site",
+                week_num     = "week")
+  resolve <- function(f) {
+    alt <- name_map[f]
+    if (!is.na(alt) && !is.null(game_row[[alt]])) return(as.numeric(game_row[[alt]][1]))
+    v <- game_row[[f]]
+    if (!is.null(v) && length(v) > 0) as.numeric(v[1]) else NA_real_
+  }
+  feat <- as_tibble(setNames(lapply(feat_names, resolve), feat_names))
+  tryCatch(as.numeric(predict(.CFB_ML_SPREAD, new_data = feat)$.pred), error = function(e) NA_real_)
+}
+
+.ml_predict_total <- function(game_row, effective_hfa) {
+  if (is.null(.CFB_ML_TOTAL)) return(NA_real_)
+  feat_names <- c("posted_total", "rating_diff_blend", "ppa_diff", "expl_diff",
+                   "success_rate_diff", "third_down_diff", "rush_rate_diff",
+                   "neutral_site", "week", "is_postseason", "conf_tier")
+  name_map <- c(rating_diff = "rating_diff_blend", week_num = "week")
+  resolve <- function(f) {
+    alt <- name_map[f]
+    if (!is.na(alt) && !is.null(game_row[[alt]])) return(as.numeric(game_row[[alt]][1]))
+    v <- game_row[[f]]
+    if (!is.null(v) && length(v) > 0) as.numeric(v[1]) else NA_real_
+  }
+  feat <- as_tibble(setNames(lapply(feat_names, resolve), feat_names))
+  tryCatch(as.numeric(predict(.CFB_ML_TOTAL, new_data = feat)$.pred), error = function(e) NA_real_)
+}
+
+`%||%` <- function(a, b) if (!is.null(a)) a else b
+
 # ------------------------------------------------------------------------------
 # Talent composite decay schedule
 #   In weeks 1-4, in-season SP+ hasn't fully stabilized. Talent composite
@@ -329,6 +384,23 @@ predict_game <- function(game_row) {
     CFB_AVG_TOTAL + odh + oda + p_adj + third_down_total_adj + injury_total_adj
   }
 
+  # --- ML ensemble (blends ML prediction with formula; falls back if model absent) ---
+  # ML predicts actual_margin (home - away); negate to get spread convention.
+  # game_row must carry posted_spread + posted_total for ML features.
+  formula_spread <- proj_spread
+  formula_total  <- proj_total
+
+  ml_margin <- tryCatch(.ml_predict_spread(game_row), error = function(e) NA_real_)
+  if (!is.na(ml_margin)) {
+    ml_spread  <- -ml_margin   # margin → spread convention (negative = home favored)
+    proj_spread <- ML_ENSEMBLE_WT * ml_spread + (1 - ML_ENSEMBLE_WT) * formula_spread
+  }
+
+  ml_total <- tryCatch(.ml_predict_total(game_row, effective_hfa = hfa), error = function(e) NA_real_)
+  if (!is.na(ml_total)) {
+    proj_total <- ML_ENSEMBLE_WT * ml_total + (1 - ML_ENSEMBLE_WT) * formula_total
+  }
+
   # --- Win probability (logistic sigmoid) ---
   win_prob_home <- spread_to_win_prob(proj_spread)
   win_prob_away <- 1 - win_prob_home
@@ -336,6 +408,10 @@ predict_game <- function(game_row) {
   list(
     proj_spread           = round(proj_spread,           2),
     proj_total            = round(proj_total,            2),
+    formula_spread        = round(formula_spread,        2),
+    formula_total         = round(formula_total,         2),
+    ml_spread             = round(coalesce(if (!is.na(ml_margin)) -ml_margin else NA_real_, formula_spread), 2),
+    ml_active             = !is.na(ml_margin),
     win_prob_home         = round(win_prob_home,         4),
     win_prob_away         = round(win_prob_away,         4),
     bye_adj               = round(bye_adj,               2),
