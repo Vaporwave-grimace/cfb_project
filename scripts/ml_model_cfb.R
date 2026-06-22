@@ -6,6 +6,7 @@
 #   cfb_total_xgb.rds   — predicts actual_total  (home + away)
 #
 # Input:  clean/ml_training_data_2013_2025.csv (from build_ml_training_data.R)
+#         (re-run build_ml_training_data.R to include new features before retraining)
 # Output: models/cfb_spread_xgb.rds
 #         models/cfb_total_xgb.rds
 #         models/cfb_ml_meta.rds
@@ -46,31 +47,40 @@ TEST_SEASON   <- 2025
 # ── Feature columns (available both in training CSV and at live prediction time)
 
 SPREAD_PREDICTORS <- c(
-  "posted_spread",       # market prior — most predictive single feature
-  "rating_diff_blend",   # SP+ + ELO blend
-  "sp_diff",             # raw SP+ differential (prior year)
-  "elo_diff_scaled",     # ELO diff scaled to SP+ units
-  "ppa_diff",            # net EPA/play advantage
-  "success_rate_diff",   # drive consistency signal
-  "expl_diff",           # big-play threat differential
-  "rush_rate_diff",      # run/pass tendency mismatch
-  "third_down_diff",     # 3rd-down conversion rate diff
-  "scheme_adj",          # computed from PPA scheme splits
-  "effective_hfa",       # home field advantage pts (0 when neutral)
-  "neutral_site",        # 1/0
-  "week",                # season week (1–15)
-  "is_postseason",       # bowl game flag
-  "conf_tier"            # 1 = P4 vs P4, 0 = mixed/G5
+  "posted_spread",          # market prior — most predictive single feature
+  "rating_diff_blend",      # SP+ + ELO blend
+  "sp_diff",                # raw SP+ differential (prior year)
+  "elo_diff_scaled",        # ELO diff scaled to SP+ units
+  "ppa_diff",               # net EPA/play advantage
+  "success_rate_diff",      # drive consistency signal
+  "expl_diff",              # big-play threat differential
+  "rush_rate_diff",         # run/pass tendency mismatch
+  "third_down_diff",        # 3rd-down conversion rate diff
+  "scheme_adj",             # computed from PPA scheme splits
+  "sp_st_diff",             # special teams SP+ differential (prior year)
+  "turnover_margin_diff",   # turnover margin advantage
+  "returning_pct_diff",     # returning production % differential (2014+)
+  "talent_diff",            # 247Sports talent composite diff (2015+)
+  "portal_index_diff",      # On3 transfer portal net quality (2022+)
+  "effective_hfa",          # home field advantage pts (0 when neutral)
+  "neutral_site",           # 1/0
+  "week",                   # season week (1–15)
+  "is_postseason",          # bowl game flag
+  "conf_tier"               # 1 = P4 vs P4, 0 = mixed/G5
 )
 
 TOTAL_PREDICTORS <- c(
-  "posted_total",        # market prior for totals
-  "rating_diff_blend",   # stronger teams → higher scoring on average
-  "ppa_diff",            # offensive efficiency signal
-  "expl_diff",           # big-play threat → inflates totals
-  "success_rate_diff",   # sustained drives → more points
-  "third_down_diff",     # 3rd-down conversion = more possessions
-  "rush_rate_diff",      # run-heavy teams → slightly lower totals
+  "posted_total",           # market prior for totals
+  "rating_diff_blend",      # stronger teams → higher scoring on average
+  "ppa_diff",               # offensive efficiency signal
+  "expl_diff",              # big-play threat → inflates totals
+  "success_rate_diff",      # sustained drives → more points
+  "third_down_diff",        # 3rd-down conversion = more possessions
+  "rush_rate_diff",         # run-heavy teams → slightly lower totals
+  "turnover_margin_diff",   # turnovers affect possession count + points
+  "returning_pct_diff",     # roster continuity → more consistent scoring
+  "talent_diff",            # talent gap drives scoring differential
+  "portal_index_diff",      # portal quality shifts offensive output
   "neutral_site",
   "week",
   "is_postseason",
@@ -279,7 +289,7 @@ train_cfb_ml <- function(ml_weight = 0.60) {
   saveRDS(meta, META_PATH)
 
   cat(sprintf("\n── Summary ──\n"))
-  cat(sprintf("  Spread — 2025 MAE: %.2f pts (formula baseline: 13.17)\n", spread_res$test_mae))
+  cat(sprintf("  Spread — 2025 MAE: %.2f pts (v1 baseline: 10.45 | formula: 13.17)\n", spread_res$test_mae))
   cat(sprintf("  Total  — 2025 MAE: %.2f pts\n",  total_res$test_mae))
   cat(sprintf("  Saved: %s, %s\n", SPREAD_MODEL_PATH, TOTAL_MODEL_PATH))
 

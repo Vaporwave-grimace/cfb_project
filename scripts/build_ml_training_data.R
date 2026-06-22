@@ -4,14 +4,18 @@
 #
 # Data sources (all via CFBD API):
 #   /ratings/sp?year=Y-1   — prior-season final SP+ as preseason proxy
+#                            (also extracts SP+ special teams rating)
 #   /ratings/elo?year=Y    — in-season ELO (latest week per team)
 #   /ppa/teams?year=Y      — efficiency: PPA, success rate, explosiveness, scheme splits
-#   /stats/season?year=Y   — third-down rates, rush/pass attempts
+#   /stats/season?year=Y   — third-down rates, rush/pass attempts, turnover margin
 #   /games?year=Y          — game results (regular + postseason)
 #   /lines?year=Y          — posted spread + total (DK preferred)
+#   /returning?year=Y      — returning production % (2014+)
+#   /teams/talent?year=Y   — 247Sports talent composite (2015+)
+#   On3 transfer portal    — team portal index score via Firecrawl (2022+)
 #
-# Coverage: 2013-2025 (PPA available from 2013). ~10 API calls/year × 13 years.
-# Runtime: ~5-10 minutes (rate-limited to ~3 req/s).
+# Coverage: 2013-2025 (PPA available from 2013). ~13 API calls/year × 13 years.
+# Runtime: ~7-12 minutes (rate-limited to ~3 req/s).
 #
 # Output: clean/ml_training_data_2013_2025.csv
 #   One row per completed FBS game with ratings, efficiency, context, and market data.
@@ -27,6 +31,7 @@ suppressMessages({
 setwd("G:/My Drive/Scripting Projects/cfb_project")
 source("scripts/CONFIG.R")
 source("scripts/TEAM_NAME_NORMALIZER_CFB.R")
+source("scripts/scrape_portal_on3.R")
 
 TRAINING_YEARS  <- 2013:2025
 API_SLEEP       <- 0.35     # seconds between requests (~3 req/s, well within CFBD limits)
@@ -110,14 +115,22 @@ pull_season <- function(yr) {
   # 1. SP+ (prior year) --------------------------------------------------------
   sp <- tryCatch({
     raw <- cfbd_get("/ratings/sp", list(year = sp_yr))
-    as_tibble(raw) %>%
+    tbl <- as_tibble(raw)
+    # Extract special teams rating — column name varies by API version
+    get_st <- function(df) {
+      for (nm in c("specialTeams.rating", "special_teams.rating", "specialTeamsRating"))
+        if (nm %in% names(df)) return(as.numeric(df[[nm]]))
+      NA_real_
+    }
+    tbl %>%
       transmute(
         canonical_name = normalize_team_name(team, mappings = master,
                                               source_col    = "massey_name",
                                               unmatched_log = "logs/unmatched_teams.csv"),
         sp_overall     = as.numeric(rating),
         sp_offense     = as.numeric(offense.rating),
-        sp_defense     = as.numeric(defense.rating)
+        sp_defense     = as.numeric(defense.rating),
+        sp_st          = get_st(tbl)
       ) %>%
       filter(!is.na(canonical_name))
   }, error = function(e) {
@@ -180,28 +193,97 @@ pull_season <- function(yr) {
     if (!all(c("statName", "statValue", "team") %in% names(tbl))) stop("unexpected format")
     tbl %>%
       filter(statName %in% c("thirdDownConversions", "thirdDowns",
-                               "rushingAttempts",     "passAttempts")) %>%
+                               "rushingAttempts",     "passAttempts",
+                               "turnovers",           "turnoversOpponent")) %>%
       select(team, statName, statValue) %>%
       pivot_wider(names_from = statName, values_from = statValue, values_fn = first) %>%
       filter(!is.na(thirdDowns), as.numeric(thirdDowns) > 0) %>%
       mutate(
-        canonical_name  = normalize_team_name(team, mappings = master,
-                                               source_col    = "massey_name",
-                                               unmatched_log = "logs/unmatched_teams.csv"),
-        third_down_rate = as.numeric(thirdDownConversions) /
-                            pmax(as.numeric(thirdDowns), 1L),
-        rush_att        = suppressWarnings(as.numeric(rushingAttempts)),
-        pass_att        = suppressWarnings(as.numeric(passAttempts)),
-        rush_rate       = if_else(
+        canonical_name   = normalize_team_name(team, mappings = master,
+                                                source_col    = "massey_name",
+                                                unmatched_log = "logs/unmatched_teams.csv"),
+        third_down_rate  = as.numeric(thirdDownConversions) /
+                             pmax(as.numeric(thirdDowns), 1L),
+        rush_att         = suppressWarnings(as.numeric(rushingAttempts)),
+        pass_att         = suppressWarnings(as.numeric(passAttempts)),
+        rush_rate        = if_else(
           !is.na(rush_att) & !is.na(pass_att) & (rush_att + pass_att) > 0,
-          rush_att / (rush_att + pass_att), NA_real_)
+          rush_att / (rush_att + pass_att), NA_real_),
+        to_forced        = suppressWarnings(as.numeric(turnoversOpponent)),
+        to_lost          = suppressWarnings(as.numeric(turnovers)),
+        turnover_margin  = coalesce(to_forced, 0) - coalesce(to_lost, 0)
       ) %>%
       filter(!is.na(canonical_name)) %>%
-      select(canonical_name, third_down_rate, rush_rate)
+      select(canonical_name, third_down_rate, rush_rate, turnover_margin)
   }, error = function(e) {
     warning(sprintf("[%d] Stats failed: %s", yr, e$message)); tibble()
   })
   cat(sprintf("  Season stats: %d teams\n", nrow(stats)))
+
+  # 5a. Returning production (available 2014+) ----------------------------------
+  returning <- if (yr < 2014L) {
+    tibble()
+  } else {
+    tryCatch({
+      raw <- cfbd_get("/returning", list(year = yr))
+      tbl <- as_tibble(raw)
+      get_ret_col <- function(df, ...) {
+        for (nm in c(...)) if (nm %in% names(df)) return(as.numeric(df[[nm]]))
+        NA_real_
+      }
+      tbl %>%
+        transmute(
+          canonical_name = normalize_team_name(
+            if ("school" %in% names(tbl)) tbl$school else tbl$team,
+            mappings = master, source_col = "massey_name",
+            unmatched_log = "logs/unmatched_teams.csv"),
+          returning_pct  = get_ret_col(tbl, "percentPPA", "offense.total",
+                                       "percentSnaps", "total")
+        ) %>%
+        filter(!is.na(canonical_name), !is.na(returning_pct))
+    }, error = function(e) {
+      warning(sprintf("[%d] Returning failed: %s", yr, e$message)); tibble()
+    })
+  }
+  cat(sprintf("  Returning: %d teams\n", nrow(returning)))
+
+  # 5b. Talent composite (247Sports, available 2015+) ---------------------------
+  talent <- if (yr < 2015L) {
+    tibble()
+  } else {
+    tryCatch({
+      raw <- cfbd_get("/teams/talent", list(year = yr))
+      tbl <- as_tibble(raw)
+      tbl %>%
+        transmute(
+          canonical_name = normalize_team_name(school, mappings = master,
+                                               source_col    = "massey_name",
+                                               unmatched_log = "logs/unmatched_teams.csv"),
+          talent_score   = as.numeric(talent)
+        ) %>%
+        filter(!is.na(canonical_name), !is.na(talent_score))
+    }, error = function(e) {
+      warning(sprintf("[%d] Talent failed: %s", yr, e$message)); tibble()
+    })
+  }
+  cat(sprintf("  Talent: %d teams\n", nrow(talent)))
+
+  # 5c. On3 Transfer Portal (available 2022+) -----------------------------------
+  portal <- tryCatch({
+    scrape_portal_on3(yr, api_key = creds$firecrawl_api_key)
+  }, error = function(e) {
+    warning(sprintf("[%d] Portal failed: %s", yr, e$message)); tibble()
+  })
+  if (nrow(portal) > 0L) {
+    portal <- portal %>%
+      mutate(
+        canonical_name = normalize_team_name(team_name_raw, mappings = master,
+                                              source_col    = "massey_name",
+                                              unmatched_log = "logs/unmatched_teams.csv")
+      ) %>%
+      filter(!is.na(canonical_name)) %>%
+      select(canonical_name, portal_index_score)
+  }
 
   # 5. Game results (regular + postseason) --------------------------------------
   pull_games_yr <- function(season_type) {
@@ -308,10 +390,12 @@ pull_season <- function(yr) {
   joined <- games %>%
     # SP+ ratings
     left_join(sp  %>% select(canonical_name, home_sp = sp_overall,
-                               home_sp_off = sp_offense, home_sp_def = sp_defense),
+                               home_sp_off = sp_offense, home_sp_def = sp_defense,
+                               home_sp_st  = sp_st),
               by = c("canonical_home" = "canonical_name")) %>%
     left_join(sp  %>% select(canonical_name, away_sp = sp_overall,
-                               away_sp_off = sp_offense, away_sp_def = sp_defense),
+                               away_sp_off = sp_offense, away_sp_def = sp_defense,
+                               away_sp_st  = sp_st),
               by = c("canonical_away" = "canonical_name")) %>%
     # ELO ratings
     left_join(elo %>% select(canonical_name, home_elo = elo_rating),
@@ -335,10 +419,39 @@ pull_season <- function(yr) {
               by = c("canonical_away" = "canonical_name")) %>%
     # Season stats
     left_join(stats %>% select(canonical_name, home_3d = third_down_rate,
-                                 home_rush_rate = rush_rate),
+                                 home_rush_rate = rush_rate,
+                                 home_to_margin = turnover_margin),
               by = c("canonical_home" = "canonical_name")) %>%
     left_join(stats %>% select(canonical_name, away_3d = third_down_rate,
-                                 away_rush_rate = rush_rate),
+                                 away_rush_rate = rush_rate,
+                                 away_to_margin = turnover_margin),
+              by = c("canonical_away" = "canonical_name")) %>%
+    # Returning production (2014+)
+    left_join(if (nrow(returning) > 0L)
+                returning %>% select(canonical_name, home_ret_pct = returning_pct)
+              else tibble(canonical_name = character(), home_ret_pct = numeric()),
+              by = c("canonical_home" = "canonical_name")) %>%
+    left_join(if (nrow(returning) > 0L)
+                returning %>% select(canonical_name, away_ret_pct = returning_pct)
+              else tibble(canonical_name = character(), away_ret_pct = numeric()),
+              by = c("canonical_away" = "canonical_name")) %>%
+    # Talent composite (2015+)
+    left_join(if (nrow(talent) > 0L)
+                talent %>% select(canonical_name, home_talent = talent_score)
+              else tibble(canonical_name = character(), home_talent = numeric()),
+              by = c("canonical_home" = "canonical_name")) %>%
+    left_join(if (nrow(talent) > 0L)
+                talent %>% select(canonical_name, away_talent = talent_score)
+              else tibble(canonical_name = character(), away_talent = numeric()),
+              by = c("canonical_away" = "canonical_name")) %>%
+    # On3 Transfer Portal (2022+)
+    left_join(if (nrow(portal) > 0L)
+                portal %>% select(canonical_name, home_portal_idx = portal_index_score)
+              else tibble(canonical_name = character(), home_portal_idx = integer()),
+              by = c("canonical_home" = "canonical_name")) %>%
+    left_join(if (nrow(portal) > 0L)
+                portal %>% select(canonical_name, away_portal_idx = portal_index_score)
+              else tibble(canonical_name = character(), away_portal_idx = integer()),
               by = c("canonical_away" = "canonical_name")) %>%
     # HFA
     left_join(hfa_lu %>% select(canonical_name, home_hfa = hfa_pts),
@@ -347,21 +460,27 @@ pull_season <- function(yr) {
     left_join(lines, by = "game_id") %>%
     # Derived features
     mutate(
-      sp_diff           = coalesce(home_sp - away_sp,    0),
-      elo_diff          = coalesce(home_elo - away_elo,  0),
-      elo_diff_scaled   = elo_diff / elo_sd * sp_sd,
-      rating_diff_blend = WEIGHT_SP_PLUS / (WEIGHT_SP_PLUS + WEIGHT_ELO) * sp_diff +
-                          WEIGHT_ELO    / (WEIGHT_SP_PLUS + WEIGHT_ELO) * elo_diff_scaled,
-      ppa_diff          = (coalesce(home_off_ppa,  0) - coalesce(away_def_ppa,  0)) -
-                          (coalesce(away_off_ppa,  0) - coalesce(home_def_ppa,  0)),
-      success_rate_diff = (coalesce(home_off_succ, 0) - coalesce(away_def_succ, 0)) -
-                          (coalesce(away_off_succ, 0) - coalesce(home_def_succ, 0)),
-      expl_diff         = coalesce(home_off_expl - away_off_expl, 0),
-      rush_rate_diff    = coalesce(home_rush_rate - away_rush_rate, 0),
-      third_down_diff   = coalesce(home_3d - away_3d, 0),
-      effective_hfa     = if_else(neutral_site == 1L, 0,
-                                   coalesce(home_hfa, DEFAULT_HFA)),
-      scheme_adj        = pmap_dbl(
+      sp_diff              = coalesce(home_sp - away_sp,    0),
+      elo_diff             = coalesce(home_elo - away_elo,  0),
+      elo_diff_scaled      = elo_diff / elo_sd * sp_sd,
+      rating_diff_blend    = WEIGHT_SP_PLUS / (WEIGHT_SP_PLUS + WEIGHT_ELO) * sp_diff +
+                             WEIGHT_ELO    / (WEIGHT_SP_PLUS + WEIGHT_ELO) * elo_diff_scaled,
+      ppa_diff             = (coalesce(home_off_ppa,  0) - coalesce(away_def_ppa,  0)) -
+                             (coalesce(away_off_ppa,  0) - coalesce(home_def_ppa,  0)),
+      success_rate_diff    = (coalesce(home_off_succ, 0) - coalesce(away_def_succ, 0)) -
+                             (coalesce(away_off_succ, 0) - coalesce(home_def_succ, 0)),
+      expl_diff            = coalesce(home_off_expl - away_off_expl, 0),
+      rush_rate_diff       = coalesce(home_rush_rate - away_rush_rate, 0),
+      third_down_diff      = coalesce(home_3d - away_3d, 0),
+      sp_st_diff           = coalesce(home_sp_st - away_sp_st, NA_real_),
+      turnover_margin_diff = coalesce(home_to_margin - away_to_margin, NA_real_),
+      returning_pct_diff   = coalesce(home_ret_pct - away_ret_pct, NA_real_),
+      talent_diff          = coalesce(home_talent - away_talent, NA_real_),
+      portal_index_diff    = coalesce(as.numeric(home_portal_idx) -
+                                       as.numeric(away_portal_idx), NA_real_),
+      effective_hfa        = if_else(neutral_site == 1L, 0,
+                                      coalesce(home_hfa, DEFAULT_HFA)),
+      scheme_adj           = pmap_dbl(
         list(home_rush_rate, away_rush_rate,
              home_def_rush,  home_def_pass,
              away_def_rush,  away_def_pass),
@@ -378,6 +497,8 @@ pull_season <- function(yr) {
       sp_diff, elo_diff_scaled, rating_diff_blend,
       ppa_diff, success_rate_diff, expl_diff,
       rush_rate_diff, third_down_diff, scheme_adj,
+      sp_st_diff, turnover_margin_diff, returning_pct_diff,
+      talent_diff, portal_index_diff,
       effective_hfa,
       home_sp, away_sp, home_elo, away_elo
     )
