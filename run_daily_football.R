@@ -162,6 +162,23 @@ tryCatch({
   vsin_data <<- NULL
 })
 
+# --- STEP 8.75: BBOC podcast intelligence ------------------------------------
+# Fetches Action Network "Big Bets on Campus" transcript, extracts Stuckey +
+# Collin Wilson picks + supporting data (ATS records, line movement, public %,
+# injuries, situational angles). Sets bboc_picks / bboc_justifications in
+# GlobalEnv. Step 18 boost 4f applies BBOC_CONFIRM_BOOST (1.12x) when BBOC
+# and model align on same side.
+cat("\n[Step 8.75] Parsing BBOC podcast intelligence...\n")
+tryCatch({
+  .bboc_sourced_by_orchestrator <- TRUE
+  source("scripts/BBOC_PODCAST_PARSER.R")
+  run_bboc_parser()
+}, error = function(e) {
+  cat(sprintf("[Step 8.75] BBOC parser error (non-fatal): %s\n", e$message))
+  bboc_picks          <<- tibble()
+  bboc_justifications <<- tibble()
+})
+
 # --- STEP 9: Patch commence times ---------------------------------------------
 cat("\n[Step 9] Patching commence times...\n")
 tryCatch({

@@ -196,6 +196,27 @@ LG_AVG_DEF_PASS_PPA   <- 0.0   # FBS avg EPA/play allowed on passes (≈ 0; refi
 LG_AVG_RUSH_RATE      <- 0.42  # FBS avg rush-play fraction (tune from /stats/season data)
 
 # ------------------------------------------------------------------------------
+# BBOC PODCAST INTELLIGENCE (BBOC_PODCAST_PARSER.R — Step 8.75)
+# Source: Action Network "Big Bets on Campus" podcast (Stuckey + Collin Wilson)
+# Omny Studio RSS — includes full episode transcripts via <podcast:transcript>
+#
+# BBOC_CONFIRM_BOOST: applied to EV when bboc_agrees = TRUE for a game.
+#   Set between BOOST_TREND (1.08) and BOOST_SHARP (1.15) — BBOC analysts are
+#   sharp public handicappers; meaningful signal but not market-moving steam.
+#   Compounds with other boosts (max combined stays within portfolio limits).
+#
+# BBOC_LOOKBACK_DAYS: how many days back to scan for episodes.
+#   7 = one week covers Thu/Fri/Sat slate thoroughly (BBOC drops episodes
+#   Mon–Wed for the upcoming weekend).
+#
+# BBOC_MAX_EPISODES: cap to avoid over-fetching transcripts per run.
+# ------------------------------------------------------------------------------
+BBOC_RSS_URL        <- "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/61403825-97cd-4547-b4f2-b3ec011d3f83/b96a4573-5dc1-4181-add2-b3ec011d3f8a/podcast.rss"
+BBOC_CONFIRM_BOOST  <- 1.12        # EV multiplier when BBOC pick confirms model (tune 1.08–1.15)
+BBOC_LOOKBACK_DAYS  <- 7L          # days back to scan for new episodes
+BBOC_MAX_EPISODES   <- 5L          # max episodes to parse per run
+
+# ------------------------------------------------------------------------------
 # DATA PATHS
 # ------------------------------------------------------------------------------
 MASTER_CSV         <- "team_name_mappings_MASTER_CFB.csv"

@@ -46,11 +46,13 @@ signals_line <- function(flags, line_move) {
   if (is.na(flags) || !nzchar(flags)) return("💼 Model edge only")
   parts  <- strsplit(flags, "\\|")[[1]]
   labels <- character(0)
-  if ("SHARP"  %in% parts)
+  if ("SHARP"      %in% parts)
     labels <- c(labels, sprintf("📈 Sharp move (%.1f pts)", coalesce(as.numeric(line_move), 0)))
-  if ("BYE"    %in% parts) labels <- c(labels, "😴 Off bye")
-  if ("TREND"  %in% parts) labels <- c(labels, "📊 Trend agrees")
-  if ("PUBLIC" %in% parts) labels <- c(labels, "👥 Fading public")
+  if ("BYE"        %in% parts) labels <- c(labels, "😴 Off bye")
+  if ("TREND"      %in% parts) labels <- c(labels, "📊 Trend agrees")
+  if ("PUBLIC"     %in% parts) labels <- c(labels, "👥 Fading public")
+  if ("BBOC_LOVE"  %in% parts) labels <- c(labels, "🎙️ BBOC loves it")
+  if ("BBOC_LIKE"  %in% parts) labels <- c(labels, "🎙️ BBOC likes it")
   if (length(labels) == 0) return("💼 Model edge only")
   paste(labels, collapse = " | ")
 }
@@ -163,7 +165,23 @@ format_bet_card <- function(qb, bankroll) {
       sprintf("🏃 Away: %s", away_str),                                       "\n",
       sprintf("🏠 Home: %s", home_str),                                       "\n",
       signals_line(r$boost_flags, r$line_move),                              "\n",
-      value_line(r$bet_type, r$edge, r$ev, r$bet_amount)
+      value_line(r$bet_type, r$edge, r$ev, r$bet_amount),
+      # BBOC justification block — only when podcast intelligence fired
+      if (grepl("BBOC", coalesce(r$boost_flags, "")) &&
+          exists("bboc_picks", envir = .GlobalEnv)) {
+        bp <- get("bboc_picks", envir = .GlobalEnv)
+        bet_team <- if (r$bet_side == "home") r$canonical_home else
+                    if (r$bet_side == "away") r$canonical_away else NA_character_
+        bboc_row <- bp[!is.na(bp$team_mention) &
+                       bp$team_mention == coalesce(bet_team, "") &
+                       bp$market == r$bet_type, ]
+        if (nrow(bboc_row) > 0 && !is.na(bboc_row$bboc_justification[1])) {
+          # Truncate to first 2 justification entries for clean broadcast
+          justs <- strsplit(bboc_row$bboc_justification[1], " \\| ")[[1]]
+          justs <- head(justs, 2)
+          paste0("\n🎙️ BBOC: ", paste(justs, collapse = " | "))
+        } else ""
+      } else ""
     )
 
     blocks[i] <- block

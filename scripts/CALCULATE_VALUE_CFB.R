@@ -283,6 +283,43 @@ apply_boosts <- function(bet_row, game) {
   cw <- coalesce(bet_row$conf_weight_avg, 1.0)
   boost <- boost * cw
 
+  # 4f. BBOC confirmation — Stuckey/Collin Wilson (Action Network BBOC podcast)
+  # pick aligns with model side. Fires only when bboc_picks is populated and
+  # has a LOVE or LIKE tier pick for this game+market+side.
+  # Market mapping: SPREAD bet_side "home"/"away" → pick direction "FOR"/"FOR"
+  #   (team_mention = canonical_home or canonical_away)
+  # TOTAL: bet_side "over"/"under" → pick direction "OVER"/"UNDER"
+  if (exists("bboc_picks", envir = .GlobalEnv)) {
+    bp <- get("bboc_picks", envir = .GlobalEnv)
+    if (!is.null(bp) && nrow(bp) > 0) {
+      bboc_market <- bet_row$bet_type   # "SPREAD", "TOTAL", "ML"
+      bboc_team   <- if (bet_row$bet_side %in% c("home")) game$canonical_home
+                     else if (bet_row$bet_side == "away") game$canonical_away
+                     else NA_character_  # TOTAL handled by direction
+      bboc_dir    <- if (bet_row$bet_side %in% c("over", "under"))
+                       toupper(bet_row$bet_side) else "FOR"
+
+      # Match: same game + same market + (same team_mention OR same direction for TOTAL)
+      # Require LOVE or LIKE tier — LEAN is too soft to boost
+      bboc_match <- bp %>%
+        filter(
+          coalesce(game_id, "") == coalesce(bet_row$game_id, "X"),
+          market == bboc_market,
+          confidence_tier %in% c("LOVE", "LIKE"),
+          if (bboc_market == "TOTAL")
+            direction == bboc_dir
+          else
+            coalesce(team_mention, "") == coalesce(bboc_team, "X")
+        )
+
+      if (nrow(bboc_match) > 0) {
+        bboc_mult <- if (exists("BBOC_CONFIRM_BOOST")) BBOC_CONFIRM_BOOST else 1.12
+        boost <- boost * bboc_mult
+        flags <- c(flags, sprintf("BBOC_%s", bboc_match$confidence_tier[1]))
+      }
+    }
+  }
+
   list(boost = round(boost, 4), flags = paste(flags, collapse = "|"))
 }
 

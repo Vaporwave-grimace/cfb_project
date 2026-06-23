@@ -32,6 +32,7 @@ setwd("G:/My Drive/Scripting Projects/cfb_project")
 source("scripts/CONFIG.R")
 source("scripts/TEAM_NAME_NORMALIZER_CFB.R")
 source("scripts/scrape_portal_on3.R")
+source("scripts/scrape_talent_247.R")
 
 TRAINING_YEARS  <- 2013:2025
 API_SLEEP       <- 0.35     # seconds between requests (~3 req/s, well within CFBD limits)
@@ -220,52 +221,93 @@ pull_season <- function(yr) {
   })
   cat(sprintf("  Season stats: %d teams\n", nrow(stats)))
 
-  # 5a. Returning production (available 2014+) ----------------------------------
-  returning <- if (yr < 2014L) {
-    tibble()
-  } else {
-    tryCatch({
-      raw <- cfbd_get("/returning", list(year = yr))
+  # 5a. Returning production — computed from /player/usage year-over-year ------
+  #     CFBD /returning endpoint is Patreon-gated (returns empty on free tier).
+  #     Instead: fetch all player usage for yr-1 and yr; match by (player_id, team)
+  #     to find same-team returners; returning_pct = sum(usage[returners]) / sum(usage[all])
+  returning <- tryCatch({
+    fetch_usage <- function(y) {
+      Sys.sleep(API_SLEEP)
+      resp <- GET(
+        "https://api.collegefootballdata.com/player/usage",
+        add_headers(Authorization = paste("Bearer", api_key)),
+        query   = list(year = y, excludeGarbageTime = "true"),
+        timeout(30)
+      )
+      if (http_error(resp)) return(tibble())
+      raw <- fromJSON(content(resp, "text", encoding = "UTF-8"), flatten = TRUE)
+      if (length(raw) == 0 || !is.data.frame(raw)) return(tibble())
       tbl <- as_tibble(raw)
-      get_ret_col <- function(df, ...) {
-        for (nm in c(...)) if (nm %in% names(df)) return(as.numeric(df[[nm]]))
-        NA_real_
-      }
-      tbl %>%
-        transmute(
-          canonical_name = normalize_team_name(
-            if ("school" %in% names(tbl)) tbl$school else tbl$team,
-            mappings = master, source_col = "massey_name",
-            unmatched_log = "logs/unmatched_teams.csv"),
-          returning_pct  = get_ret_col(tbl, "percentPPA", "offense.total",
-                                       "percentSnaps", "total")
-        ) %>%
-        filter(!is.na(canonical_name), !is.na(returning_pct))
-    }, error = function(e) {
-      warning(sprintf("[%d] Returning failed: %s", yr, e$message)); tibble()
-    })
-  }
+      # Flatten nested usage column if present
+      if ("usage.overall" %in% names(tbl)) {
+        tbl %>% mutate(usage_overall = as.numeric(usage.overall),
+                       player_id     = as.character(id))
+      } else if ("usage" %in% names(tbl) && is.list(tbl$usage)) {
+        tbl %>% mutate(usage_overall = map_dbl(usage, ~ as.numeric(.x[["overall"]])),
+                       player_id     = as.character(id))
+      } else { tibble() }
+    }
+
+    prev_usage <- fetch_usage(yr - 1L)
+    curr_usage <- fetch_usage(yr)
+
+    if (nrow(prev_usage) == 0 || nrow(curr_usage) == 0) {
+      cat(sprintf("  Returning: 0 teams (usage data unavailable for %d or %d)\n", yr-1, yr))
+      tibble()  # NOTE: do NOT use return() here — it exits pull_season(), not tryCatch()
+    } else {
+
+    returning_ids <- intersect(
+      paste(prev_usage$player_id, prev_usage$team, sep = "|"),
+      paste(curr_usage$player_id, curr_usage$team, sep = "|")
+    )
+
+    result <- prev_usage %>%
+      filter(!is.na(usage_overall)) %>%
+      mutate(uid = paste(player_id, team, sep = "|"),
+             is_returning = uid %in% returning_ids) %>%
+      group_by(team) %>%
+      summarise(
+        total_usage   = sum(usage_overall, na.rm = TRUE),
+        ret_usage     = sum(usage_overall[is_returning], na.rm = TRUE),
+        returning_pct = if_else(total_usage > 0, ret_usage / total_usage, NA_real_),
+        .groups = "drop"
+      ) %>%
+      filter(!is.na(returning_pct), total_usage > 0) %>%
+      transmute(
+        canonical_name = normalize_team_name(team, mappings = master,
+                                              source_col    = "massey_name",
+                                              unmatched_log = "logs/unmatched_teams.csv"),
+        returning_pct
+      ) %>%
+      filter(!is.na(canonical_name))
+
+    result
+    }
+  }, error = function(e) {
+    warning(sprintf("[%d] Returning production failed: %s", yr, e$message)); tibble()
+  })
   cat(sprintf("  Returning: %d teams\n", nrow(returning)))
 
-  # 5b. Talent composite (247Sports, available 2015+) ---------------------------
-  talent <- if (yr < 2015L) {
-    tibble()
-  } else {
-    tryCatch({
-      raw <- cfbd_get("/teams/talent", list(year = yr))
-      tbl <- as_tibble(raw)
-      tbl %>%
+  # 5b. Talent composite — 247Sports prior-year recruiting class via Firecrawl -
+  #     CFBD /teams/talent is 404 on current API. Scrape directly from 247Sports.
+  #     Use prior-year class (yr-1) as preseason talent proxy (same as SP+ logic).
+  talent <- tryCatch({
+    raw <- scrape_talent_247(yr - 1L, api_key = creds$firecrawl_api_key)
+    if (nrow(raw) == 0L) {
+      tibble()
+    } else {
+      raw %>%
         transmute(
-          canonical_name = normalize_team_name(school, mappings = master,
-                                               source_col    = "massey_name",
-                                               unmatched_log = "logs/unmatched_teams.csv"),
-          talent_score   = as.numeric(talent)
+          canonical_name = normalize_team_name(team_name_raw, mappings = master,
+                                                source_col    = "massey_name",
+                                                unmatched_log = "logs/unmatched_teams.csv"),
+          talent_score
         ) %>%
         filter(!is.na(canonical_name), !is.na(talent_score))
-    }, error = function(e) {
-      warning(sprintf("[%d] Talent failed: %s", yr, e$message)); tibble()
-    })
-  }
+    }
+  }, error = function(e) {
+    warning(sprintf("[%d] 247Sports talent failed: %s", yr, e$message)); tibble()
+  })
   cat(sprintf("  Talent: %d teams\n", nrow(talent)))
 
   # 5c. On3 Transfer Portal (available 2022+) -----------------------------------

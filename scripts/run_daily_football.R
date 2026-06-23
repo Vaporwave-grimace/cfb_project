@@ -54,7 +54,7 @@ source("scripts/TEAM_NAME_NORMALIZER_CFB.R")
 # Logging setup
 # ==============================================================================
 
-LOG_FILE <- sprintf("logs/run_%s.log", format(Sys.time(), "%Y%m%d_%H%M"))
+LOG_FILE <- file.path("logs", format(Sys.Date(), "%Y-%m-%d.log"))
 dir.create("logs", showWarnings = FALSE)
 
 log_msg <- function(...) {
