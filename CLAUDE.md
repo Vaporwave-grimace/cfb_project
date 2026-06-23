@@ -1,5 +1,5 @@
 # mcFootball CFB Pipeline — Session State
-# Last updated: 2026-06-15 | Session 22
+# Last updated: 2026-06-23 | Session 23
 
 ## Project
 Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_football.R`). Markets: SPREAD / TOTAL / ML. Kelly 0.5 fractional sizing. Telegram + Discord broadcast.
@@ -29,7 +29,7 @@ Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_
 7. ✅ 10–15 pt edge bucket validated — 63.5% ATS (40/63) with ELO active; was 46% without ELO (ELO filters spurious large edges)
 
 ## Known Warnings (pre-season, non-fatal)
-- Warnings 3–6: talent/returning production API calls return HTML instead of JSON — expected until season live
+- Warnings 3–6: talent/returning production via Firecrawl/player/usage; 50 P4 teams for talent, 130-138 for returning — G5 vs G5 matchups default to NA → median imputed → 0 diff
 - Warning 7: 1–2 games with NA ratings when Massey/Sagarin doesn't cover both teams
 - Warning 9: games with |proj_spread| > 35 pts — expected in pre-season schedule
 - Warning 10: BYE_WEEK_TRACKER — no schedule found (pre-season)
@@ -67,7 +67,57 @@ Enable line logger in late August: `Enable-ScheduledTask -TaskName "CFB_LineLogg
 
 ## Drop-in for Next Session
 
-Continuing mcFootball CFB pipeline. Read `CFB_PROJECT_BIBLE.md` for full history. Session 22 complete — 2025 backtest fully validated with ELO + scheme matchup. All model weights confirmed. **Before first live use, run `source("scripts/db_schema_init.R")`**. Enable `CFB_LineLogger_Hourly` task in late August. Next live action Sep 2026.
+Continuing mcFootball CFB pipeline. Read `CFB_PROJECT_BIBLE.md` for full history. Session 23 complete — ML v4 training data rebuilt (9443 rows / 13 seasons) with 247Sports talent, returning production, turnover margin, SP+ special teams, and On3 portal index. Models retrained; spread MAE 10.46, total MAE 12.48. **Before first live use, run `source("scripts/db_schema_init.R")`**. Enable `CFB_LineLogger_Hourly` task in late August. Next live action Sep 2026.
+
+## Session 23 Summary (2026-06-23)
+
+### ML Training Data v4 — 5 New Features + Bug Fixes
+
+**New scraper: `scripts/scrape_talent_247.R`**
+- Firecrawl scrape of `247sports.com/season/{year}-football/CompositeTeamRankings/`
+- Returns `talent_score` (composite total, e.g. 317.19 for Georgia 2024) + avg rating + commits
+- 49-50 teams/year (P4 heavy — page lazy-loads; G5 coverage via median imputation)
+- Key fix: `perl=TRUE` required in `sub("^\\[([^\\]]+)\\].*", "\\1", line, perl=TRUE)` — without it POSIX ERE treats `[^\]]` as "not-backslash" and sub() returns the full markdown link unchanged
+
+**Bug fixes in `scripts/build_ml_training_data.R`**
+- `return()` inside `tryCatch({...})` exits the *enclosing function* (`pull_season()`), not the tryCatch — was silently dropping 2013 season (and any year where usage/talent data unavailable). Fixed throughout: bare `tibble()` as last expression in `if/else` block
+- Returning production `else {` block was missing closing `}` — causing parse error at the `}, error=` boundary
+- 247Sports talent `tryCatch` had same `return(tibble())` pattern — changed to `if/else`
+
+**New ML features (all as `home - away` diffs):**
+| Feature | Source | Coverage | Importance (total model) |
+|---|---|---|---|
+| `returning_pct_diff` | CFBD `/player/usage` year-over-year | 130-138 teams (2014+) | **#3 (0.0181)** |
+| `talent_diff` | 247Sports composite via Firecrawl | 49-50 teams/year | #8 (0.00846) |
+| `portal_index_diff` | On3 portal via Firecrawl | 50 teams (2022+) | ~0 |
+| `turnover_margin_diff` | CFBD `/stats/season` | 127-138 teams | #4 in both models |
+| `sp_st_diff` | CFBD `/ratings/sp` special teams | 123-134 teams | #9 spread |
+
+**Returning production computation** — CFBD `/returning` is Patreon-gated (returns `"\n"`). Instead: `fetch_usage(yr-1)` + `fetch_usage(yr)`, intersect on `(player_id, team)`, compute `ret_usage/total_usage` per team. ~2 API calls/year.
+
+**247Sports talent** — CFBD `/teams/talent` is 404 on current API path. Scrape directly. Prior-year class (yr-1) used as preseason talent proxy (same philosophy as SP+).
+
+**Training data v4 results:**
+- **9,443 rows / 13 seasons (2013–2025)** — previously 8,720 rows / 12 seasons (2013 was silently dropped)
+- All 13 seasons present; returning_pct has 0 coverage for 2013 (no 2012 usage data) — median imputed
+
+**Model v4 results (2025 holdout, train 2013-2024):**
+| Model | MAE | vs v1 baseline |
+|---|---|---|
+| Spread | **10.46 pts** | v1: 10.45 — flat |
+| Total | **12.48 pts** | v1: 12.43 — flat |
+
+- `returning_pct_diff` now #3 feature in total model — signal confirmed present, will strengthen with more seasons
+- `turnover_margin_diff` is #4 in both spread and total models; `talent_diff` #8 in total
+- Spread model still dominated by `elo_diff_scaled` (93% importance) — new features provide marginal signal on totals
+
+**`scripts/ml_model_cfb.R` — predictor lists updated:**
+```r
+SPREAD_PREDICTORS: added sp_st_diff, turnover_margin_diff, returning_pct_diff, talent_diff, portal_index_diff
+TOTAL_PREDICTORS:  added turnover_margin_diff, returning_pct_diff, talent_diff, portal_index_diff
+```
+
+---
 
 ## Session 22 Summary (2026-06-15)
 
