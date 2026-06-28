@@ -1,5 +1,5 @@
 # mcFootball CFB Pipeline — Session State
-# Last updated: 2026-06-23 | Session 23
+# Last updated: 2026-06-28 | Session 24
 
 ## Project
 Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_football.R`). Markets: SPREAD / TOTAL / ML. Kelly 0.5 fractional sizing. Telegram + Discord broadcast.
@@ -16,6 +16,12 @@ Modular NCAA CFB sports betting pipeline in R. 21-step orchestrator (`run_daily_
   - `scripts/CONFIG.R` — `LEAGUE_AVG_PACE <- 70.0`, `TEMPO_TOTAL_WEIGHT <- 0.15` added.
   - MASTER CSV: 138 rows. Delaware + Missouri State added. massey_name corrections: Missouri State → "Missouri State", Boise State → "Boise St".
   - Massey scraper: timeout 20s → 60s; one retry added on `Page.loadEventFired` timeout.
+
+## Session 24 Changes (2026-06-28)
+
+- **`scripts/SCRAPE_CFB_DATA.R`** — `scrape_schedule()` now tries `cfbfastR::cfbd_game_info()` as primary (falls back to httr); `Sys.setenv(CFBD_API_KEY)` set before cfbfastR calls; `scrape_recruiting()` added — fetches 3-year 247Sports composite via `cfbfastR::cfbd_recruiting_team()`, writes `clean/cfb_recruiting_YYYY.csv`
+- **`scripts/CONFIG.R`** — `WEIGHT_RECRUITING = 0.08` added; weights adjusted: SP+ 0.41, Sagarin 0.25, Massey 0.17, ELO 0.09
+- **`scripts/MERGE_ALL_RATINGS_CFB.R`** — recruiting loaded as 5th source; `z_rec` z-scored; weighted into blend matrix; `recruiting_composite` in output CSV
 
 ## Outstanding Before Sep 2026
 

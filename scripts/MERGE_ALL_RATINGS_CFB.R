@@ -77,23 +77,25 @@ load_or_get <- function(env_name, file_pattern, date = Sys.Date()) {
 # ------------------------------------------------------------------------------
 merge_all_ratings <- function(date = Sys.Date()) {
 
-  # --- Load four sources ---
-  sp_plus  <- load_or_get("cfbd_sp_plus",    "^cfb_ratings_\\d{4}\\.csv$",          date)
-  sagarin  <- load_or_get("sagarin_ratings", "^sagarin_ratings_\\d{8}\\.csv$",       date)
-  massey   <- load_or_get("massey_ratings",  "^massey_ratings_\\d{8}\\.csv$",        date)
-  elo      <- load_or_get("cfbd_elo_ratings","^cfb_elo_ratings_\\d{4}\\.csv$",       date)
+  # --- Load five sources ---
+  sp_plus     <- load_or_get("cfbd_sp_plus",    "^cfb_ratings_\\d{4}\\.csv$",          date)
+  sagarin     <- load_or_get("sagarin_ratings", "^sagarin_ratings_\\d{8}\\.csv$",       date)
+  massey      <- load_or_get("massey_ratings",  "^massey_ratings_\\d{8}\\.csv$",        date)
+  elo         <- load_or_get("cfbd_elo_ratings","^cfb_elo_ratings_\\d{4}\\.csv$",       date)
+  recruiting  <- load_or_get("cfbd_recruiting", "^cfb_recruiting_\\d{4}\\.csv$",        date)
 
   # At least one source required
   if (is.null(sp_plus) && is.null(sagarin) && is.null(massey) && is.null(elo)) {
     stop("[MERGE] All rating sources are NULL — cannot build blended ratings.")
   }
 
-  n_sp  <- if (!is.null(sp_plus))  nrow(sp_plus)  else 0
-  n_sag <- if (!is.null(sagarin))  nrow(sagarin)   else 0
-  n_mas <- if (!is.null(massey))   nrow(massey)    else 0
-  n_elo <- if (!is.null(elo))      nrow(elo)       else 0
-  cat(sprintf("[MERGE] Sources — SP+: %d | Sagarin: %d | Massey: %d | ELO: %d teams\n",
-              n_sp, n_sag, n_mas, n_elo))
+  n_sp  <- if (!is.null(sp_plus))    nrow(sp_plus)    else 0
+  n_sag <- if (!is.null(sagarin))    nrow(sagarin)    else 0
+  n_mas <- if (!is.null(massey))     nrow(massey)     else 0
+  n_elo <- if (!is.null(elo))        nrow(elo)        else 0
+  n_rec <- if (!is.null(recruiting)) nrow(recruiting) else 0
+  cat(sprintf("[MERGE] Sources — SP+: %d | Sagarin: %d | Massey: %d | ELO: %d | Recruiting: %d teams\n",
+              n_sp, n_sag, n_mas, n_elo, n_rec))
 
   # --- Build master team list from all available sources ---
   all_teams <- unique(c(
@@ -154,28 +156,37 @@ merge_all_ratings <- function(date = Sys.Date()) {
     base <- base %>% mutate(elo_rating = NA_real_)
   }
 
+  if (!is.null(recruiting)) {
+    rec_join <- recruiting %>% select(canonical_name, recruiting_composite)
+    base <- left_join(base, rec_join, by = "canonical_name")
+  } else {
+    base <- base %>% mutate(recruiting_composite = NA_real_)
+  }
+
   # --- Z-score each source ---
   base <- base %>%
     mutate(
       z_sp  = safe_zscore(sp_overall),
       z_sag = safe_zscore(sag_value),
       z_mas = safe_zscore(massey_rating),
-      z_elo = safe_zscore(elo_rating)
+      z_elo = safe_zscore(elo_rating),
+      z_rec = safe_zscore(recruiting_composite)
     )
 
   # --- Weighted blend (weights renormalized per-row when a source is missing) ---
-  z_matrix <- base %>% select(z_sp, z_sag, z_mas, z_elo) %>% as.matrix()
+  z_matrix <- base %>% select(z_sp, z_sag, z_mas, z_elo, z_rec) %>% as.matrix()
   weights  <- c(
     z_sp  = WEIGHT_SP_PLUS,
     z_sag = WEIGHT_SAGARIN,
     z_mas = WEIGHT_MASSEY,
-    z_elo = if (exists("WEIGHT_ELO")) WEIGHT_ELO else 0.10
+    z_elo = if (exists("WEIGHT_ELO"))        WEIGHT_ELO        else 0.09,
+    z_rec = if (exists("WEIGHT_RECRUITING")) WEIGHT_RECRUITING else 0.08
   )
 
   base <- base %>%
     mutate(
       z_blended   = weighted_blend(z_matrix, weights),
-      n_sources   = rowSums(!is.na(z_matrix)),
+      n_sources   = rowSums(!is.na(z_matrix[, c("z_sp","z_sag","z_mas","z_elo")])),
       # Rescale to SP+ points-above-average units
       # If SP+ is available: use its mean/sd as the reference scale
       # Otherwise fall back to a ±20 point range (z * 12)
@@ -210,7 +221,8 @@ merge_all_ratings <- function(date = Sys.Date()) {
       sagarin_predictor,
       massey_rating,
       elo_rating,
-      z_sp, z_sag, z_mas, z_elo, z_blended  # kept for diagnostics / recalibration
+      recruiting_composite,
+      z_sp, z_sag, z_mas, z_elo, z_rec, z_blended
     ) %>%
     arrange(desc(blended_rating))
 
@@ -218,9 +230,10 @@ merge_all_ratings <- function(date = Sys.Date()) {
   write_csv(output, out_path)
 
   n_elo_blended <- sum(!is.na(output$elo_rating))
+  n_rec_blended <- sum(!is.na(output$recruiting_composite))
   cat(sprintf(
-    "[MERGE] Blended ratings: %d teams (ELO available: %d) | top 5: %s\n",
-    nrow(output), n_elo_blended,
+    "[MERGE] Blended ratings: %d teams (ELO: %d | Recruiting: %d) | top 5: %s\n",
+    nrow(output), n_elo_blended, n_rec_blended,
     paste(head(output$canonical_name, 5), collapse = ", ")
   ))
   cat(sprintf("[MERGE] Rating range: %.1f to %.1f pts | saved → %s\n",

@@ -53,13 +53,30 @@ cfb_season_year <- function(date = Sys.Date()) {
 # Determine current week from the CFBD calendar
 cfbd_current_week <- function(api_key, year, date = Sys.Date()) {
   tryCatch({
-    cal <- cfbd_get(sprintf("/calendar/%d", year), api_key = api_key)
-    cal <- as_tibble(cal) %>%
-      mutate(
-        first_game_start = as.Date(firstGameStart),
-        last_game_start  = as.Date(lastGameStart)
+    # Primary: cfbfastR (no manual auth headers)
+    cal <- if (requireNamespace("cfbfastR", quietly = TRUE)) {
+      tryCatch(
+        cfbfastR::cfbd_calendar(year = year),
+        error = function(e) { cat("[CFBD] cfbfastR calendar fallback to httr:", e$message, "\n"); NULL }
       )
-    # Find the week whose window contains today, or the next upcoming week
+    } else NULL
+
+    if (!is.null(cal) && nrow(cal) > 0) {
+      cal <- cal %>%
+        mutate(
+          first_game_start = as.Date(first_game_start),
+          last_game_start  = as.Date(last_game_start)
+        )
+    } else {
+      # httr fallback
+      raw <- cfbd_get(sprintf("/calendar/%d", year), api_key = api_key)
+      cal <- as_tibble(raw) %>%
+        mutate(
+          first_game_start = as.Date(firstGameStart),
+          last_game_start  = as.Date(lastGameStart)
+        )
+    }
+
     upcoming <- cal %>%
       filter(last_game_start >= date) %>%
       arrange(week) %>%
@@ -83,24 +100,49 @@ cfbd_current_week <- function(api_key, year, date = Sys.Date()) {
 scrape_sp_plus <- function(api_key, year, master) {
   cat(sprintf("[CFBD] Fetching SP+ ratings for %d...\n", year))
 
-  raw <- cfbd_get("/ratings/sp", params = list(year = year), api_key = api_key)
+  # Primary: cfbfastR (maintained wrapper, snake_case column names)
+  raw_cfbfastr <- if (requireNamespace("cfbfastR", quietly = TRUE))
+    tryCatch(cfbfastR::cfbd_ratings_sp(year = year),
+             error = function(e) { cat("[CFBD] cfbfastR SP+ fallback to httr:", e$message, "\n"); NULL })
+  else NULL
 
-  if (length(raw) == 0 || nrow(as.data.frame(raw)) == 0) {
+  df <- if (!is.null(raw_cfbfastr) && nrow(raw_cfbfastr) > 0) {
+    raw_cfbfastr %>%
+      transmute(
+        year       = as.integer(year),
+        team_raw   = team,
+        conference = conference,
+        sp_overall = as.numeric(rating),
+        sp_offense = as.numeric(offense_rating),
+        sp_defense = as.numeric(defense_rating),
+        sp_st      = if ("special_teams_rating" %in% names(raw_cfbfastr))
+                       as.numeric(special_teams_rating) else NA_real_
+      )
+  } else {
+    # httr fallback
+    raw <- cfbd_get("/ratings/sp", params = list(year = year), api_key = api_key)
+    if (length(raw) == 0 || nrow(as.data.frame(raw)) == 0) {
+      warning("[CFBD] SP+ ratings returned empty — off-season or pre-season scrape?")
+      return(NULL)
+    }
+    as_tibble(raw) %>%
+      transmute(
+        year       = as.integer(year),
+        team_raw   = team,
+        conference = conference,
+        sp_overall = as.numeric(rating),
+        sp_offense = as.numeric(offense.rating),
+        sp_defense = as.numeric(defense.rating),
+        sp_st      = if ("specialTeams.rating" %in% names(.)) as.numeric(specialTeams.rating) else NA_real_
+      )
+  }
+
+  if (is.null(df) || nrow(df) == 0) {
     warning("[CFBD] SP+ ratings returned empty — off-season or pre-season scrape?")
     return(NULL)
   }
 
-  df <- as_tibble(raw) %>%
-    transmute(
-      year            = as.integer(year),
-      team_raw        = team,
-      conference      = conference,
-      sp_overall      = as.numeric(rating),
-      sp_offense      = as.numeric(offense.rating),
-      sp_defense      = as.numeric(defense.rating),
-      # Special teams if available
-      sp_st           = if ("specialTeams.rating" %in% names(.)) as.numeric(specialTeams.rating) else NA_real_
-    ) %>%
+  df <- df %>%
     mutate(
       canonical_name = normalize_team_name(team_raw, mappings = master,
                                             source_col = "massey_name",
@@ -213,35 +255,54 @@ scrape_team_stats <- function(api_key, year, master) {
 scrape_schedule <- function(api_key, year, week, master, date = Sys.Date()) {
   cat(sprintf("[CFBD] Fetching schedule for %d week %s...\n", year, week))
 
-  params <- list(year = year, week = week, seasonType = "regular",
-                 division = "fbs")
+  # Primary: cfbfastR
+  raw_cfbfastr <- if (requireNamespace("cfbfastR", quietly = TRUE))
+    tryCatch(
+      cfbfastR::cfbd_game_info(year = year, week = week, season_type = "regular",
+                               division = "fbs"),
+      error = function(e) { cat("[CFBD] cfbfastR schedule fallback to httr:", e$message, "\n"); NULL }
+    )
+  else NULL
 
-  raw <- cfbd_get("/games", params = params, api_key = api_key)
+  raw <- if (!is.null(raw_cfbfastr) && nrow(raw_cfbfastr) > 0) {
+    raw_cfbfastr
+  } else {
+    raw_httr <- cfbd_get("/games",
+                         params = list(year = year, week = week,
+                                       seasonType = "regular", division = "fbs"),
+                         api_key = api_key)
+    if (length(raw_httr) == 0 || nrow(as.data.frame(raw_httr)) == 0) {
+      warning(sprintf("[CFBD] No games found for year=%d week=%s.", year, week))
+      return(NULL)
+    }
+    as_tibble(raw_httr)
+  }
 
-  if (length(raw) == 0 || nrow(as.data.frame(raw)) == 0) {
+  if (is.null(raw) || nrow(raw) == 0) {
     warning(sprintf("[CFBD] No games found for year=%d week=%s.", year, week))
     return(NULL)
   }
 
-  df <- as_tibble(raw) %>%
+  # Column names are consistent between cfbfastR and raw httr (both snake_case from CFBD)
+  safe_col <- function(nm, default) if (nm %in% names(raw)) raw[[nm]] else default
+  df <- raw %>%
     transmute(
-      game_id          = as.character(id),
-      season           = as.integer(season),
-      week             = as.integer(week),
-      season_type      = season_type,
-      scheduled_time   = start_date,
-      neutral_site     = as.logical(neutral_site),
-      conference_game  = as.logical(conference_game),
-      home_team_raw    = home_team,
-      away_team_raw    = away_team,
-      home_conference  = home_conference,
-      away_conference  = away_conference,
-      venue            = if ("venue" %in% names(.)) venue else NA_character_,
-      home_points      = if ("home_points" %in% names(.)) as.integer(home_points) else NA_integer_,
-      away_points      = if ("away_points" %in% names(.)) as.integer(away_points) else NA_integer_
+      game_id         = as.character(id),
+      season          = as.integer(season),
+      week            = as.integer(week),
+      season_type     = season_type,
+      scheduled_time  = start_date,
+      neutral_site    = as.logical(neutral_site),
+      conference_game = as.logical(conference_game),
+      home_team_raw   = home_team,
+      away_team_raw   = away_team,
+      home_conference = home_conference,
+      away_conference = away_conference,
+      venue           = if ("venue" %in% names(.)) venue else NA_character_,
+      home_points     = if ("home_points" %in% names(.)) as.integer(home_points) else NA_integer_,
+      away_points     = if ("away_points" %in% names(.)) as.integer(away_points) else NA_integer_
     ) %>%
     mutate(
-      # Normalize team names via Massey column (CFBD uses full team names)
       canonical_home = normalize_team_name(home_team_raw, mappings = master,
                                             source_col = "massey_name",
                                             unmatched_log = "logs/unmatched_teams.csv"),
@@ -249,7 +310,6 @@ scrape_schedule <- function(api_key, year, week, master, date = Sys.Date()) {
                                             source_col = "massey_name",
                                             unmatched_log = "logs/unmatched_teams.csv")
     ) %>%
-    # Keep only FBS-vs-FBS games (both teams resolved)
     filter(!is.na(canonical_home), !is.na(canonical_away)) %>%
     select(game_id, season, week, season_type, scheduled_time, neutral_site,
            conference_game, canonical_home, canonical_away,
@@ -272,20 +332,29 @@ scrape_schedule <- function(api_key, year, week, master, date = Sys.Date()) {
 scrape_elo_ratings <- function(api_key, year, master) {
   cat(sprintf("[CFBD] Fetching ELO ratings for %d...\n", year))
 
-  raw <- tryCatch(
-    cfbd_get("/ratings/elo", params = list(year = year), api_key = api_key),
-    error = function(e) {
-      warning(sprintf("[CFBD] ELO ratings failed (non-fatal): %s", e$message))
-      NULL
-    }
-  )
+  # Primary: cfbfastR
+  raw_cfbfastr <- if (requireNamespace("cfbfastR", quietly = TRUE))
+    tryCatch(cfbfastR::cfbd_ratings_elo(year = year),
+             error = function(e) { cat("[CFBD] cfbfastR ELO fallback to httr:", e$message, "\n"); NULL })
+  else NULL
 
-  if (is.null(raw) || length(raw) == 0) {
+  raw <- if (!is.null(raw_cfbfastr) && nrow(raw_cfbfastr) > 0) {
+    raw_cfbfastr
+  } else {
+    tryCatch(
+      as_tibble(cfbd_get("/ratings/elo", params = list(year = year), api_key = api_key)),
+      error = function(e) {
+        warning(sprintf("[CFBD] ELO ratings failed (non-fatal): %s", e$message)); NULL
+      }
+    )
+  }
+
+  if (is.null(raw) || nrow(raw) == 0) {
     warning("[CFBD] ELO ratings returned empty — pre-season or no data yet.")
     return(NULL)
   }
 
-  df <- as_tibble(raw) %>%
+  df <- raw %>%
     # Most recent week per team (highest week number = current rating)
     group_by(team) %>%
     slice_max(order_by = as.integer(week), n = 1, with_ties = FALSE) %>%
@@ -314,7 +383,67 @@ scrape_elo_ratings <- function(api_key, year, master) {
 }
 
 # ------------------------------------------------------------------------------
-# 5. Orchestrator — called by run_daily_football.R Step 4
+# 5. Recruiting composite — 247Sports 3-year average via cfbfastR
+#    Talent proxy for early-season weeks before SP+ stabilizes.
+#    Output: canonical_name, recruiting_composite, recruiting_year_range
+# ------------------------------------------------------------------------------
+scrape_recruiting <- function(api_key, year, master, n_years = 3L) {
+  cat(sprintf("[CFBD] Fetching recruiting composites (%d–%d)...\n",
+              year - n_years + 1L, year))
+
+  years <- seq(year - n_years + 1L, year)
+  raw_list <- lapply(years, function(yr) {
+    tryCatch({
+      if (requireNamespace("cfbfastR", quietly = TRUE)) {
+        df <- cfbfastR::cfbd_recruiting_team(year = yr)
+      } else {
+        r <- cfbd_get(sprintf("/recruiting/teams?year=%d", yr), api_key = api_key)
+        df <- as_tibble(do.call(rbind, lapply(r, as.data.frame)))
+      }
+      if (is.null(df) || nrow(df) == 0) return(NULL)
+      df %>%
+        select(team = any_of(c("team", "Team")),
+               points = any_of(c("points", "Points"))) %>%
+        mutate(yr = yr)
+    }, error = function(e) {
+      cat(sprintf("[CFBD] Recruiting %d failed: %s\n", yr, e$message)); NULL
+    })
+  })
+
+  raw <- bind_rows(Filter(Negate(is.null), raw_list))
+  if (nrow(raw) == 0) {
+    warning("[CFBD] Recruiting: no data retrieved")
+    return(NULL)
+  }
+
+  # Average composite points across available years per team
+  df <- raw %>%
+    group_by(team) %>%
+    summarise(
+      recruiting_composite = mean(as.numeric(points), na.rm = TRUE),
+      recruiting_year_range = paste(range(yr), collapse = "–"),
+      .groups = "drop"
+    ) %>%
+    mutate(
+      canonical_name = normalize_team_name(team, mappings = master,
+                                           source_col = "massey_name",
+                                           unmatched_log = "logs/unmatched_teams.csv")
+    ) %>%
+    filter(!is.na(canonical_name)) %>%
+    select(canonical_name, recruiting_composite, recruiting_year_range)
+
+  out_path <- sprintf("clean/cfb_recruiting_%d.csv", year)
+  write_csv(df, out_path)
+  cat(sprintf("[CFBD] Recruiting: %d teams | composite range %.0f–%.0f → %s\n",
+              nrow(df),
+              min(df$recruiting_composite, na.rm = TRUE),
+              max(df$recruiting_composite, na.rm = TRUE),
+              out_path))
+  df
+}
+
+# ------------------------------------------------------------------------------
+# 6. Orchestrator — called by run_daily_football.R Step 4
 # ------------------------------------------------------------------------------
 run_cfbd_scrape <- function(master = NULL, date = Sys.Date()) {
 
@@ -324,6 +453,9 @@ run_cfbd_scrape <- function(master = NULL, date = Sys.Date()) {
   if (is.null(api_key) || nchar(api_key) < 10) {
     stop("[CFBD] cfbd_api_key missing or too short in credentials.json")
   }
+
+  # Make API key available to cfbfastR (reads CFBD_API_KEY env var)
+  Sys.setenv(CFBD_API_KEY = api_key)
 
   # Load MASTER if not passed in
   if (is.null(master)) {
@@ -360,22 +492,30 @@ run_cfbd_scrape <- function(master = NULL, date = Sys.Date()) {
     error = function(e) { warning(sprintf("[CFBD] ELO failed: %s", e$message)); NULL }
   )
 
+  cfbd_recruiting <- tryCatch(
+    scrape_recruiting(api_key = api_key, year = year, master = master),
+    error = function(e) { warning(sprintf("[CFBD] Recruiting failed: %s", e$message)); NULL }
+  )
+
   # Assign to global env for downstream pipeline steps
-  if (!is.null(cfbd_sp_plus))      assign("cfbd_sp_plus",      cfbd_sp_plus,      envir = .GlobalEnv)
-  if (!is.null(cfbd_team_stats))   assign("cfbd_team_stats",   cfbd_team_stats,   envir = .GlobalEnv)
-  if (!is.null(cfbd_schedule))     assign("cfbd_schedule",     cfbd_schedule,     envir = .GlobalEnv)
-  if (!is.null(cfbd_elo_ratings))  assign("cfbd_elo_ratings",  cfbd_elo_ratings,  envir = .GlobalEnv)
+  if (!is.null(cfbd_sp_plus))     assign("cfbd_sp_plus",     cfbd_sp_plus,     envir = .GlobalEnv)
+  if (!is.null(cfbd_team_stats))  assign("cfbd_team_stats",  cfbd_team_stats,  envir = .GlobalEnv)
+  if (!is.null(cfbd_schedule))    assign("cfbd_schedule",    cfbd_schedule,    envir = .GlobalEnv)
+  if (!is.null(cfbd_elo_ratings)) assign("cfbd_elo_ratings", cfbd_elo_ratings, envir = .GlobalEnv)
+  if (!is.null(cfbd_recruiting))  assign("cfbd_recruiting",  cfbd_recruiting,  envir = .GlobalEnv)
 
   n_games <- if (!is.null(cfbd_schedule)) nrow(cfbd_schedule) else 0
   cat(sprintf(
-    "[CFBD] Scrape complete — %d SP+ | %d stats | %d ELO | %d games this week.\n",
+    "[CFBD] Scrape complete — %d SP+ | %d stats | %d ELO | %d recruiting | %d games this week.\n",
     if (!is.null(cfbd_sp_plus))     nrow(cfbd_sp_plus)     else 0,
     if (!is.null(cfbd_team_stats))  nrow(cfbd_team_stats)  else 0,
     if (!is.null(cfbd_elo_ratings)) nrow(cfbd_elo_ratings) else 0,
+    if (!is.null(cfbd_recruiting))  nrow(cfbd_recruiting)  else 0,
     n_games))
 
   invisible(list(sp_plus = cfbd_sp_plus, team_stats = cfbd_team_stats,
-                 schedule = cfbd_schedule, elo_ratings = cfbd_elo_ratings))
+                 schedule = cfbd_schedule, elo_ratings = cfbd_elo_ratings,
+                 recruiting = cfbd_recruiting))
 }
 
 # Run immediately when sourced by pipeline

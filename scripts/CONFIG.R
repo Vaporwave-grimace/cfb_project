@@ -67,10 +67,11 @@ RIVALRY_SOFTEN_PTS <- 1.5          # Reduce effective spread edge for rivalry ga
 # ELO is especially valuable early season before SP+ stabilizes.
 # Adjust weights after validation against 2025 CFB season MAE.
 # ------------------------------------------------------------------------------
-WEIGHT_SP_PLUS     <- 0.45
-WEIGHT_SAGARIN     <- 0.27
-WEIGHT_MASSEY      <- 0.18
-WEIGHT_ELO         <- 0.10   # CFBD /ratings/elo — Elo rating per team, latest week
+WEIGHT_SP_PLUS     <- 0.41
+WEIGHT_SAGARIN     <- 0.25
+WEIGHT_MASSEY      <- 0.17
+WEIGHT_ELO         <- 0.09   # CFBD /ratings/elo — Elo rating per team, latest week
+WEIGHT_RECRUITING  <- 0.08   # 247Sports 3-yr composite — talent proxy; decays to 0 after Week 4
 
 # ------------------------------------------------------------------------------
 # SPREAD FORMULA CALIBRATION
