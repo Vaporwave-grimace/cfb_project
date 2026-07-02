@@ -34,9 +34,9 @@ source("scripts/db_init_bets.R")
 # ------------------------------------------------------------------------------
 cat("[SCHEMA_INIT] Step 2: cfb_line_movement.sqlite\n")
 
-LM_DB <- "outputs/cfb_line_movement.sqlite"
+LM_DB <- "C:/Users/Mike/sports_data/cfb_line_movement.sqlite"
 
-if (!dir.exists("outputs")) dir.create("outputs", recursive = TRUE)
+if (!dir.exists("C:/Users/Mike/sports_data")) dir.create("C:/Users/Mike/sports_data", recursive = TRUE)
 
 con_lm <- dbConnect(RSQLite::SQLite(), LM_DB)
 dbExecute(con_lm, "PRAGMA journal_mode=WAL")

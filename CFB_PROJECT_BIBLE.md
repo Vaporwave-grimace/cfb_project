@@ -1,6 +1,6 @@
 # ==============================================================================
 # mcFootball PROJECT BIBLE
-# Last updated: 2026-05-22  |  Session: 10
+# Last updated: 2026-07-02  |  Session: 11
 # Maintained by: Grimace
 # Update cadence: append a new ## SESSION entry after every 20-response chat
 # ==============================================================================
@@ -273,6 +273,25 @@ cfb_project/
 ---
 
 ## SESSION LOG
+
+---
+
+### Session Log — 2026-06-28 (Session 24)
+
+**Changes:**
+- **`scripts/SCRAPE_CFB_DATA.R`** — `scrape_schedule()` now tries `cfbfastR::cfbd_game_info()` as primary (falls back to httr); `Sys.setenv(CFBD_API_KEY)` set before cfbfastR calls. Added `scrape_recruiting()`: fetches 3-year 247Sports composite via `cfbfastR::cfbd_recruiting_team()`, writes `clean/cfb_recruiting_YYYY.csv`.
+- **`scripts/CONFIG.R`** — `WEIGHT_RECRUITING = 0.08` added; rating blend weights adjusted: SP+ 0.41, Sagarin 0.25, Massey 0.17, ELO 0.09.
+- **`scripts/MERGE_ALL_RATINGS_CFB.R`** — recruiting loaded as 5th source; `z_rec` z-scored and weighted into blend matrix; `recruiting_composite` in output CSV.
+
+**Decisions:**
+- Recruiting weight (0.08) is a conservative prior. Dominated by cfbfastR's 247Sports composite — 3-year average reduces single-class noise.
+- cfbfastR used as primary schedule fetcher to standardize API call pattern (falls back to httr for robustness).
+
+**Issues / Open Items:**
+- LINE_MOVEMENT_LOGGER_CFB task paused until late August (preseason lines static; burning Odds API quota).
+- Next live action September 2026. Enable `CFB_LineLogger_Hourly` in late August.
+
+---
 
 ### SESSION 1 (Chat 1, Response 1)
 **Date:** 2026-05-08
@@ -1003,3 +1022,126 @@ Priority for Session 6:
 1. Re-run BACKTEST_2025.R with PPA weights active (PPA_SPREAD_WEIGHT=5.0, EXPL_TOTAL_WEIGHT=3.0, SUCCESS_SPREAD_WEIGHT=2.0). Verify 55.0% ATS baseline holds. If it regresses, tune weights down or zero them to isolate.
 2. Verify home_conference/away_conference columns survive standardize_data_cfb.R → games_with_ratings so conf_weight_avg is live in CALCULATE_VALUE_CFB.R.
 3. Stretch: broadcast_football.R end-to-end test, then Monte Carlo groundwork (Phase 2 — see GENERATE_PREDICTIONS_CFB.R header for full implementation plan).
+
+---
+
+## SESSION 11 (2026-07-02)
+
+### CFB — Database Migration + Havoc/Portal Build Spec (5 Phases)
+
+#### 5.1 — CFB SQLite DBs moved off Google Drive
+
+Both CFB databases moved from relative `outputs/` paths (on Google Drive) to
+`C:/Users/Mike/sports_data/` to avoid WAL/SHM locking under Drive sync.
+
+**Files updated:**
+- `scripts/CONFIG.R` — `CFB_BETS_DB` → `C:/Users/Mike/sports_data/cfb_bets.sqlite`
+- `scripts/fetch_odds_football.R` — `DB_PATH` → `C:/Users/Mike/sports_data/cfb_line_movement.sqlite`
+- `scripts/LINE_MOVEMENT_LOGGER_CFB.R` — `DB_PATH` → same
+- `scripts/TREND_ANALYSIS_CFB.R` — `db_path` (inside `analyze_trends()`) → same
+- `scripts/db_schema_init.R` — `LM_DB` + dir.create target → same
+- `scripts/BET_SETTLEMENT.R` — `load_closing_lines()` default param → same
+
+Run `db_schema_init.R` once after first pull to initialize DBs at new location.
+Existing data in `outputs/*.sqlite` must be manually copied if needed.
+
+#### Phase 1 — Havoc Rate Integration
+
+**New columns in `team_metrics` (TEAM_METRICS.R `fetch_advanced_stats()`):**
+- `def_havoc_total`, `def_havoc_front_seven`, `def_havoc_db`
+  → from CFBD `/stats/season/advanced` fields `defense.havoc.*`
+  → added to `priority_cols` ordering
+  → NA when CFBD doesn't return these (rare; graceful coalesce to 0)
+
+**New CONFIG.R constants:**
+- `HAVOC_SPREAD_WEIGHT <- 2.5` — pts per raw havoc diff unit (÷100 in formula)
+- `MATCHUP_HAVOC_WEIGHT <- 1.8` — matchup interaction amplifier (÷100)
+
+**New helper in MERGE_GAMES_RATINGS_CFB.R:**
+- `join_havoc_side()` — mirrors `join_talent_side()` pattern; joins home/away
+  `def_havoc_total`, `def_havoc_front_seven`, `def_havoc_db`
+- `havoc_diff` column added to mutate block:
+  `home_def_havoc_front_seven - away_def_havoc_front_seven`
+- Havoc cols added to `stale_pattern` to prevent join collisions on re-run
+
+**GENERATE_PREDICTIONS_CFB.R additions:**
+- `havoc_adj = havoc_diff * havoc_w / 100` (Phase 1)
+- `matchup_havoc_edge = (home_def_h7 × away_stuff - away_def_h7 × home_stuff) × matchup_hw / 100` (Phase 3)
+  Uses `home/away_def_havoc_front_seven` × opponent `off_stuff_rate`
+- Both added to `proj_spread` formula:
+  `proj_spread = -(... + havoc_adj + matchup_havoc_edge + portal_adj)`
+
+#### Phase 2 — Transfer Portal Grading
+
+**New file: `scripts/TRANSFER_PORTAL_CFB.R`**
+- `fetch_portal_data(year, master)` — main entry point; assigns `team_portal_scores` to .GlobalEnv
+- Combines: On3 team portal index (`scrape_portal_on3.R`) + cfbfastR individual transfers
+- `compute_team_portal_scores()` — normalizes On3 portal_index_score:
+  `portal_net_score = (portal_index_score - 0) / 200`
+  (÷200 puts it on ≈ same scale as talent_norm)
+- `flag_difference_makers()` — filters transfers rating ≥ `PORTAL_MIN_RATING` (0.80)
+  at impact positions (QB ×2.5, EDGE ×1.5, OT/CB ×1.3, WR/DL ×1.2)
+  → `n_difference_makers`, `has_qb_upgrade`, `has_edge_upgrade`
+
+**New file: `data/position_impact_weights_CFB.csv`**
+  QB=2.5, EDGE=1.5, OT/CB=1.3, WR/DL=1.2, LB/S=1.0, TE=0.9, RB=0.8
+
+**New CONFIG.R constants:**
+- `PORTAL_NET_WEIGHT <- 1.0` — spread pts per normalized portal score unit
+- `PORTAL_MIN_RATING <- 0.80` — minimum On3 rating to be a difference-maker
+
+**MERGE_GAMES_RATINGS_CFB.R:** portal join block added after havoc join;
+  reads `team_portal_scores` from .GlobalEnv; joins `home_portal_net_score` /
+  `away_portal_net_score`; `portal_diff` column added to mutate block.
+
+**GENERATE_PREDICTIONS_CFB.R:** `portal_adj = portal_diff × portal_w × talent_decay(week_num)`
+  Decays same schedule as talent_adj (weeks 1-4 only).
+
+**run_daily_football.R:** Portal step added in PHASE 2 (after TEAM_METRICS build);
+  non-fatal `tryCatch`; `.portal_sourced_by_orchestrator` flag prevents auto-run.
+
+**broadcast_football.R:** Bet cards enriched with portal flags when `team_portal_scores`
+  is in .GlobalEnv: `🔀 QB portal upgrade`, `🔀 EDGE rusher added`,
+  `🔀 N impact transfer(s)`.
+
+#### Phase 4 — PFF Option C Stub
+
+**TEAM_METRICS.R:** `load_pff_grades(master)` added as standalone function.
+  Reads `clean/pff_grades_latest.csv` if present; returns empty tibble if absent.
+  Columns: `team_name`, `pff_off_grade` (0-100), `pff_def_grade` (0-100).
+  Not wired into pipeline automatically — call manually or add to orchestrator
+  when PFF Enterprise export becomes available.
+
+#### Phase 5 — On3/247 QA Cross-Check
+
+**New file: `scripts/QA_portal_crosscheck.R`** (standalone only)
+- `portal_qa_run(year)` — fetches On3 + cfbfastR 247 individual portal data,
+  aggregates 247 to team level, compares On3 rank vs 247 rank
+- Flags teams with rank discrepancy ≥ 15 (configurable `DISCREPANCY_THRESHOLD`)
+- Writes `clean/qa_portal_crosscheck_YYYY.csv`
+- Usage: `source("scripts/QA_portal_crosscheck.R"); portal_qa_run()`
+
+### Activation Notes
+
+1. **Immediate** (preseason prep): Run `db_schema_init.R` to init DBs at new path
+2. **Early August** (before pipeline enable): Run `portal_qa_run(2026)` to spot
+   On3 vs 247 conflicts for top-ranked programs
+3. **Sep 2026** (Week 1): Havoc + portal signals are live; watch `havoc_adj` /
+   `portal_adj` in `proj_spread` vs `formula_spread` difference to gauge signal size
+4. **Post-Week 4**: Tune `HAVOC_SPREAD_WEIGHT` and `PORTAL_NET_WEIGHT` using
+   MAE comparison in `BACKTEST_2025.R` once 2026 data accumulates
+
+---
+
+## SESSION 11 MIGRATION PROMPT
+
+Continuing mcFootball CFB pipeline build. Read `CFB_PROJECT_BIBLE.md` at project root for full state — starting Session 12.
+
+Session 11 delivered: (1) CFB SQLite DBs moved to `C:/Users/Mike/sports_data/`; (2) Havoc rate integration — 3 new CFBD columns in team_metrics, `havoc_diff` + `matchup_havoc_edge` in prediction formula; (3) Transfer portal — `TRANSFER_PORTAL_CFB.R`, `position_impact_weights_CFB.csv`, portal step in orchestrator, difference-maker flags in broadcast; (4) PFF `load_pff_grades()` stub in TEAM_METRICS.R; (5) `QA_portal_crosscheck.R` standalone.
+
+All changes are non-fatal / gracefully degrade when CFBD doesn't return havoc cols or portal data isn't available.
+
+Priority for Session 12:
+1. Backtest validation — re-run `BACKTEST_2025.R` with new formula terms (havoc + portal = 0 for 2025, so formula spread should be identical; verify no regression)
+2. First live check (Week 1 Sep 2026) — verify `def_havoc_total` populates from CFBD
+3. Tune `HAVOC_SPREAD_WEIGHT` and `PORTAL_NET_WEIGHT` post-Week 4 against MAE

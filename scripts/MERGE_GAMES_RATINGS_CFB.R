@@ -109,6 +109,27 @@ join_talent_side <- function(games_df, metrics_df, side = "home") {
 }
 
 # ------------------------------------------------------------------------------
+# Helper: join defensive havoc rates for home + away
+# Columns sourced from team_metrics (TEAM_METRICS.R fetch_advanced_stats —
+# defense.havoc.* via CFBD /stats/season/advanced). Non-fatal — returns
+# games_df unchanged when havoc cols are absent from metrics_df.
+# ------------------------------------------------------------------------------
+join_havoc_side <- function(games_df, metrics_df, side = "home") {
+  col    <- if (side == "home") "canonical_home" else "canonical_away"
+  prefix <- side
+
+  keep_cols <- c("def_havoc_total", "def_havoc_front_seven", "def_havoc_db")
+  available <- intersect(keep_cols, names(metrics_df))
+  if (length(available) == 0) return(games_df)
+
+  havoc_join <- metrics_df %>%
+    select(canonical_name, all_of(available)) %>%
+    rename_with(~ paste0(prefix, "_", .), .cols = -canonical_name)
+
+  left_join(games_df, havoc_join, by = setNames("canonical_name", col))
+}
+
+# ------------------------------------------------------------------------------
 # Main merge
 # ------------------------------------------------------------------------------
 merge_games_ratings <- function() {
@@ -172,7 +193,9 @@ merge_games_ratings <- function() {
     "off_ppa|def_ppa|off_rush_ppa|off_pass_ppa|def_rush_ppa|def_pass_ppa|rush_rate|",
     "off_success_rate|def_success_rate|",
     "off_explosiveness|def_explosiveness|off_power_success|off_stuff_rate|",
-    "talent_norm|retention_score",
+    "talent_norm|retention_score|",
+    "def_havoc_total|def_havoc_front_seven|def_havoc_db|",
+    "portal_net_score",
     ")"
   )
   stale_cols <- names(games)[str_detect(names(games), stale_pattern)]
@@ -208,6 +231,33 @@ merge_games_ratings <- function() {
     gwr <- gwr %>%
       join_talent_side(metrics, "home") %>%
       join_talent_side(metrics, "away")
+  }
+
+  # --- Join defensive havoc rates (non-fatal) ---
+  # def_havoc_* cols added to team_metrics by TEAM_METRICS.R Phase 1.
+  # Returns games_df unchanged when columns are absent (pre-2026 data or API gap).
+  if (!is.null(metrics) &&
+      any(c("def_havoc_total", "def_havoc_front_seven", "def_havoc_db") %in% names(metrics))) {
+    gwr <- gwr %>%
+      join_havoc_side(metrics, "home") %>%
+      join_havoc_side(metrics, "away")
+  }
+
+  # --- Join portal net score (non-fatal) ---
+  # portal_net_score written by TRANSFER_PORTAL_CFB.R (Phase 2).
+  # Assign to GlobalEnv as team_portal_scores before this step if available.
+  portal_scores <- if (exists("team_portal_scores", envir = .GlobalEnv)) {
+    get("team_portal_scores", envir = .GlobalEnv)
+  } else NULL
+
+  if (!is.null(portal_scores) && "portal_net_score" %in% names(portal_scores)) {
+    for (side in c("home", "away")) {
+      col <- if (side == "home") "canonical_home" else "canonical_away"
+      p_join <- portal_scores %>%
+        select(canonical_name, portal_net_score) %>%
+        rename_with(~ paste0(side, "_", .), .cols = -canonical_name)
+      gwr <- left_join(gwr, p_join, by = setNames("canonical_name", col))
+    }
   }
 
   # --- Rating differential (home perspective) ---
@@ -261,6 +311,21 @@ merge_games_ratings <- function() {
       # +2.0 = home team is roughly ~200 composite pts better (e.g., Alabama vs G5)
       # Coalesced to 0 so prediction formula degrades gracefully when talent unavailable.
       talent_diff = coalesce(home_talent_norm, 0) - coalesce(away_talent_norm, 0),
+
+      # Havoc differential (home def minus away def front-seven disruption rate)
+      # Positive = home D-line creates more disruption vs away offense.
+      # NA when CFBD /stats/season/advanced doesn't return havoc columns.
+      havoc_diff = coalesce(
+        home_def_havoc_front_seven - away_def_havoc_front_seven,
+        NA_real_
+      ),
+
+      # Portal net score differential (home minus away portal talent delta)
+      # Written by TRANSFER_PORTAL_CFB.R; NA when portal step hasn't run.
+      portal_diff = coalesce(
+        home_portal_net_score - away_portal_net_score,
+        NA_real_
+      ),
 
       # Conference weight — downweights thin G5/FCS-adjacent markets in CALCULATE_VALUE
       # Scale: P4 conf = 1.00 | G5 = 0.80 | Independent = 0.70 | mixed = avg

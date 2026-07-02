@@ -19,7 +19,7 @@ suppressMessages(library(RSQLite))
 
 analyze_trends <- function() {
 
-  db_path <- "outputs/cfb_line_movement.sqlite"
+  db_path <- "C:/Users/Mike/sports_data/cfb_line_movement.sqlite"
 
   if (!file.exists(db_path)) {
     cat("[TREND] No line movement DB found — trend signals unavailable.\n")

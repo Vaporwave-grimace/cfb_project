@@ -212,6 +212,37 @@ LG_AVG_RUSH_RATE      <- 0.42  # FBS avg rush-play fraction (tune from /stats/se
 #
 # BBOC_MAX_EPISODES: cap to avoid over-fetching transcripts per run.
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# HAVOC RATE — defensive disruption (sacks + TFLs + PBUs / total plays)
+# Source: CFBD /stats/season/advanced → defense.havoc.*
+#
+# HAVOC_SPREAD_WEIGHT: pts per raw havoc rate unit
+#   Havoc rates are expressed as raw fractions (0.152 = 15.2%).
+#   Diff of 0.03 (3 pp) × 2.5 / 100 = 0.00075 × 100 = 0.075 pt shift.
+#   Use /100 to keep adjustment conservative; raise to /10 after live validation.
+#
+# MATCHUP_HAVOC_WEIGHT: amplifier on the cross-product matchup signal
+#   home_def_havoc_front_seven × away_off_stuff_rate — penalises an offense
+#   that frequently gets stuffed in the backfield against a disruptive D-front.
+# ------------------------------------------------------------------------------
+HAVOC_SPREAD_WEIGHT  <- 2.5   # pts per raw havoc diff unit (tune 1.0–5.0)
+MATCHUP_HAVOC_WEIGHT <- 1.8   # matchup interaction amplifier (tune 1.0–3.0)
+
+# ------------------------------------------------------------------------------
+# TRANSFER PORTAL — net talent delta from portal activity
+# Source: On3 portal team rankings (scrape_portal_on3.R) via Firecrawl
+#         + cfbfastR::cfbd_recruiting_transfer_portal() for position detail
+#
+# PORTAL_NET_WEIGHT: spread pts per normalized portal score unit
+#   Decays at same schedule as talent_decay() — only relevant weeks 1-4
+#   before in-season SP+ absorbs portal impact.
+#
+# PORTAL_MIN_RATING: minimum On3 composite rating to flag as difference-maker
+#   On3 player ratings scale 0.80–1.00 (five-star ≥ 0.98, four-star ≥ 0.90)
+# ------------------------------------------------------------------------------
+PORTAL_NET_WEIGHT    <- 1.0   # spread pts per portal score unit (tune 0.5–2.0)
+PORTAL_MIN_RATING    <- 0.80  # min On3 rating to be a "difference-maker"
+
 BBOC_RSS_URL        <- "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/61403825-97cd-4547-b4f2-b3ec011d3f83/b96a4573-5dc1-4181-add2-b3ec011d3f8a/podcast.rss"
 BBOC_CONFIRM_BOOST  <- 1.12        # EV multiplier when BBOC pick confirms model (tune 1.08–1.15)
 BBOC_LOOKBACK_DAYS  <- 7L          # days back to scan for new episodes
@@ -223,7 +254,7 @@ BBOC_MAX_EPISODES   <- 5L          # max episodes to parse per run
 MASTER_CSV         <- "team_name_mappings_MASTER_CFB.csv"
 BET_HISTORY_CSV    <- "outputs/bet_history.csv"   # ARCHIVE ONLY — not written post-Session 14
                                                    # used only by db_init_bets.R backfill (one-time)
-CFB_BETS_DB        <- "outputs/cfb_bets.sqlite"   # primary ledger (Session 14+)
+CFB_BETS_DB        <- "C:/Users/Mike/sports_data/cfb_bets.sqlite"   # primary ledger (Session 14+)
 MASTER_TICKET_CSV  <- "outputs/master_ticket.csv"
 # LINE_MOVEMENT_CSV removed — line movement is cfb_line_movement.sqlite (Session 11+)
 

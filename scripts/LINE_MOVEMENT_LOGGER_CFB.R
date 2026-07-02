@@ -24,7 +24,7 @@ suppressMessages(library(RSQLite))
 
 setwd("G:/My Drive/Scripting Projects/cfb_project")
 
-DB_PATH <- "outputs/cfb_line_movement.sqlite"
+DB_PATH <- "C:/Users/Mike/sports_data/cfb_line_movement.sqlite"
 LOG_RETENTION_DAYS <- 21
 ODDS_SPORT_KEY     <- "americanfootball_ncaaf"
 

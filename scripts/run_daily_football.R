@@ -103,6 +103,7 @@ run_step <- function(label, script, fatal = FALSE) {
 # (orchestrator calls build_team_metrics() after SCRAPE_CFB_DATA.R completes)
 # ==============================================================================
 .team_metrics_sourced_by_orchestrator <- TRUE
+.portal_sourced_by_orchestrator <- TRUE
 
 # ==============================================================================
 # MASTER — load team name mappings once, pass via GlobalEnv
@@ -137,13 +138,26 @@ tryCatch({
   source("scripts/TEAM_METRICS.R")
   build_team_metrics(master = master_cfb)
   elapsed_tm <- NA
-  log_msg("   ✓ Advanced team metrics (PPA, success rate, explosiveness)")
+  log_msg("   ✓ Advanced team metrics (PPA, success rate, explosiveness, havoc)")
   pipeline_log[[length(pipeline_log) + 1]] <<-
     list(label = "Advanced team metrics", status = "ok", elapsed = NA, error = NULL)
 }, error = function(e) {
   log_msg("   ⚠ non-fatal — Advanced team metrics: %s", conditionMessage(e))
   pipeline_log[[length(pipeline_log) + 1]] <<-
     list(label = "Advanced team metrics", status = "error",
+         elapsed = NA, error = conditionMessage(e))
+})
+
+tryCatch({
+  source("scripts/TRANSFER_PORTAL_CFB.R")
+  fetch_portal_data(year = as.integer(format(RUN_DATE, "%Y")), master = master_cfb)
+  log_msg("   ✓ Transfer portal scores (On3 + cfbfastR)")
+  pipeline_log[[length(pipeline_log) + 1]] <<-
+    list(label = "Transfer portal", status = "ok", elapsed = NA, error = NULL)
+}, error = function(e) {
+  log_msg("   ⚠ non-fatal — Transfer portal: %s", conditionMessage(e))
+  pipeline_log[[length(pipeline_log) + 1]] <<-
+    list(label = "Transfer portal", status = "error",
          elapsed = NA, error = conditionMessage(e))
 })
 

@@ -115,12 +115,16 @@ fetch_advanced_stats <- function(api_key, year, master) {
       off_stuff_rate    = as.numeric(safe_col(df, "offense.stuffRate")),
       off_line_yards    = as.numeric(safe_col(df, "offense.lineYards")),
       # Defense (negative ppa = good defense)
-      def_ppa           = as.numeric(safe_col(df, "defense.ppa")),
-      def_success_rate  = as.numeric(safe_col(df, "defense.successRate")),
-      def_explosiveness = as.numeric(safe_col(df, "defense.explosiveness")),
-      def_power_success = as.numeric(safe_col(df, "defense.powerSuccess")),
-      def_stuff_rate    = as.numeric(safe_col(df, "defense.stuffRate")),
-      def_line_yards    = as.numeric(safe_col(df, "defense.lineYards"))
+      def_ppa              = as.numeric(safe_col(df, "defense.ppa")),
+      def_success_rate     = as.numeric(safe_col(df, "defense.successRate")),
+      def_explosiveness    = as.numeric(safe_col(df, "defense.explosiveness")),
+      def_power_success    = as.numeric(safe_col(df, "defense.powerSuccess")),
+      def_stuff_rate       = as.numeric(safe_col(df, "defense.stuffRate")),
+      def_line_yards       = as.numeric(safe_col(df, "defense.lineYards")),
+      # Havoc: sacks + TFLs + PBUs per total plays — disruptive D-line signal
+      def_havoc_total      = as.numeric(safe_col(df, "defense.havoc.total")),
+      def_havoc_front_seven = as.numeric(safe_col(df, "defense.havoc.frontSeven")),
+      def_havoc_db         = as.numeric(safe_col(df, "defense.havoc.db"))
     ) %>%
     mutate(
       canonical_name = normalize_team_name(
@@ -474,6 +478,7 @@ build_team_metrics <- function(year = NULL, master = NULL) {
     "off_power_success", "def_power_success",
     "off_stuff_rate", "def_stuff_rate",
     "off_line_yards", "def_line_yards",
+    "def_havoc_total", "def_havoc_front_seven", "def_havoc_db",
     "pointsPerGame", "yardsPerPlay", "turnovers"
   )
   remaining <- setdiff(names(metrics), priority_cols)
@@ -567,7 +572,52 @@ build_team_metrics <- function(year = NULL, master = NULL) {
 }
 
 # ==============================================================================
-# 5. Run when sourced directly (not when sourced by orchestrator with own logic)
+# 5. PFF grades loader (Option C stub — Phase 4)
+#
+# Reads a manually-placed PFF export CSV (not API-fetched — PFF requires
+# Enterprise plan). If the file is absent, returns an empty tibble silently.
+# When present, it enriches team_metrics with pff_off_grade / pff_def_grade
+# before the pipeline's merge step.
+#
+# To activate: export grades from pff.com and save as clean/pff_grades_latest.csv
+# Columns expected: team_name (raw), pff_off_grade (0–100), pff_def_grade (0–100)
+# ==============================================================================
+
+load_pff_grades <- function(master = NULL) {
+  path <- "clean/pff_grades_latest.csv"
+  if (!file.exists(path)) return(tibble())
+
+  grades <- tryCatch(
+    read_csv(path, col_types = cols(.default = "c"), show_col_types = FALSE) %>%
+      mutate(
+        pff_off_grade = suppressWarnings(as.numeric(pff_off_grade)),
+        pff_def_grade = suppressWarnings(as.numeric(pff_def_grade))
+      ),
+    error = function(e) {
+      warning("[PFF] Error reading pff_grades_latest.csv: ", e$message)
+      return(tibble())
+    }
+  )
+
+  if (nrow(grades) == 0) return(tibble())
+
+  if (!is.null(master) && "team_name" %in% names(grades)) {
+    grades <- grades %>%
+      mutate(canonical_name = normalize_team_name(
+        team_name, mappings = master,
+        source_col = "massey_name",
+        unmatched_log = "logs/unmatched_teams.csv"
+      )) %>%
+      filter(!is.na(canonical_name))
+  }
+
+  n <- sum(!is.na(grades$pff_off_grade) | !is.na(grades$pff_def_grade))
+  cat(sprintf("[PFF] Loaded %d teams from pff_grades_latest.csv\n", n))
+  grades
+}
+
+# ==============================================================================
+# 6. Run when sourced directly (not when sourced by orchestrator with own logic)
 # ==============================================================================
 
 if (!exists(".team_metrics_sourced_by_orchestrator")) {

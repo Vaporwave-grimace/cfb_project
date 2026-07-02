@@ -39,7 +39,7 @@ suppressMessages(library(RSQLite))
 #           canonical game_id populated (i.e., hourly scheduler is active).
 #           Returns NULL gracefully if DB is absent or has no canonical ids.
 # ------------------------------------------------------------------------------
-load_closing_lines <- function(db_path = "outputs/cfb_line_movement.sqlite") {
+load_closing_lines <- function(db_path = "C:/Users/Mike/sports_data/cfb_line_movement.sqlite") {
 
   if (!file.exists(db_path)) {
     cat("[SETTLE] No line movement DB — CLV will be NA.\n")

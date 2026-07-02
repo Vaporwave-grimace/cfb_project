@@ -25,7 +25,7 @@ suppressMessages(library(jsonlite))
 suppressMessages(library(DBI))
 suppressMessages(library(RSQLite))
 
-DB_PATH         <- "outputs/cfb_line_movement.sqlite"
+DB_PATH         <- "C:/Users/Mike/sports_data/cfb_line_movement.sqlite"
 ODDS_SPORT_KEY  <- "americanfootball_ncaaf"
 ODDS_REGIONS    <- "us"
 ODDS_MARKETS    <- "spreads,totals,h2h"

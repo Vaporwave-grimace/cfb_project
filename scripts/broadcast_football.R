@@ -128,6 +128,37 @@ format_bet_card <- function(qb, bankroll) {
   # Enrich with conference info
   qb <- enrich_conference(qb)
 
+  # Enrich with portal difference-maker flags (non-fatal — cols absent pre-Phase 2)
+  if (exists("team_portal_scores", envir = .GlobalEnv)) {
+    ps <- get("team_portal_scores", envir = .GlobalEnv)
+    dm_cols <- intersect(c("canonical_name", "n_difference_makers",
+                           "has_qb_upgrade", "has_edge_upgrade",
+                           "difference_maker_names"), names(ps))
+    if (length(dm_cols) > 1) {
+      ps_join <- select(ps, all_of(dm_cols))
+      # Join on bet_side team: if home bet, join home; if away, join away
+      for (side in c("home", "away")) {
+        canon_col <- paste0("canonical_", side)
+        if (canon_col %in% names(qb)) {
+          qb <- left_join(qb, ps_join,
+                          by = setNames("canonical_name", canon_col),
+                          suffix = c("", paste0(".", side)))
+        }
+      }
+      # Flatten: keep only the picked team's portal flags
+      if (!"n_difference_makers" %in% names(qb))
+        qb$n_difference_makers <- NA_integer_
+      if (!"has_qb_upgrade" %in% names(qb))
+        qb$has_qb_upgrade <- NA
+      if (!"has_edge_upgrade" %in% names(qb))
+        qb$has_edge_upgrade <- NA
+    }
+  } else {
+    if (!"n_difference_makers" %in% names(qb)) qb$n_difference_makers <- NA_integer_
+    if (!"has_qb_upgrade"      %in% names(qb)) qb$has_qb_upgrade      <- NA
+    if (!"has_edge_upgrade"    %in% names(qb)) qb$has_edge_upgrade     <- NA
+  }
+
   # Header
   n    <- nrow(qb)
   header <- paste(
@@ -165,6 +196,21 @@ format_bet_card <- function(qb, bankroll) {
       sprintf("🏃 Away: %s", away_str),                                       "\n",
       sprintf("🏠 Home: %s", home_str),                                       "\n",
       signals_line(r$boost_flags, r$line_move),                              "\n",
+      # Portal difference-maker flags (Phase 2) — shown when portal step ran
+      {
+        portal_flags <- character(0)
+        if (!is.null(r$has_qb_upgrade) && isTRUE(r$has_qb_upgrade))
+          portal_flags <- c(portal_flags, "🔀 QB portal upgrade")
+        if (!is.null(r$has_edge_upgrade) && isTRUE(r$has_edge_upgrade))
+          portal_flags <- c(portal_flags, "🔀 EDGE rusher added")
+        if (!is.null(r$n_difference_makers) && !is.na(r$n_difference_makers) &&
+            as.integer(r$n_difference_makers) > 0 && length(portal_flags) == 0)
+          portal_flags <- c(portal_flags,
+                            sprintf("🔀 %d impact transfer(s)", r$n_difference_makers))
+        if (length(portal_flags) > 0)
+          paste0(paste(portal_flags, collapse = " | "), "\n")
+        else ""
+      },
       value_line(r$bet_type, r$edge, r$ev, r$bet_amount),
       # BBOC justification block — only when podcast intelligence fired
       if (grepl("BBOC", coalesce(r$boost_flags, "")) &&

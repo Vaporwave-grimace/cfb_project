@@ -298,6 +298,9 @@ predict_game <- function(game_row) {
   expl_w       <- if (exists("EXPL_TOTAL_WEIGHT"))     EXPL_TOTAL_WEIGHT     else 3.0
   success_w    <- if (exists("SUCCESS_SPREAD_WEIGHT")) SUCCESS_SPREAD_WEIGHT else 2.0
   talent_w     <- if (exists("TALENT_WEIGHT"))         TALENT_WEIGHT         else 1.5
+  havoc_w      <- if (exists("HAVOC_SPREAD_WEIGHT"))   HAVOC_SPREAD_WEIGHT   else 2.5
+  matchup_hw   <- if (exists("MATCHUP_HAVOC_WEIGHT"))  MATCHUP_HAVOC_WEIGHT  else 1.8
+  portal_w     <- if (exists("PORTAL_NET_WEIGHT"))     PORTAL_NET_WEIGHT     else 1.0
 
   # --- PPA signals (NA-safe; fall back to 0 when team_metrics not available) ---
   ppa_diff       <- coalesce(game_row$ppa_diff,          NA_real_)
@@ -326,6 +329,27 @@ predict_game <- function(game_row) {
   }
 
   talent_adj <- tdiff * talent_w * talent_decay(week_num)
+
+  # --- Havoc adjustment (Phase 1) ---
+  # havoc_diff = home_def_havoc_front_seven - away_def_havoc_front_seven
+  # Positive = home D-front is more disruptive; shifts spread toward home.
+  # /100 keeps adjustment conservative vs raw fraction values; tune after validation.
+  havoc_diff <- coalesce(game_row$havoc_diff, 0)
+  havoc_adj  <- havoc_diff * havoc_w / 100
+
+  # --- Matchup havoc edge (Phase 3) ---
+  # Cross-product: home def front-seven havoc × away off stuff rate (susceptibility
+  # to backfield disruption). Measures how well home D exploits away O weakness.
+  home_def_h7 <- coalesce(as.numeric(game_row[["home_def_havoc_front_seven"]]), 0)
+  away_def_h7 <- coalesce(as.numeric(game_row[["away_def_havoc_front_seven"]]), 0)
+  home_stuff  <- coalesce(as.numeric(game_row[["home_off_stuff_rate"]]),  0)
+  away_stuff  <- coalesce(as.numeric(game_row[["away_off_stuff_rate"]]),  0)
+  matchup_havoc_edge <- (home_def_h7 * away_stuff - away_def_h7 * home_stuff) *
+                        matchup_hw / 100
+
+  # --- Portal adjustment (Phase 2; decays same schedule as talent) ---
+  portal_diff <- coalesce(game_row$portal_diff, 0)
+  portal_adj  <- portal_diff * portal_w * talent_decay(week_num)
 
   # --- Bye week + travel adjustments ---
   bye_adj    <- tryCatch(get_bye_adj(home, away, rd), error = function(e) 0)
@@ -362,7 +386,8 @@ predict_game <- function(game_row) {
   # All positive adj terms shift the spread in home team's favour.
   proj_spread <- -(rd * scalar + ppa_adj + success_adj + talent_adj + hfa +
                    bye_adj + travel_adj + third_down_spread_adj +
-                   injury_adj + motiv_adj + scheme_adj)
+                   injury_adj + motiv_adj + scheme_adj +
+                   havoc_adj + matchup_havoc_edge + portal_adj)
 
   # --- Projected total ---
   home_plays_pg <- if ("home_plays_per_game" %in% names(game_row))
